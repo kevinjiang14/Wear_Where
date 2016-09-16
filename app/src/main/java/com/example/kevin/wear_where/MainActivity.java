@@ -1,6 +1,5 @@
 package com.example.kevin.wear_where;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
