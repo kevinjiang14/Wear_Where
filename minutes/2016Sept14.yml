@@ -1,0 +1,18 @@
+date: September 14, 2016
+meeting_type: ta
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: None},
+  {ubit: calvinzh, progress: None},
+  {ubit: hermesko, progress: None},
+  {ubit: kevinjia, progress: Incorporated the yahoo weather api into app GUI.}
+  ]
+issues: []
+Notes: |
+  Features discussion:
+    Vacation button (Shows the weather for the vacation location for the length of vacation)
+    Roadtrip button (Shows the weather transition from point A and point B)
+
+  List out functionality on readme.md on repository (does not need to be fully completed by end of semester)

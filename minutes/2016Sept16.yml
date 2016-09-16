@@ -1,0 +1,18 @@
+date: September 16, 2016
+meeting_type: group
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: None},
+  {ubit: calvinzh, progress: created minutes folder in github and completed meeting minutes},
+  {ubit: hermesko, progress: None},
+  {ubit: kevinjia, progress: None}
+  ]
+issues: []
+Notes: |
+  Finalizing what needs to be done by Sprint 1.
+  Four separate GUI screens will be created by each of us,
+  each linked to one of the four buttons on the home screen
+  of the app. Youtube video will be done either over skype or
+  with VLC screen capturing.
