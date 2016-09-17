@@ -1,0 +1,16 @@
+date: September 17, 2016
+meeting_type: group
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: None},
+  {ubit: calvinzh, progress: Created a Vacation tab for homescreen},
+  {ubit: hermesko, progress: Created a Roadtrip tab for homescreen},
+  {ubit: kevinjia, progress: Created a Suggestions tab for homescreen}
+  ]
+issues: []
+Notes: |
+  Youtube video capturing today. Audio inclusion is to be decided.
+  May just use text or youtube annotations to help explain the prototype
+  and include a motivational "start-up-like" soundtrack in the background.
