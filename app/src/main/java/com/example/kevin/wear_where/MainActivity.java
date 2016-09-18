@@ -2,12 +2,18 @@ package com.example.kevin.wear_where;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.data.Channel;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
 
@@ -17,7 +23,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback{
 
     TextView temperature, location, description;            // TextView in xml
     URL request;                                            // The link requesting service from Yahoo query
@@ -32,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         tabHost.setup();
 
         TabHost.TabSpec homeTab = tabHost.newTabSpec("homeTab");
-        homeTab.setIndicator("Home");
+        homeTab.setIndicator("Weather");
         homeTab.setContent(R.id.layout1);
         tabHost.addTab(homeTab);
 
@@ -41,23 +47,32 @@ public class MainActivity extends AppCompatActivity {
         description = (TextView) findViewById(R.id.description);
 
         channel = new Channel();
-
         getRequest();
 
         homeTab = tabHost.newTabSpec("homeTab2");
-        homeTab.setIndicator("Home 2");
+        homeTab.setIndicator("Apparel");
         homeTab.setContent(R.id.layout2);
         tabHost.addTab(homeTab);
 
         homeTab = tabHost.newTabSpec("homeTab3");
-        homeTab.setIndicator("Home 3");
+        homeTab.setIndicator("Vacation?");
         homeTab.setContent(R.id.layout3);
         tabHost.addTab(homeTab);
 
         homeTab = tabHost.newTabSpec("homeTab2");
-        homeTab.setIndicator("Home 4");
+        homeTab.setIndicator("Road\nTrip!");
         homeTab.setContent(R.id.layout4);
         tabHost.addTab(homeTab);
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(0, 0))
+                .title("Marker"));
     }
 
     private void displayResults() {
