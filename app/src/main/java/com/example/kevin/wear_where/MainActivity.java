@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -76,9 +77,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void displayResults() {
-        temperature.setText("" + channel.getItem().getCondition().getTemperature() + (char) 0x00B0 + " " + channel.getUnits().getTemperatureUnit());
-        location.setText(channel.getLocation());
-        description.setText(channel.getItem().getCondition().getDescription());
+        temperature.setText("" + channel.getTemp() + (char) 0x00B0 + " F");
+        location.setText("Buffalo, NY");
+        description.setText(channel.getCondition());
         // Debugger
         //Log.d("WearWhere", "" + channel.getItem().getCondition().getTemperature());
         //temperature.setText("" + channel.getLocation());
@@ -92,9 +93,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Temporary Channel Object holder
                 Channel channelTemp = new Channel();
 
-                String query = String.format("select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\"buffalo, ny\")");
+                String city = "buffalo";
+                String state = "NY";
 
-                String link = String.format("https://query.yahooapis.com/v1/public/yql?q=%s&format=json", Uri.encode(query));
+                String link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
+
+                //String query = String.format("select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\"buffalo, ny\")");
+
+                //String link = String.format("https://query.yahooapis.com/v1/public/yql?q=%s&format=json", Uri.encode(query));
 
                 try {
                     request = new URL(link);
@@ -114,7 +120,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         result.append(line);
                     }
 
-                    JSONObject data = new JSONObject(result.toString());
+                    /*JSONObject data = new JSONObject(result.toString());
                     JSONObject queryResult = data.optJSONObject("query");
 
                     // Check for number of results to verify acceptable location
@@ -126,7 +132,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     JSONObject resultsObject = queryResult.optJSONObject("results");
                     JSONObject channelObject = resultsObject.optJSONObject("channel");
 
-                    channelTemp.retrieveData(channelObject);
+                    channelTemp.retrieveData(channelObject);*/
+
+                    JSONObject jsonRootObject = new JSONObject(result.toString());
+                    JSONArray jsonArray = jsonRootObject.optJSONArray("hourly_forecast");
+                    JSONObject FCTTIME = jsonArray.getJSONObject(0);
+                    JSONObject temp = FCTTIME.getJSONObject("temp");
+                    String temp_english = temp.optString("english").toString();
+                    String condition = FCTTIME.optString("condition").toString();
+
+                    channelTemp.setTemp(temp_english);
+                    channelTemp.setCondition(condition);
 
                     return channelTemp;
 
