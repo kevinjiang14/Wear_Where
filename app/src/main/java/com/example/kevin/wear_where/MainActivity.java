@@ -25,7 +25,7 @@ import java.net.URLConnection;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback{
 
-    TextView temperature, location, description;            // TextView in xml
+    TextView temperature, location, description;            // TextView in xml.
     URL request;                                            // The link requesting service from Yahoo query
     Channel channel;                                        // Channel Object
 

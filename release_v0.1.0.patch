@@ -1,0 +1,40 @@
+Index: minutes/2016Sept18.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- minutes/2016Sept18.yml	(revision )
++++ minutes/2016Sept18.yml	(revision )
+@@ -0,0 +1,15 @@
++date: September 18, 2016
++meeting_type: group
++attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
++absent: []
++excused_absences: []
++task_progress: [
++  {ubit: thomas69, progress: did voiceover for youtube video},
++  {ubit: calvinzh, progress: created 1st patch for sprint one, updated develop to master},
++  {ubit: hermesko, progress: edited youtube video for processing},
++  {ubit: kevinjia, progress: created youtube account for the project}
++  ]
++issues: []
++Notes: |
++  Sprint 1 has basically been completed. Final touches are being implemented.
++  Prepared to show prototype.
+Index: app/src/main/java/com/example/kevin/wear_where/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/kevin/wear_where/MainActivity.java	(revision 2f7e6d82b91fbbbf1122174f1b9c296ac6bf53ba)
++++ app/src/main/java/com/example/kevin/wear_where/MainActivity.java	(revision )
+@@ -25,7 +25,7 @@
+ 
+ public class MainActivity extends FragmentActivity implements OnMapReadyCallback{
+ 
+-    TextView temperature, location, description;            // TextView in xml
++    TextView temperature, location, description;            // TextView in xml.
+     URL request;                                            // The link requesting service from Yahoo query
+     Channel channel;                                        // Channel Object
+ 
+\ No newline at end of file
