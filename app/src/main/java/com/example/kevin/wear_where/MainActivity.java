@@ -3,7 +3,6 @@ package com.example.kevin.wear_where;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -43,13 +42,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         homeTab.setContent(R.id.layout1);
         tabHost.addTab(homeTab);
 
-        temperature = (TextView) findViewById(R.id.temperature);
-        location = (TextView) findViewById(R.id.location);
-        description = (TextView) findViewById(R.id.description);
-
-        channel = new Channel();
-        getRequest();
-
         homeTab = tabHost.newTabSpec("homeTab2");
         homeTab.setIndicator("Apparel");
         homeTab.setContent(R.id.layout2);
@@ -67,6 +59,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        temperature = (TextView) findViewById(R.id.temperature);
+        location = (TextView) findViewById(R.id.location);
+        description = (TextView) findViewById(R.id.description);
+
+        channel = new Channel();
+        getRequest();
     }
 
     @Override
