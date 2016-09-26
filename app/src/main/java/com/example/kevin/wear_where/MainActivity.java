@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +37,8 @@ import java.net.URLConnection;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
+    GoogleApiClient mGoogleApiClient;                       // Variable used to create an instance of the GoogleApiClient
+    Location mLastLocation;                                 // Variable used to store the most recent location
     TextView temperature, location, description;            // TextView in xml.
     URL request;                                            // The link requesting service from Yahoo query
     Channel channel;                                        // Channel Object
@@ -87,17 +88,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //Build Google API Client
+        //Build and instantiate an instance of the Google API Client
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
         }
 
-        //Attempt to connect
+        //Attempt to connect to Google Play Services
         if(mGoogleApiClient!= null){
             mGoogleApiClient.connect();
         }
-        else
+        else {
             currentLocation.setText("Could not connect to Google Play Services!");
+        }
     }
 
     @Override
@@ -107,17 +109,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onConnected(Bundle arg0) {
-        int MY_PERMISSION_ACCESS_COARSE_LOCATION = 77;
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(this, new String[] {
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
-                    }, MY_PERMISSION_ACCESS_COARSE_LOCATION );
-        }
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null) {
-            TextView currentLocation = (TextView) findViewById(R.id.locationCoordinates);
-            currentLocation.setText("Current Location: Latitude = " + String.valueOf(mLastLocation.getLatitude()) + ", Longitude = " + String.valueOf(mLastLocation.getLongitude()));
-        }
+        getLocation(null);
     }
 
     @Override
@@ -215,5 +207,28 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 displayResults();
             }
         }.execute();
+    }
+
+    //use this to get the current location (just pass NULL in here)
+    public void getLocation(View view) {
+        int MY_PERMISSION_ACCESS_COARSE_LOCATION = 77;
+        int MY_PERMISSION_ACCESS_FINE_LOCATION = 77;
+
+        //request permission for coarse location if not granted already
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSION_ACCESS_COARSE_LOCATION );
+        }
+
+        //request permission for fine location if not granted already
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_ACCESS_FINE_LOCATION );
+        }
+
+        //get the last location from the GoogleApiClient
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            TextView currentLocation = (TextView) findViewById(R.id.locationCoordinates);
+            currentLocation.setText("Current Location: Latitude = " + String.valueOf(mLastLocation.getLatitude()) + ", Longitude = " + String.valueOf(mLastLocation.getLongitude()));
+        }
     }
 }

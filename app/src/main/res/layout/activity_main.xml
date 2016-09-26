@@ -80,7 +80,17 @@
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:id="@+id/locationCoordinates"
                         android:layout_below="@+id/location"
-                        android:layout_centerHorizontal="true" />
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Get Location!"
+                        android:id="@+id/getLocationButton"
+                        android:layout_below="@+id/locationCoordinates"
+                        android:layout_centerHorizontal="true"
+                        android:onClick="getLocation"/>
 
                 </RelativeLayout>
 
@@ -239,7 +249,7 @@
                         android:text="Let's Go!"
                         android:id="@+id/getRoadTripWeatherButton"
                         android:layout_below="@+id/endingLocationEditText"
-                        android:layout_centerHorizontal="true" />
+                        android:layout_centerHorizontal="true"/>
                 </RelativeLayout>
             </FrameLayout>
         </LinearLayout>
