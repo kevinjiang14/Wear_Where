@@ -1,6 +1,6 @@
-package com.example.kevin.wear_where.data;
+package com.example.kevin.wear_where.YahooData;
 
-import android.util.Log;
+import com.example.kevin.wear_where.Interface.JSONData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,20 +34,6 @@ public class Channel implements JSONData {
         location = city + ", " + region;
         // Debugger
         //Log.d("WearWhere", "" + location);
-    }
-
-    @Override
-    public JSONObject toJSON() {
-        JSONObject data = new JSONObject();
-
-        try{
-            data.put("units", units.toJSON());
-            data.put("item", item.toJSON());
-            data.put("location", location);
-        }catch (JSONException e){
-            e.printStackTrace();
-        }
-        return data;
     }
 
     public Unit getUnits(){

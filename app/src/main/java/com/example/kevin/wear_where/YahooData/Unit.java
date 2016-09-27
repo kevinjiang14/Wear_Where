@@ -1,4 +1,6 @@
-package com.example.kevin.wear_where.data;
+package com.example.kevin.wear_where.YahooData;
+
+import com.example.kevin.wear_where.Interface.JSONData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,18 +15,6 @@ public class Unit implements JSONData {
     @Override
     public void retrieveData(JSONObject data) {
         temperatureUnit = data.optString("temperature");
-    }
-
-    @Override
-    public JSONObject toJSON() {
-        JSONObject data = new JSONObject();
-
-        try {
-            data.put("temperature", temperatureUnit);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return data;
     }
 
     public String getTemperatureUnit(){
