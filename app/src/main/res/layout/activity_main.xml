@@ -74,39 +74,173 @@
                         android:layout_below="@+id/description"
                         android:layout_centerHorizontal="true" />
 
-                    <Button
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New Button"
-                        android:id="@+id/button"
-                        android:layout_centerVertical="true"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/locationCoordinates"
+                        android:layout_below="@+id/location"
                         android:layout_centerHorizontal="true" />
 
                 </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/layout2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                </LinearLayout>
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Headwear"
+                        android:id="@+id/headwear"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
 
-                <LinearLayout
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upper Body"
+                        android:id="@+id/upperbody"
+                        android:layout_below="@+id/headwear"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignRight="@+id/headwear"
+                        android:layout_alignEnd="@+id/headwear" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lower Body"
+                        android:id="@+id/lowerbody"
+                        android:layout_below="@+id/upperbody"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignRight="@+id/upperbody"
+                        android:layout_alignEnd="@+id/upperbody" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Accessory"
+                        android:id="@+id/accessory"
+                        android:layout_below="@+id/lowerbody"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignRight="@+id/lowerbody"
+                        android:layout_alignEnd="@+id/lowerbody" />
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:id="@+id/layout3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Where you headed?"
+                        android:id="@+id/textView"
+                        android:textSize="20dp"
+                        android:layout_marginTop="46dp"
+                        android:layout_below="@+id/textView3"
+                        android:layout_alignRight="@+id/textView3"
+                        android:layout_alignEnd="@+id/textView3" />
 
-                <LinearLayout
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editText"
+                        android:text="Search.."
+                        android:clickable="true"
+                        android:textSize="14dp"
+                        android:layout_below="@+id/textView"
+                        android:layout_alignLeft="@+id/textView"
+                        android:layout_alignStart="@+id/textView" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Duration of stay?"
+                        android:id="@+id/textView2"
+                        android:layout_marginTop="44dp"
+                        android:layout_below="@+id/editText"
+                        android:layout_alignLeft="@+id/editText"
+                        android:layout_alignStart="@+id/editText"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="Vacation"
+                        android:id="@+id/textView3"
+                        android:textSize="24dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" />
+
+                    <CalendarView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/calendarView"
+                        android:layout_below="@+id/textView2"
+                        android:layout_centerHorizontal="true" />
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:id="@+id/layout4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/roadTripTextView"
+                        android:layout_centerHorizontal="true"
+                        android:text='Road Trip!'
+                        android:textStyle="bold"
+                        android:textSize="50dp"
+                        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:name="com.google.android.gms.maps.MapFragment"
+                        android:id="@+id/map"
+                        android:layout_below="@+id/roadTripTextView"
+                        android:layout_width="480sp"
+                        android:layout_height="320sp"/>
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/startingLocationEditText"
+                        android:text="Enter a starting location..."
+                        android:layout_below="@+id/map"
+                        android:layout_centerHorizontal="true" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/endingLocationEditText"
+                        android:text="Enter an ending location..."
+                        android:layout_below="@+id/startingLocationEditText"
+                        android:layout_centerHorizontal="true" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Let's Go!"
+                        android:id="@+id/getRoadTripWeatherButton"
+                        android:layout_below="@+id/endingLocationEditText"
+                        android:layout_centerHorizontal="true" />
+                </RelativeLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>

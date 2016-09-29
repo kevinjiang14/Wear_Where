@@ -1,0 +1,15 @@
+date: September 18, 2016
+meeting_type: group
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: did voiceover for youtube video},
+  {ubit: calvinzh, progress: created 1st patch for sprint one, updated develop to master},
+  {ubit: hermesko, progress: edited youtube video for processing},
+  {ubit: kevinjia, progress: created youtube account for the project}
+  ]
+issues: []
+Notes: |
+  Sprint 1 has basically been completed. Final touches are being implemented.
+  Prepared to show prototype.

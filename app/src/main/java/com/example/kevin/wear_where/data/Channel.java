@@ -14,6 +14,9 @@ public class Channel implements JSONData {
     private Item item;
     private String location;
 
+    private String temp;
+    private String condition;
+
     @Override
     public void retrieveData(JSONObject data) {
         units = new Unit();
@@ -57,5 +60,21 @@ public class Channel implements JSONData {
 
     public String getLocation(){
         return location;
+    }
+
+    public String getTemp(){
+        return temp;
+    }
+
+    public String getCondition(){
+        return condition;
+    }
+
+    public void setTemp(String value){
+        temp = value;
+    }
+
+    public void setCondition(String value){
+        condition = value;
     }
 }
