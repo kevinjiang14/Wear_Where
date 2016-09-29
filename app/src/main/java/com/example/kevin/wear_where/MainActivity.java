@@ -98,6 +98,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if(mGoogleApiClient!= null){
             mGoogleApiClient.connect();
         }
+
         else {
             currentLocation.setText("Could not connect to Google Play Services!");
         }
