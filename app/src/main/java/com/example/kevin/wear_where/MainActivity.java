@@ -1,3 +1,4 @@
+
 package com.example.kevin.wear_where;
 
 import android.content.pm.PackageManager;
@@ -38,6 +39,9 @@ import java.net.URLConnection;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
+    double latitude = 0;
+    double longitude = 0;
+
     GoogleApiClient mGoogleApiClient;                       // Variable used to create an instance of the GoogleApiClient
     Location mLastLocation;                                 // Variable used to store the most recent location
     TextView temperature, location, description;            // TextView in xml.
@@ -77,17 +81,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         homeTab.setContent(R.id.layout4);
         tabHost.addTab(homeTab);
 
-        temperature = (TextView) findViewById(R.id.temperature);
-        location = (TextView) findViewById(R.id.location);
-        description = (TextView) findViewById(R.id.description);
-        TextView currentLocation = (TextView) findViewById(R.id.locationCoordinates);
-
-        channel = new Channel();
-        getRequest();
-
-        //Set up google maps fragment in tab4
+        /*//Set up google maps fragment in tab4
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(this);*/
+    }
+
+    @Override
+    protected void onStart() {
 
         //Build and instantiate an instance of the Google API Client
         if (mGoogleApiClient == null) {
@@ -95,18 +95,43 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         //Attempt to connect to Google Play Services
-        if(mGoogleApiClient!= null){
+        if(mGoogleApiClient != null){
             mGoogleApiClient.connect();
         }
 
         else {
+            TextView currentLocation = (TextView) findViewById(R.id.locationCoordinates);
             currentLocation.setText("Could not connect to Google Play Services!");
         }
+
+        temperature = (TextView) findViewById(R.id.temperature);
+        location = (TextView) findViewById(R.id.location);
+        description = (TextView) findViewById(R.id.description);
+
+        channel = new Channel();
+        getRequest();
+
+        super.onStart();
     }
 
     @Override
     public void onMapReady(GoogleMap map) {
-        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
+        int MY_PERMISSION_ACCESS_COARSE_LOCATION = 77;
+        int MY_PERMISSION_ACCESS_FINE_LOCATION = 77;
+
+        //request permission for coarse location if not granted already
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSION_ACCESS_COARSE_LOCATION );
+        }
+
+        //request permission for fine location if not granted already
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_ACCESS_FINE_LOCATION );
+        }
+
+        map.setMyLocationEnabled(true);
+        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Marker"));
     }
 
     @Override
@@ -172,16 +197,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                     /*JSONObject data = new JSONObject(result.toString());
                     JSONObject queryResult = data.optJSONObject("query");
-
                     // Check for number of results to verify acceptable location
                     int count = queryResult.optInt("count");
                     if (count == 0) {
                         return null;
                     }
-
                     JSONObject resultsObject = queryResult.optJSONObject("results");
                     JSONObject channelObject = resultsObject.optJSONObject("channel");
-
                     channelTemp.retrieveData(channelObject);*/
 
                     JSONObject jsonRootObject = new JSONObject(result.toString());
@@ -231,6 +253,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if (mLastLocation != null) {
             TextView currentLocation = (TextView) findViewById(R.id.locationCoordinates);
             currentLocation.setText("Current Location: Latitude = " + String.valueOf(mLastLocation.getLatitude()) + ", Longitude = " + String.valueOf(mLastLocation.getLongitude()));
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
         }
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 }
