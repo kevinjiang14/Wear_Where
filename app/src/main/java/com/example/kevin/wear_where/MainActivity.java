@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -20,8 +21,13 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.drive.Drive;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,8 +45,18 @@ import java.net.URLConnection;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
-    double latitude = 0;
+    private static final String TAG = "MainActivity";
+
+    double latitude = 0;                                    // Variables used to keep track of the current latitude and longitude
     double longitude = 0;
+
+    double startingLatitude = 0;
+    double startingLongitude = 0;
+    double endingLatitude = 0;
+    double endingLongitude = 0;
+
+    MapFragment mapFragment;                                /* Variable used to create an instance of the mapFragment
+                                                               --> Call getMapAsync(this) on mapFragment to update the map */
 
     GoogleApiClient mGoogleApiClient;                       // Variable used to create an instance of the GoogleApiClient
     Location mLastLocation;                                 // Variable used to store the most recent location
@@ -48,6 +64,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     URL request;                                            // The link requesting service from Yahoo query
     Channel channel;                                        // Channel Object
 
+    /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
+       Also called whenever the application is launched and there are no existing resources to work with (i.e. first start or application was killed before) */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,12 +99,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         homeTab.setContent(R.id.layout4);
         tabHost.addTab(homeTab);
 
-        /*//Set up google maps fragment in tab4
-        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
+        //Get a reference to the google maps fragment in tab4
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
     }
 
-    @Override
+    @Override   //Called when the activity becomes visible to the user. Also called when coming back to the application from another application (assuming this application wasn't killed).
     protected void onStart() {
 
         //Build and instantiate an instance of the Google API Client
@@ -111,6 +128,42 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         channel = new Channel();
         getRequest();
 
+        //Set up PlaceAutocompleteFragments and their listeners
+        PlaceAutocompleteFragment startingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.starting_location_autocomplete_fragment);
+        PlaceAutocompleteFragment endingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.ending_location_autocomplete_fragment);
+
+        startingLocation.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                startingLatitude = place.getLatLng().latitude;
+                startingLongitude = place.getLatLng().longitude;
+                Log.i(TAG, "Place: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+        endingLocation.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                endingLatitude = place.getLatLng().latitude;
+                endingLongitude = place.getLatLng().longitude;
+                Log.i(TAG, "Place: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
         super.onStart();
     }
 
@@ -130,8 +183,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_ACCESS_FINE_LOCATION );
         }
 
+        //If the starting and ending points have been initialized then set the markers on the map(need to figure out a better way to check this...)
+        if (startingLatitude != 0 && startingLongitude != 0) {
+            map.addMarker(new MarkerOptions().position(new LatLng(startingLatitude, startingLongitude)));
+        }
+
+        if (endingLatitude != 0 && endingLongitude != 0) {
+            map.addMarker(new MarkerOptions().position(new LatLng(endingLatitude, endingLongitude)));
+        }
+
+        //Move the camera to the current location (used upon start up, may encounter bugs later on when calling getMapAsync() after startup)
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
         map.setMyLocationEnabled(true);
-        map.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title("Marker"));
     }
 
     @Override
@@ -256,7 +319,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             latitude = mLastLocation.getLatitude();
             longitude = mLastLocation.getLongitude();
         }
-        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+
+        //update the map with the zoom of the current location
+        mapFragment.getMapAsync(this);
+    }
+
+    public void placeMarkers(View view) {
+        //update the map with the corresponding markers for the starting and ending points
         mapFragment.getMapAsync(this);
     }
 }
