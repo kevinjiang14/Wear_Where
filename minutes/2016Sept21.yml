@@ -1,0 +1,25 @@
+date: September 21, 2016
+meeting_type: ta
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: None},
+  {ubit: calvinzh, progress: None},
+  {ubit: hermesko, progress: None},
+  {ubit: kevinjia, progress: None}
+  ]
+issues: []
+Notes: |
+  Discussion:
+    What would we want to do for this week of sprint 2?
+      It is still to be determined in our own group meetings when we
+      look more closely and find functions in each tab that do not work.
+
+    Some form of progress must be presented week by week.
+
+    If we have a function we expected to implement during a week but did not complete it
+    during that week, we can push it to the next week and try to catch up. Function
+    completion is not mandatory but progress and effort must be clearly shown.
+
+  Task: Add more issues into github repository and assign them to group members.

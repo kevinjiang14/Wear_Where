@@ -1,0 +1,15 @@
+date: September 27, 2016
+meeting_type: instructor
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: None},
+  {ubit: calvinzh, progress: None},
+  {ubit: hermesko, progress: implemented Get Location},
+  {ubit: kevinjia, progress: None}
+  ]
+issues: []
+Notes: |
+  Can use PaleBlueDot assignment from CSE 250 for getLocation.
+  
