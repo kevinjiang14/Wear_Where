@@ -1,5 +1,8 @@
 package com.example.kevin.wear_where.WundergroundData.CurrentCondition;
 
+import android.graphics.Bitmap;
+
+import com.example.kevin.wear_where.AsyncTask.ImageLoaderAST;
 import com.example.kevin.wear_where.Interface.JSONData;
 
 import org.json.JSONObject;
