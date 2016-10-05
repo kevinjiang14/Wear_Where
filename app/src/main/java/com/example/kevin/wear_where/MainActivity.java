@@ -148,10 +148,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 String link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
-                //String query = String.format("select * from weather.forecast where woeid in (select woeid from geo.places(1) where text=\"buffalo, ny\")");
-
-                //String link = String.format("https://query.yahooapis.com/v1/public/yql?q=%s&format=json", Uri.encode(query));
-
                 try {
                     request = new URL(link);
                     // Open a URL connection to link
