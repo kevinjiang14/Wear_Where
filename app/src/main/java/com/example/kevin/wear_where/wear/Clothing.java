@@ -1,4 +1,4 @@
-package com.example.kevin.wear_where;
+package com.example.kevin.wear_where.wear;
 
 import android.widget.TextView;
 
@@ -17,7 +17,7 @@ public class Clothing {
     HashMap<Integer,ArrayList<String>> upperBody = new HashMap<>();
     HashMap<Integer,ArrayList<String>> lowerBody = new HashMap<>();
 
-    public Clothing(String temp, String condition){
+    public Clothing(){
         /**
          *  Integer key of hash map determines the level of the temperature outside and type of clothing
          *  1- Freezing
