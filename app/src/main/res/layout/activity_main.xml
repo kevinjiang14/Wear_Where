@@ -227,29 +227,32 @@
                         android:layout_width="480sp"
                         android:layout_height="320sp"/>
 
-                    <EditText
-                        android:layout_width="wrap_content"
+                    <fragment
+                        android:id="@+id/starting_location_autocomplete_fragment"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/startingLocationEditText"
-                        android:text="Enter a starting location..."
+                        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                         android:layout_below="@+id/map"
-                        android:layout_centerHorizontal="true" />
+                        android:layout_centerHorizontal="true"
+                        />
 
-                    <EditText
-                        android:layout_width="wrap_content"
+                    <fragment
+                        android:id="@+id/ending_location_autocomplete_fragment"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/endingLocationEditText"
-                        android:text="Enter an ending location..."
-                        android:layout_below="@+id/startingLocationEditText"
-                        android:layout_centerHorizontal="true" />
+                        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                        android:layout_below="@+id/starting_location_autocomplete_fragment"
+                        android:layout_centerHorizontal="true"
+                        />
 
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Let's Go!"
                         android:id="@+id/getRoadTripWeatherButton"
-                        android:layout_below="@+id/endingLocationEditText"
-                        android:layout_centerHorizontal="true"/>
+                        android:layout_below="@+id/ending_location_autocomplete_fragment"
+                        android:layout_centerHorizontal="true"
+                        android:onClick="placeMarkers"/>
                 </RelativeLayout>
             </FrameLayout>
         </LinearLayout>
