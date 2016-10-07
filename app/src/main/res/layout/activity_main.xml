@@ -211,37 +211,56 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/roadTripTextView"
-                        android:layout_centerHorizontal="true"
-                        android:text='Road Trip!'
-                        android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/roadTripTextView"
+                    android:layout_centerHorizontal="true"
+                    android:text='Road Trip!'
+                    android:textStyle="bold"
                         android:textSize="50dp"
                         android:textAppearance="?android:attr/textAppearanceLarge"/>
 
                     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                         android:name="com.google.android.gms.maps.MapFragment"
                         android:id="@+id/map"
-                        android:layout_below="@+id/roadTripTextView"
-                        android:layout_width="480sp"
+                        android:layout_width="match_parent"
                         android:layout_height="320sp"/>
+
+                    <TextView
+                        android:paddingTop="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/startingLocationTextView"
+                        android:layout_below="@+id/map"
+                        android:layout_centerHorizontal="true"
+                        android:text="Enter a Starting Location..."/>
 
                     <fragment
                         android:id="@+id/starting_location_autocomplete_fragment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                        android:layout_below="@+id/map"
+                        android:layout_below="@+id/startingLocationTextView"
                         android:layout_centerHorizontal="true"
                         />
+
+                    <TextView
+                        android:paddingTop="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:id="@+id/endingLocationTextView"
+                        android:layout_below="@+id/starting_location_autocomplete_fragment"
+                        android:layout_centerHorizontal="true"
+                        android:text="Enter an Ending Location..."/>
 
                     <fragment
                         android:id="@+id/ending_location_autocomplete_fragment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-                        android:layout_below="@+id/starting_location_autocomplete_fragment"
+                        android:layout_below="@+id/endingLocationTextView"
                         android:layout_centerHorizontal="true"
                         />
 
