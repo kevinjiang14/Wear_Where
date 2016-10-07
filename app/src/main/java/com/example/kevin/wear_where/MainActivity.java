@@ -2,6 +2,8 @@
 package com.example.kevin.wear_where;
 
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -42,6 +44,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
@@ -63,6 +67,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     TextView temperature, location, description;            // TextView in xml.
     URL request;                                            // The link requesting service from Yahoo query
     Channel channel;                                        // Channel Object
+
+    String city = "Buffalo";
+    String state = "NY";
 
     /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
        Also called whenever the application is launched and there are no existing resources to work with (i.e. first start or application was killed before) */
@@ -231,9 +238,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Temporary Channel Object holder
                 Channel channelTemp = new Channel();
 
-                String city = "buffalo";
-                String state = "NY";
-
                 String link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
                 try {
@@ -314,6 +318,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             currentLocation.setText("Current Location: Latitude = " + String.valueOf(mLastLocation.getLatitude()) + ", Longitude = " + String.valueOf(mLastLocation.getLongitude()));
             latitude = mLastLocation.getLatitude();
             longitude = mLastLocation.getLongitude();
+
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
+                city = addresses.get(0).getLocality();
+                state = addresses.get(0).getAdminArea();
+                location.setText(city + ", " + state);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         //update the map with the zoom of the current location
