@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -52,27 +53,612 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:id="@+id/temperature"
                         android:layout_below="@+id/title"
                         android:layout_centerHorizontal="true"
-                        android:textSize="30dp" />
+                        android:id="@+id/temperature"
+                        android:textAppearance="?android:attr/textAppearanceLarge" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:id="@+id/description"
                         android:layout_below="@+id/temperature"
-                        android:layout_centerHorizontal="true" />
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:layout_centerHorizontal="true"
+                        android:id="@+id/description" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:id="@+id/location"
-                        android:layout_below="@+id/description"
-                        android:layout_centerHorizontal="true" />
+                        android:layout_below="@+id/description" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/cast_album_art_placeholder"
+                        android:id="@+id/conditionIcon"
+                        android:layout_below="@+id/title"
+                        android:layout_alignLeft="@+id/title"
+                        android:layout_alignStart="@+id/title" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginBottom="19dp"
+                        android:id="@+id/hourlyForecast">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour1">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature1" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon1"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature1" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description1"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon1" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time1"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description1" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour2">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature2" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon2"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature2" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description2"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon2" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time2"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description2" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour3">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature3" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon3"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature3" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description3"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon3" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time3"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description3" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour4">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature4" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon4"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature4" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description4"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon4" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time4"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description4" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour5">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature5" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon5"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature5" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description5"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon5" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time5"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description5" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour6">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature6" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon6"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature6" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description6"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon6" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time6"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description6" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour7">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature7" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon7"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature7" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description7"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon7" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time7"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description7" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour8">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature8" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon8"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature8" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description8"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon8" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time8"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description8" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour9">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature9" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon9"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature9" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description9"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon9" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time9"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description9" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour10">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature10" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon10"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature10" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description10"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon10" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time10"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description10" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour11">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature11" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon11"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature11" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description11"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon11" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time11"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description11" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour12">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature12" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon12"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature12" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description12"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon12" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time12"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description12" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour13">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature13" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon13"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature13" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description13"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon13" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time13"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description13" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour14">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature14" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon14"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature14" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description14"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon14" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time14"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description14" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour15">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature15" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon15"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature15" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description15"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon15" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time15"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description15" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:id="@+id/hour16">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/temperature16" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/icon16"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/temperature16" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/description16"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/icon16" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/time16"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_below="@+id/description16" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -156,7 +742,7 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="Where you headed?"
-                        android:id="@+id/textView"
+                        android:id="@+id/vacationTitle"
                         android:textSize="20dp"
                         android:layout_marginTop="46dp"
                         android:layout_below="@+id/textView3"
@@ -170,16 +756,16 @@
                         android:text="Search.."
                         android:clickable="true"
                         android:textSize="14dp"
-                        android:layout_below="@+id/textView"
-                        android:layout_alignLeft="@+id/textView"
-                        android:layout_alignStart="@+id/textView" />
+                        android:layout_below="@+id/vacationTitle"
+                        android:layout_alignLeft="@+id/vacationTitle"
+                        android:layout_alignStart="@+id/vacationTitle" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Duration of stay?"
-                        android:id="@+id/textView2"
+                        android:id="@+id/duration"
                         android:layout_marginTop="44dp"
                         android:layout_below="@+id/editText"
                         android:layout_alignLeft="@+id/editText"
@@ -200,7 +786,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/calendarView"
-                        android:layout_below="@+id/textView2"
+                        android:layout_below="@+id/duration"
                         android:layout_centerHorizontal="true" />
                 </RelativeLayout>
 

@@ -1,4 +1,6 @@
-package com.example.kevin.wear_where.data;
+package com.example.kevin.wear_where.YahooData;
+
+import com.example.kevin.wear_where.Interface.JSONData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,20 +21,6 @@ public class Condition implements JSONData {
         temperature = data.optInt("temp");
 
         description = data.optString("text");
-    }
-
-    @Override
-    public JSONObject toJSON() {
-        JSONObject data = new JSONObject();
-
-        try {
-            data.put("code", code);
-            data.put("temp", temperature);
-            data.put("tezt", description);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return data;
     }
 
     public int getCode(){
