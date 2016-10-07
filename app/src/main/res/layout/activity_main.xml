@@ -660,24 +660,6 @@
 
                     </HorizontalScrollView>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:id="@+id/locationCoordinates"
-                        android:layout_below="@+id/location"
-                        android:layout_centerHorizontal="true"
-                        android:gravity="center"/>
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Get Location!"
-                        android:id="@+id/getLocationButton"
-                        android:layout_below="@+id/locationCoordinates"
-                        android:layout_centerHorizontal="true"
-                        android:onClick="getLocation"/>
-
                 </RelativeLayout>
 
                 <RelativeLayout

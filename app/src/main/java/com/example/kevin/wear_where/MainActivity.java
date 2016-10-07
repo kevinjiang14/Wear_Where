@@ -4,8 +4,6 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -16,16 +14,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.kevin.wear_where.data.Channel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
@@ -42,8 +37,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,9 +57,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     GoogleApiClient mGoogleApiClient;                       // Variable used to create an instance of the GoogleApiClient
     Location mLastLocation;                                 // Variable used to store the most recent location
-    TextView temperature, location, description;            // TextView in xml.
-    URL request;                                            // The link requesting service from Yahoo query
-    Channel channel;                                        // Channel Object
     private TextView temperature, location, description;            // TextView for current weather information
     private ImageView conditionIcon;                                // ImageView for current condition image
     private ConditionsObject currentForecast;                       // Object holding the current weather information
@@ -110,9 +100,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String city = "Buffalo";
     private String state = "NY";
 
-    String city = "Buffalo";
-    String state = "NY";
-
     /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
        Also called whenever the application is launched and there are no existing resources to work with (i.e. first start or application was killed before) */
     @Override
@@ -154,6 +141,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override   //Called when the activity becomes visible to the user. Also called when coming back to the application from another application (assuming this application wasn't killed).
     protected void onStart() {
+        super.onStart();
 
         //Build and instantiate an instance of the Google API Client
         if (mGoogleApiClient == null) {
@@ -164,19 +152,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if(mGoogleApiClient != null){
             mGoogleApiClient.connect();
         }
-
-        else {
-            TextView currentLocation = (TextView) findViewById(R.id.locationCoordinates);
-            currentLocation.setText("Could not connect to Google Play Services!");
-        }
-
-        temperature = (TextView) findViewById(R.id.temperature);
-        conditionIcon = (ImageView) findViewById(R.id.conditionIcon);
-        location = (TextView) findViewById(R.id.location);
-        description = (TextView) findViewById(R.id.description);
-
-        channel = new Channel();
-        getRequest();
 
         //Set up PlaceAutocompleteFragments and their listeners
         PlaceAutocompleteFragment startingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.starting_location_autocomplete_fragment);
@@ -213,6 +188,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
+
+        temperature = (TextView) findViewById(R.id.temperature);
+        conditionIcon = (ImageView) findViewById(R.id.conditionIcon);
+        location = (TextView) findViewById(R.id.location);
+        description = (TextView) findViewById(R.id.description);
 
         temperature1 = (TextView) findViewById(R.id.temperature1);
         description1 = (TextView) findViewById(R.id.description1);
@@ -297,7 +277,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         getCurrentRequest();
         getHourlyRequest();
 
-        super.onStart();
     }
 
     @Override
@@ -337,14 +316,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onConnectionSuspended(int arg0) {
-        TextView currentLocation = (TextView) findViewById(R.id.locationCoordinates);
-        currentLocation.setText("Connection Suspended!");
+
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult arg0) {
-        TextView currentLocation = (TextView) findViewById(R.id.locationCoordinates);
-        currentLocation.setText("Connection Failed!");
+
     }
 
     private void displayCurrentResults() {
@@ -516,8 +493,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         //get the last location from the GoogleApiClient
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
-            TextView currentLocation = (TextView) findViewById(R.id.locationCoordinates);
-            currentLocation.setText("Current Location: Latitude = " + String.valueOf(mLastLocation.getLatitude()) + ", Longitude = " + String.valueOf(mLastLocation.getLongitude()));
             latitude = mLastLocation.getLatitude();
             longitude = mLastLocation.getLongitude();
 
