@@ -30,7 +30,7 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
     protected HourlyObject doInBackground(Void... params) {
         HourlyObject hourlyForecastTemp;
 
-        String condition_link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
+        String condition_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
         try {
             request = new URL(condition_link);
