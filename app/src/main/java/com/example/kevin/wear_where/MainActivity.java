@@ -390,7 +390,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         temperature.setText("" + currentForecast.getTemperature() + (char) 0x00B0 + " F");
         description.setText("" + currentForecast.getCondition());
         location.setText("" + city + ", " + state);
-
     }
 
     public void displayHourlyResults(){
