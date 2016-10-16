@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
+import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -69,6 +71,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private ImageView conditionIcon;                                // ImageView for current condition image
     private ConditionsObject currentForecast;                       // Object holding the current weather information
     private HourlyObject hourlyForecast;                            // Object holding the hourly weather information
+    private DailyObject dailyForecast;                              // Object holding the daily weather information
 
     // Hourly forecast widgets
     private TextView temperature1, description1, time1;
@@ -104,9 +107,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView temperature16, description16, time16;
     private ImageView icon16;
 
+    // Daily forecast widgets
+    private ImageView day1icon;
+    private TextView day1weekday, day1condition, day1low, day1high;
+    private ImageView day2icon;
+    private TextView day2weekday, day2condition, day2low, day2high;
+    private ImageView day3icon;
+    private TextView day3weekday, day3condition, day3low, day3high;
+    private ImageView day4icon;
+    private TextView day4weekday, day4condition, day4low, day4high;
+    private ImageView day5icon;
+    private TextView day5weekday, day5condition, day5low, day5high;
+    private ImageView day6icon;
+    private TextView day6weekday, day6condition, day6low, day6high;
+    private ImageView day7icon;
+    private TextView day7weekday, day7condition, day7low, day7high;
 
-    private String city = "Buffalo";
-    private String state = "NY";
+    private String city;
+    private String state;
 
     /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
        Also called whenever the application is launched and there are no existing resources to work with (i.e. first start or application was killed before) */
@@ -214,6 +232,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        // Assign hourly forecast widgets
         temperature = (TextView) findViewById(R.id.temperature);
         conditionIcon = (ImageView) findViewById(R.id.conditionIcon);
         location = (TextView) findViewById(R.id.location);
@@ -299,9 +318,48 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         time16 = (TextView) findViewById(R.id.time16);
         icon16 = (ImageView) findViewById(R.id.icon16);
 
-        getCurrentRequest();
-        getHourlyRequest();
+        // Assign daily forecast widget
+        day1icon = (ImageView) findViewById(R.id.day1icon);
+        day1weekday = (TextView) findViewById(R.id.day1weekday);
+        day1condition = (TextView) findViewById(R.id.day1condition);
+        day1low = (TextView) findViewById(R.id.day1low);
+        day1high = (TextView) findViewById(R.id.day1high);
 
+        day2icon = (ImageView) findViewById(R.id.day2icon);
+        day2weekday = (TextView) findViewById(R.id.day2weekday);
+        day2condition = (TextView) findViewById(R.id.day2condition);
+        day2low = (TextView) findViewById(R.id.day2low);
+        day2high = (TextView) findViewById(R.id.day2high);
+
+        day3icon = (ImageView) findViewById(R.id.day3icon);
+        day3weekday = (TextView) findViewById(R.id.day3weekday);
+        day3condition = (TextView) findViewById(R.id.day3condition);
+        day3low = (TextView) findViewById(R.id.day3low);
+        day3high = (TextView) findViewById(R.id.day3high);
+
+        day4icon = (ImageView) findViewById(R.id.day4icon);
+        day4weekday = (TextView) findViewById(R.id.day4weekday);
+        day4condition = (TextView) findViewById(R.id.day4condition);
+        day4low = (TextView) findViewById(R.id.day4low);
+        day4high = (TextView) findViewById(R.id.day4high);
+
+        day5icon = (ImageView) findViewById(R.id.day5icon);
+        day5weekday = (TextView) findViewById(R.id.day5weekday);
+        day5condition = (TextView) findViewById(R.id.day5condition);
+        day5low = (TextView) findViewById(R.id.day5low);
+        day5high = (TextView) findViewById(R.id.day5high);
+
+        day6icon = (ImageView) findViewById(R.id.day6icon);
+        day6weekday = (TextView) findViewById(R.id.day6weekday);
+        day6condition = (TextView) findViewById(R.id.day6condition);
+        day6low = (TextView) findViewById(R.id.day6low);
+        day6high = (TextView) findViewById(R.id.day6high);
+
+        day7icon = (ImageView) findViewById(R.id.day7icon);
+        day7weekday = (TextView) findViewById(R.id.day7weekday);
+        day7condition = (TextView) findViewById(R.id.day7condition);
+        day7low = (TextView) findViewById(R.id.day7low);
+        day7high = (TextView) findViewById(R.id.day7high);
     }
 
     @Override
@@ -351,18 +409,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void displayCurrentResults() {
         String iconURL = currentForecast.getConditionImageLink();
-
         new ImageLoaderAST(iconURL, conditionIcon).execute();
 
         temperature.setText("" + currentForecast.getTemperature() + (char) 0x00B0 + " F");
-
         description.setText("" + currentForecast.getCondition());
-
         location.setText("" + city + ", " + state);
-
-        // Debugger
-        //Log.d("WearWhere", "" + channel.getItem().getCondition().getTemperature());
-        //temperature.setText("" + channel.getLocation());
     }
 
     public void displayHourlyResults(){
@@ -480,6 +531,64 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public void displayDailyResults(){
+        String iconURL = dailyForecast.getIconURL(1);
+        new ImageLoaderAST(iconURL, day1icon).execute();
+
+        iconURL = dailyForecast.getIconURL(2);
+        new ImageLoaderAST(iconURL, day2icon).execute();
+
+        iconURL = dailyForecast.getIconURL(3);
+        new ImageLoaderAST(iconURL, day3icon).execute();
+
+        iconURL = dailyForecast.getIconURL(4);
+        new ImageLoaderAST(iconURL, day4icon).execute();
+
+        iconURL = dailyForecast.getIconURL(5);
+        new ImageLoaderAST(iconURL, day5icon).execute();
+
+        iconURL = dailyForecast.getIconURL(6);
+        new ImageLoaderAST(iconURL, day6icon).execute();
+
+        iconURL = dailyForecast.getIconURL(7);
+        new ImageLoaderAST(iconURL, day7icon).execute();
+
+        day1weekday.setText(dailyForecast.getDate(1));
+        day1condition.setText(dailyForecast.getCondition(1));
+        day1low.setText("Low: " + dailyForecast.getLow(1) + (char) 0x00B0 + " F");
+        day1high.setText("High: " + dailyForecast.getHigh(1) + (char) 0x00B0 + " F");
+
+        day2weekday.setText(dailyForecast.getDate(2));
+        day2condition.setText(dailyForecast.getCondition(2));
+        day2low.setText("Low " + dailyForecast.getLow(2) + (char) 0x00B0 + " F");
+        day2high.setText("High: " + dailyForecast.getHigh(2) + (char) 0x00B0 + " F");
+
+        day3weekday.setText(dailyForecast.getDate(3));
+        day3condition.setText(dailyForecast.getCondition(3));
+        day3low.setText("Low: " + dailyForecast.getLow(3) + (char) 0x00B0 + " F");
+        day3high.setText("High: " + dailyForecast.getHigh(3) + (char) 0x00B0 + " F");
+
+        day4weekday.setText(dailyForecast.getDate(4));
+        day4condition.setText(dailyForecast.getCondition(4));
+        day4low.setText("Low: " + dailyForecast.getLow(4) + (char) 0x00B0 + " F");
+        day4high.setText("High: " + dailyForecast.getHigh(4) + (char) 0x00B0 + " F");
+
+        day5weekday.setText(dailyForecast.getDate(5));
+        day5condition.setText(dailyForecast.getCondition(5));
+        day5low.setText("Low: " + dailyForecast.getLow(5) + (char) 0x00B0 + " F");
+        day5high.setText("High: " + dailyForecast.getHigh(5) + (char) 0x00B0 + " F");
+
+        day6weekday.setText(dailyForecast.getDate(6));
+        day6condition.setText(dailyForecast.getCondition(6));
+        day6low.setText("Low: " + dailyForecast.getLow(6) + (char) 0x00B0 + " F");
+        day6high.setText("High: " + dailyForecast.getHigh(6) + (char) 0x00B0 + " F");
+
+        day7weekday.setText(dailyForecast.getDate(7));
+        day7condition.setText(dailyForecast.getCondition(7));
+        day7low.setText("Low: " + dailyForecast.getLow(7) + (char) 0x00B0 + " F");
+        day7high.setText("High: " + dailyForecast.getHigh(7) + (char) 0x00B0 + " F");
+    }
+
     public void getHourlyRequest(){
         new HourlyForecastAST(city, state){
             @Override
@@ -496,6 +605,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             protected void onPostExecute(ConditionsObject item) {
                 currentForecast = item;
                 displayCurrentResults();
+            }
+        }.execute();
+    }
+
+    public void getDailyRequest(){
+        new DailyForecastAST(city, state){
+            @Override
+            protected void onPostExecute(DailyObject item) {
+                dailyForecast = item;
+                displayDailyResults();
             }
         }.execute();
     }
@@ -527,6 +646,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 city = addresses.get(0).getLocality();
                 state = addresses.get(0).getAdminArea();
                 location.setText(city + ", " + state);
+                getCurrentRequest();
+                getHourlyRequest();
+                getDailyRequest();
             } catch (Exception e) {
                 e.printStackTrace();
             }

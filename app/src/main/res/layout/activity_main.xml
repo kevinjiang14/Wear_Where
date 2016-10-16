@@ -89,6 +89,268 @@
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
+                        android:layout_marginBottom="119dp"
+                        android:id="@+id/dailyForecast">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <RelativeLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/day1icon"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toRightOf="@+id/day1icon"
+                                    android:id="@+id/day1weekday"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day1weekday"
+                                    android:id="@+id/day1condition"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day1condition"
+                                    android:id="@+id/day1high"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day1high"
+                                    android:id="@+id/day1low"/>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/day2icon"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toRightOf="@+id/day2icon"
+                                    android:id="@+id/day2weekday"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day2weekday"
+                                    android:id="@+id/day2condition"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day2condition"
+                                    android:id="@+id/day2high"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day2high"
+                                    android:id="@+id/day2low"/>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/day3icon"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toRightOf="@+id/day3icon"
+                                    android:id="@+id/day3weekday"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day3weekday"
+                                    android:id="@+id/day3condition"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day3condition"
+                                    android:id="@+id/day3high"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day3high"
+                                    android:id="@+id/day3low"/>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/day4icon"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toRightOf="@+id/day4icon"
+                                    android:id="@+id/day4weekday"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day4weekday"
+                                    android:id="@+id/day4condition"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day4condition"
+                                    android:id="@+id/day4high"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day4high"
+                                    android:id="@+id/day4low"/>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/day5icon"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toRightOf="@+id/day5icon"
+                                    android:id="@+id/day5weekday"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day5weekday"
+                                    android:id="@+id/day5condition"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day5condition"
+                                    android:id="@+id/day5high"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day5high"
+                                    android:id="@+id/day5low"/>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/day6icon"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toRightOf="@+id/day6icon"
+                                    android:id="@+id/day6weekday"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day6weekday"
+                                    android:id="@+id/day6condition"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day6condition"
+                                    android:id="@+id/day6high"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day6high"
+                                    android:id="@+id/day6low"/>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/day7icon"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_toRightOf="@+id/day7icon"
+                                    android:id="@+id/day7weekday"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day7weekday"
+                                    android:id="@+id/day7condition"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day7condition"
+                                    android:id="@+id/day7high"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/day7high"
+                                    android:id="@+id/day7low"/>
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         android:layout_marginBottom="19dp"
                         android:id="@+id/hourlyForecast">
 
@@ -96,7 +358,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -129,9 +391,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description1" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -164,9 +426,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description2" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -199,9 +461,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description3" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -234,9 +496,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description4" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -269,9 +531,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description5" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -304,9 +566,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description6" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -339,9 +601,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description7" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -374,9 +636,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description8" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -409,9 +671,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description9" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -444,9 +706,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description10" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -479,9 +741,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description11" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -514,9 +776,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description12" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -549,9 +811,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description13" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -584,9 +846,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description14" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -619,9 +881,9 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description15" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
-                            <LinearLayout
+                            <RelativeLayout
                                 android:layout_width="100dp"
                                 android:layout_height="match_parent"
                                 android:orientation="vertical"
@@ -654,7 +916,7 @@
                                     android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/description16" />
 
-                            </LinearLayout>
+                            </RelativeLayout>
 
                         </LinearLayout>
 
