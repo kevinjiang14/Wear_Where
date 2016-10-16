@@ -44,19 +44,27 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private static final String TAG = "MainActivity";
 
-    double latitude = 0;                                    // Variables used to keep track of the current latitude and longitude
-    double longitude = 0;
+    private double latitude = 0;                                    // Variables used to keep track of the current latitude and longitude
+    private double longitude = 0;
 
-    double startingLatitude = 0;
-    double startingLongitude = 0;
-    double endingLatitude = 0;
-    double endingLongitude = 0;
+    // Latitude and Longitude doubles initialized to 900 since this value is impossible
+    private double vacationLatitude = 900;
+    private double vacationLongitude = 900;
+    private double startingLatitude = 900;
+    private double startingLongitude = 900;
+    private double endingLatitude = 900;
+    private double endingLongitude = 900;
 
-    MapFragment mapFragment;                                /* Variable used to create an instance of the mapFragment
+    private MapFragment mapFragment;                                /* Variable used to create an instance of the mapFragment
                                                                --> Call getMapAsync(this) on mapFragment to update the map */
 
-    GoogleApiClient mGoogleApiClient;                       // Variable used to create an instance of the GoogleApiClient
-    Location mLastLocation;                                 // Variable used to store the most recent location
+    private GoogleApiClient mGoogleApiClient;                       // Variable used to create an instance of the GoogleApiClient
+    private Location mLastLocation;                                 // Variable used to store the most recent location
+
+    private PlaceAutocompleteFragment vacationLocation;
+    private PlaceAutocompleteFragment startingLocation;
+    private PlaceAutocompleteFragment endingLocation;
+
     private TextView temperature, location, description;            // TextView for current weather information
     private ImageView conditionIcon;                                // ImageView for current condition image
     private ConditionsObject currentForecast;                       // Object holding the current weather information
@@ -154,8 +162,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         //Set up PlaceAutocompleteFragments and their listeners
-        PlaceAutocompleteFragment startingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.starting_location_autocomplete_fragment);
-        PlaceAutocompleteFragment endingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.ending_location_autocomplete_fragment);
+        vacationLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.vacation_location_autocomplete_fragment);
+        startingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.starting_location_autocomplete_fragment);
+        endingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.ending_location_autocomplete_fragment);
+
+        vacationLocation.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                vacationLatitude = place.getLatLng().latitude;
+                vacationLongitude = place.getLatLng().longitude;
+                Log.i(TAG, "Place: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
 
         startingLocation.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -295,12 +320,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_ACCESS_FINE_LOCATION );
         }
 
-        //If the starting and ending points have been initialized then set the markers on the map(need to figure out a better way to check this...)
-        if (startingLatitude != 0 && startingLongitude != 0) {
+        //If the starting and ending points have been initialized then set the markers on the map
+        if (startingLatitude != 900 && startingLongitude != 900) {
             map.addMarker(new MarkerOptions().position(new LatLng(startingLatitude, startingLongitude)));
         }
 
-        if (endingLatitude != 0 && endingLongitude != 0) {
+        if (endingLatitude != 900 && endingLongitude != 900) {
             map.addMarker(new MarkerOptions().position(new LatLng(endingLatitude, endingLongitude)));
         }
 

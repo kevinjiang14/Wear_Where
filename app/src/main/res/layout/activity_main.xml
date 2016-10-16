@@ -723,24 +723,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Where you headed?"
+                        android:text="Where are you headed?"
                         android:id="@+id/vacationTitle"
                         android:textSize="20dp"
-                        android:layout_marginTop="46dp"
-                        android:layout_below="@+id/textView3"
-                        android:layout_alignRight="@+id/textView3"
-                        android:layout_alignEnd="@+id/textView3" />
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"/>
 
-                    <EditText
-                        android:layout_width="wrap_content"
+                    <fragment
+                        android:id="@+id/vacation_location_autocomplete_fragment"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/editText"
-                        android:text="Search.."
-                        android:clickable="true"
-                        android:textSize="14dp"
+                        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                         android:layout_below="@+id/vacationTitle"
-                        android:layout_alignLeft="@+id/vacationTitle"
-                        android:layout_alignStart="@+id/vacationTitle" />
+                        android:layout_centerHorizontal="true"
+                        />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -748,21 +744,10 @@
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Duration of stay?"
                         android:id="@+id/duration"
-                        android:layout_marginTop="44dp"
-                        android:layout_below="@+id/editText"
-                        android:layout_alignLeft="@+id/editText"
-                        android:layout_alignStart="@+id/editText"
+                        android:layout_marginTop="16dp"
+                        android:layout_below="@+id/vacation_location_autocomplete_fragment"
+                        android:layout_centerHorizontal="true"
                         android:textSize="20dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Vacation"
-                        android:id="@+id/textView3"
-                        android:textSize="24dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true" />
 
                     <CalendarView
                         android:layout_width="wrap_content"
