@@ -33,12 +33,17 @@
             android:value="AIzaSyBeX6ViGnMShEvlK-Z3Kxa_VProP9CJZX8"/>
             -->
 
-        <!-- Places API Key -->
+<!-- Places API Key
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA0lYh2dLhMhxw3mQUsqBjwcLFZiPqppSw"/>
+            -->
 
-    </application>
+<!-- Directons API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCWbLdotKFPVqlld5nr8haQhjrh70xhXqA"/>
+     </application>
 
-</manifest>
+ </manifest>
