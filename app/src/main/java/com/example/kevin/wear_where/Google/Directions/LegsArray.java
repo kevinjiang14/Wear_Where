@@ -1,6 +1,7 @@
 package com.example.kevin.wear_where.Google.Directions;
 
 import com.example.kevin.wear_where.Interface.JSONArrayData;
+import com.example.kevin.wear_where.Interface.JSONData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +21,7 @@ public class LegsArray implements JSONArrayData {
 
         try {
             distance = new Distance();
-            JSONObject tempObject = data.getJSONObject(0);
+            JSONObject tempObject =  data.getJSONObject(0).getJSONObject("distance");
 
             distance.retrieveData(tempObject);
 
@@ -30,7 +31,7 @@ public class LegsArray implements JSONArrayData {
 
         try {
             duration = new Duration();
-            JSONObject tempObject = data.getJSONObject(1);
+            JSONObject tempObject =  data.getJSONObject(0).getJSONObject("duration");
 
             duration.retrieveData(tempObject);
 
@@ -40,7 +41,7 @@ public class LegsArray implements JSONArrayData {
 
         try {
             stepsArray = new StepsArray();
-            JSONArray tempArray = data.getJSONArray(6);
+            JSONArray tempArray = data.getJSONObject(0).getJSONArray("steps");
 
             stepsArray.retrieveData(tempArray);
 

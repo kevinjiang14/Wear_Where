@@ -22,7 +22,7 @@ public class RoutesArray implements JSONArrayData {
 
         try {
             legsArray = new LegsArray();
-            JSONArray tempArray = data.getJSONArray(2);
+            JSONArray tempArray =  data.getJSONObject(0).getJSONArray("legs");
 
             legsArray.retrieveData(tempArray);
 
@@ -32,7 +32,7 @@ public class RoutesArray implements JSONArrayData {
 
         try {
             encodedOverviewPolyline = new EncodedOverviewPolyline();
-            JSONObject tempObject = data.getJSONObject(3);
+            JSONObject tempObject = data.getJSONObject(0).getJSONObject("overview_polyline");
 
             encodedOverviewPolyline.retrieveData(tempObject);
 

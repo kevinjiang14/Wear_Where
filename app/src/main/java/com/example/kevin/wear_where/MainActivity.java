@@ -1,6 +1,7 @@
 package com.example.kevin.wear_where;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -16,6 +17,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
+import com.example.kevin.wear_where.AsyncTask.GoogleDirectionsAST;
+import com.example.kevin.wear_where.Google.Directions.DirectionsObject;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,6 +41,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
 import java.util.Locale;
@@ -57,6 +62,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private double endingLatitude = 900;
     private double endingLongitude = 900;
 
+    private GoogleMap maps;
     private MapFragment mapFragment;                                /* Variable used to create an instance of the mapFragment
                                                                --> Call getMapAsync(this) on mapFragment to update the map */
 
@@ -66,6 +72,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private PlaceAutocompleteFragment vacationLocation;
     private PlaceAutocompleteFragment startingLocation;
     private PlaceAutocompleteFragment endingLocation;
+
+    private DirectionsObject directionsObject;
+    List<LatLng> polyline;
 
     private TextView temperature, location, description;            // TextView for current weather information
     private ImageView conditionIcon;                                // ImageView for current condition image
@@ -379,12 +388,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         //If the starting and ending points have been initialized then set the markers on the map
-        if (startingLatitude != 900 && startingLongitude != 900) {
+        if (startingLatitude != 900 && endingLatitude != 900) {
             map.addMarker(new MarkerOptions().position(new LatLng(startingLatitude, startingLongitude)));
-        }
-
-        if (endingLatitude != 900 && endingLongitude != 900) {
             map.addMarker(new MarkerOptions().position(new LatLng(endingLatitude, endingLongitude)));
+            maps = map;
         }
 
         //Move the camera to the current location (used upon start up, may encounter bugs later on when calling getMapAsync() after startup)
@@ -619,6 +626,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }.execute();
     }
 
+    public void drawPolyline(LatLng starting, LatLng ending) {
+        new GoogleDirectionsAST(starting, ending) {
+            @Override
+            protected void onPostExecute(DirectionsObject item) {
+                directionsObject = item;
+                String encodedOverviewPolyline = directionsObject.getRoutesArray().getEncodedOverviewPolyLine().getEncodedOverviewPolyline();
+                polyline = com.google.maps.android.PolyUtil.decode(encodedOverviewPolyline);
+
+                for (int i = 0; i < polyline.size() - 1; ++i) {
+                    Polyline line = maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(5).color(Color.RED));
+                }
+            }
+        }.execute();
+    }
+
     //use this to get the current location (just pass NULL in here)
     public void getLocation(View view) {
         int MY_PERMISSION_ACCESS_COARSE_LOCATION = 77;
@@ -660,6 +682,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void placeMarkers(View view) {
         //update the map with the corresponding markers for the starting and ending points
+        drawPolyline(new LatLng(startingLatitude, startingLongitude), new LatLng(endingLatitude, endingLongitude));
         mapFragment.getMapAsync(this);
     }
 }

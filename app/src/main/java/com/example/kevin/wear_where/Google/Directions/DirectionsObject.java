@@ -15,6 +15,8 @@ public class DirectionsObject {
         routesArray = new RoutesArray();
         try {
             baseObject = new JSONObject(results.toString());
+
+            System.out.println("Size: " + baseObject.getJSONArray("routes").length());
             routesArray.retrieveData(baseObject.getJSONArray("routes"));
 
         } catch (JSONException e) {
