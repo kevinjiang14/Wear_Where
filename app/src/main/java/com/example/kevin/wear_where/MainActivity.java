@@ -11,15 +11,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
-import com.example.kevin.wear_where.wear.Clothing;
-import com.example.kevin.wear_where.wear.Suggestion;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -34,6 +31,9 @@ import com.example.kevin.wear_where.AsyncTask.CurrentConditionAST;
 import com.example.kevin.wear_where.AsyncTask.HourlyForecastAST;
 import com.example.kevin.wear_where.AsyncTask.ImageLoaderAST;
 import com.example.kevin.wear_where.WundergroundData.CurrentCondition.ConditionsObject;
+import com.example.kevin.wear_where.Database.Comment;
+import com.example.kevin.wear_where.Database.CommentsDataSource;
+import com.example.kevin.wear_where.Database.MySQLiteHelper;
 
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
 import com.google.android.gms.maps.GoogleMap;
@@ -129,8 +129,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String city;
     private String state;
 
-    private Suggestion suggestion = new Suggestion(new Clothing());
-    private TextView suggestText;
+    private CommentsDataSource datasource;
 
     /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
        Also called whenever the application is launched and there are no existing resources to work with (i.e. first start or application was killed before) */
@@ -170,14 +169,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         //Get a reference to the google maps fragment in tab4
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
-        //Initialize button to refresh clothing suggestions
-        Button refresh = (Button)findViewById(R.id.refreshBTN);
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                suggestText.setText(suggestion.getSuggestion(currentForecast.getTemperature(),currentForecast.getCondition()));
-            }
-        });
+        datasource = new CommentsDataSource(this);
+        datasource.open();
     }
 
     @Override   //Called when the activity becomes visible to the user. Also called when coming back to the application from another application (assuming this application wasn't killed).
@@ -429,9 +422,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         temperature.setText("" + currentForecast.getTemperature() + (char) 0x00B0 + " F");
         description.setText("" + currentForecast.getCondition());
         location.setText("" + city + ", " + state);
-
-        suggestText = (TextView)findViewById(R.id.suggestionText);
-        suggestText.setText(suggestion.getSuggestion(currentForecast.getTemperature(),currentForecast.getCondition()));
     }
 
     public void displayHourlyResults(){
@@ -679,5 +669,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void placeMarkers(View view) {
         //update the map with the corresponding markers for the starting and ending points
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    protected void onResume() {
+        datasource.open();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        datasource.close();
+        super.onPause();
     }
 }
