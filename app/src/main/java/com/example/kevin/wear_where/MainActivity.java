@@ -31,6 +31,9 @@ import com.example.kevin.wear_where.AsyncTask.CurrentConditionAST;
 import com.example.kevin.wear_where.AsyncTask.HourlyForecastAST;
 import com.example.kevin.wear_where.AsyncTask.ImageLoaderAST;
 import com.example.kevin.wear_where.WundergroundData.CurrentCondition.ConditionsObject;
+import com.example.kevin.wear_where.Database.Comment;
+import com.example.kevin.wear_where.Database.CommentsDataSource;
+import com.example.kevin.wear_where.Database.MySQLiteHelper;
 
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
 import com.google.android.gms.maps.GoogleMap;
@@ -126,6 +129,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String city;
     private String state;
 
+    private CommentsDataSource datasource;
+
     /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
        Also called whenever the application is launched and there are no existing resources to work with (i.e. first start or application was killed before) */
     @Override
@@ -163,6 +168,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Get a reference to the google maps fragment in tab4
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+
+        datasource = new CommentsDataSource(this);
+        datasource.open();
     }
 
     @Override   //Called when the activity becomes visible to the user. Also called when coming back to the application from another application (assuming this application wasn't killed).
@@ -661,5 +669,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void placeMarkers(View view) {
         //update the map with the corresponding markers for the starting and ending points
         mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    protected void onResume() {
+        datasource.open();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        datasource.close();
+        super.onPause();
     }
 }
