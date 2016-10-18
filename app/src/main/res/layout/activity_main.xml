@@ -926,53 +926,46 @@
 
                 <RelativeLayout
                     android:id="@+id/layout2"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
                     <Button
+                        android:text="refresh"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Headwear"
-                        android:id="@+id/headwear"
+                        android:id="@+id/refreshBTN"
+                        android:elevation="0dp"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true" />
 
-                    <Button
+                    <TextView
+                        android:text="What to wear today?"
+                        android:textColor="#000080"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Upper Body"
-                        android:id="@+id/upperbody"
-                        android:layout_below="@+id/headwear"
+                        android:layout_marginLeft="18dp"
+                        android:layout_marginStart="18dp"
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/wearText"
+                        android:textSize="24sp"
+                        android:layout_below="@+id/refreshBTN"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignRight="@+id/headwear"
-                        android:layout_alignEnd="@+id/headwear" />
+                        android:layout_alignParentStart="true" />
 
-                    <Button
+                    <TextView
+                        android:text="No suggestions"
+                        android:textColor="@color/colorPrimary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lower Body"
-                        android:id="@+id/lowerbody"
-                        android:layout_below="@+id/upperbody"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignRight="@+id/upperbody"
-                        android:layout_alignEnd="@+id/upperbody" />
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Accessory"
-                        android:id="@+id/accessory"
-                        android:layout_below="@+id/lowerbody"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignRight="@+id/lowerbody"
-                        android:layout_alignEnd="@+id/lowerbody" />
+                        android:id="@+id/suggestionText"
+                        android:layout_marginTop="47dp"
+                        android:textSize="18sp"
+                        android:layout_below="@+id/wearText"
+                        android:layout_alignLeft="@+id/wearText"
+                        android:layout_alignStart="@+id/wearText" />
                 </RelativeLayout>
 
                 <RelativeLayout

@@ -1,0 +1,17 @@
+date: October 12, 2016
+meeting_type: ta
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: None},
+  {ubit: calvinzh, progress: None},
+  {ubit: hermesko, progress: prepared and released patch 0.2.0},
+  {ubit: kevinjia, progress: fixed bugs and cleaned up GUI}
+  ]
+issues: []
+Notes: |
+  -Continue working on map and getting route indication.
+  -Get clothing suggestions to show to the users.
+  -Find more issues to work on for further week meetings.
+  -Using SQLite to parse the data for cities, maybe leave for later sprint
