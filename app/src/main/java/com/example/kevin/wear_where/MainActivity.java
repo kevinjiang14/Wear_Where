@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -123,6 +124,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private ImageView day7icon;
     private TextView day7weekday, day7condition, day7low, day7high;
 
+
+    private SwipeRefreshLayout refreshSwipe;
     private String city;
     private String state;
 
@@ -360,6 +363,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         day7condition = (TextView) findViewById(R.id.day7condition);
         day7low = (TextView) findViewById(R.id.day7low);
         day7high = (TextView) findViewById(R.id.day7high);
+
+        // Refresh Handler
+        refreshSwipe = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        refreshSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                displayCurrentResults();
+                displayHourlyResults();
+                displayDailyResults();
+                completeRefresh();
+            }
+        });
     }
 
     @Override
@@ -466,67 +481,67 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         new ImageLoaderAST(iconURL, icon16).execute();
 
         temperature1.setText("" + hourlyForecast.getTemperatureF(0) + (char) 0x00B0 + " F");
-        time1.setText("" + hourlyForecast.getHour(0) + ":00");
+        time1.setText("" + hourlyForecast.getHour(0) + ":00" + hourlyForecast.getAMPM(0));
         description1.setText("" + hourlyForecast.getCondition(0));
 
         temperature2.setText("" + hourlyForecast.getTemperatureF(1) + (char) 0x00B0 + " F");
-        time2.setText("" + hourlyForecast.getHour(1) + ":00");
+        time2.setText("" + hourlyForecast.getHour(1) + ":00" + hourlyForecast.getAMPM(1));
         description2.setText("" + hourlyForecast.getCondition(1));
 
         temperature3.setText("" + hourlyForecast.getTemperatureF(2) + (char) 0x00B0 + " F");
-        time3.setText("" + hourlyForecast.getHour(2) + ":00");
+        time3.setText("" + hourlyForecast.getHour(2) + ":00" + hourlyForecast.getAMPM(2));
         description3.setText("" + hourlyForecast.getCondition(2));
 
         temperature4.setText("" + hourlyForecast.getTemperatureF(3) + (char) 0x00B0 + " F");
-        time4.setText("" + hourlyForecast.getHour(3) + ":00");
+        time4.setText("" + hourlyForecast.getHour(3) + ":00" + hourlyForecast.getAMPM(3));
         description4.setText("" + hourlyForecast.getCondition(3));
 
         temperature5.setText("" + hourlyForecast.getTemperatureF(4) + (char) 0x00B0 + " F");
-        time5.setText("" + hourlyForecast.getHour(4) + ":00");
+        time5.setText("" + hourlyForecast.getHour(4) + ":00" + hourlyForecast.getAMPM(4));
         description5.setText("" + hourlyForecast.getCondition(4));
 
         temperature6.setText("" + hourlyForecast.getTemperatureF(5) + (char) 0x00B0 + " F");
-        time6.setText("" + hourlyForecast.getHour(5) + ":00");
+        time6.setText("" + hourlyForecast.getHour(5) + ":00" + hourlyForecast.getAMPM(5));
         description6.setText("" + hourlyForecast.getCondition(5));
 
         temperature7.setText("" + hourlyForecast.getTemperatureF(6) + (char) 0x00B0 + " F");
-        time7.setText("" + hourlyForecast.getHour(6) + ":00");
+        time7.setText("" + hourlyForecast.getHour(6) + ":00" + hourlyForecast.getAMPM(6));
         description7.setText("" + hourlyForecast.getCondition(6));
 
         temperature8.setText("" + hourlyForecast.getTemperatureF(7) + (char) 0x00B0 + " F");
-        time8.setText("" + hourlyForecast.getHour(7) + ":00");
+        time8.setText("" + hourlyForecast.getHour(7) + ":00" + hourlyForecast.getAMPM(7));
         description8.setText("" + hourlyForecast.getCondition(7));
 
         temperature9.setText("" + hourlyForecast.getTemperatureF(8) + (char) 0x00B0 + " F");
-        time9.setText("" + hourlyForecast.getHour(8) + ":00");
+        time9.setText("" + hourlyForecast.getHour(8) + ":00" + hourlyForecast.getAMPM(8));
         description9.setText("" + hourlyForecast.getCondition(8));
 
         temperature10.setText("" + hourlyForecast.getTemperatureF(9) + (char) 0x00B0 + " F");
-        time10.setText("" + hourlyForecast.getHour(9) + ":00");
+        time10.setText("" + hourlyForecast.getHour(9) + ":00" + hourlyForecast.getAMPM(9));
         description10.setText("" + hourlyForecast.getCondition(9));
 
         temperature11.setText("" + hourlyForecast.getTemperatureF(10) + (char) 0x00B0 + " F");
-        time11.setText("" + hourlyForecast.getHour(10) + ":00");
+        time11.setText("" + hourlyForecast.getHour(10) + ":00" + hourlyForecast.getAMPM(10));
         description11.setText("" + hourlyForecast.getCondition(10));
 
         temperature12.setText("" + hourlyForecast.getTemperatureF(11) + (char) 0x00B0 + " F");
-        time12.setText("" + hourlyForecast.getHour(11) + ":00");
+        time12.setText("" + hourlyForecast.getHour(11) + ":00" + hourlyForecast.getAMPM(11));
         description12.setText("" + hourlyForecast.getCondition(11));
 
         temperature13.setText("" + hourlyForecast.getTemperatureF(12) + (char) 0x00B0 + " F");
-        time13.setText("" + hourlyForecast.getHour(12) + ":00");
+        time13.setText("" + hourlyForecast.getHour(12) + ":00" + hourlyForecast.getAMPM(12));
         description13.setText("" + hourlyForecast.getCondition(12));
 
         temperature14.setText("" + hourlyForecast.getTemperatureF(13) + (char) 0x00B0 + " F");
-        time14.setText("" + hourlyForecast.getHour(13) + ":00");
+        time14.setText("" + hourlyForecast.getHour(13) + ":00" + hourlyForecast.getAMPM(13));
         description14.setText("" + hourlyForecast.getCondition(13));
 
         temperature15.setText("" + hourlyForecast.getTemperatureF(14) + (char) 0x00B0 + " F");
-        time15.setText("" + hourlyForecast.getHour(14) + ":00");
+        time15.setText("" + hourlyForecast.getHour(14) + ":00" + hourlyForecast.getAMPM(14));
         description15.setText("" + hourlyForecast.getCondition(14));
 
         temperature16.setText("" + hourlyForecast.getTemperatureF(15) + (char) 0x00B0 + " F");
-        time16.setText("" + hourlyForecast.getHour(15) + ":00");
+        time16.setText("" + hourlyForecast.getHour(15) + ":00" + hourlyForecast.getAMPM(15));
         description16.setText("" + hourlyForecast.getCondition(15));
 
     }
@@ -661,5 +676,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void placeMarkers(View view) {
         //update the map with the corresponding markers for the starting and ending points
         mapFragment.getMapAsync(this);
+    }
+
+    public void completeRefresh(){
+        refreshSwipe.setRefreshing(false);
     }
 }
