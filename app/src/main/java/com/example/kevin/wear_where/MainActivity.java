@@ -11,12 +11,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
+import com.example.kevin.wear_where.wear.Clothing;
+import com.example.kevin.wear_where.wear.Suggestion;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -131,6 +134,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private CommentsDataSource datasource;
 
+    private Suggestion suggestion = new Suggestion(new Clothing());
+    TextView suggestText;
+
     /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
        Also called whenever the application is launched and there are no existing resources to work with (i.e. first start or application was killed before) */
     @Override
@@ -171,6 +177,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         datasource = new CommentsDataSource(this);
         datasource.open();
+
+        //Initialize button on tab2 and refresh suggestions
+        Button refresh = (Button)findViewById(R.id.refreshBTN);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                suggestText.setText(suggestion.getSuggestion(currentForecast.getTemperature(),currentForecast.getCondition()));
+            }
+        });
     }
 
     @Override   //Called when the activity becomes visible to the user. Also called when coming back to the application from another application (assuming this application wasn't killed).
@@ -422,6 +437,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         temperature.setText("" + currentForecast.getTemperature() + (char) 0x00B0 + " F");
         description.setText("" + currentForecast.getCondition());
         location.setText("" + city + ", " + state);
+
+        suggestText = (TextView)findViewById(R.id.suggestionText);
+        suggestText.setText(suggestion.getSuggestion(currentForecast.getTemperature(),currentForecast.getCondition()));
     }
 
     public void displayHourlyResults(){
