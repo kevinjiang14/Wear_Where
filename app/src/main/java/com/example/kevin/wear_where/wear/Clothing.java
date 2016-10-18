@@ -1,10 +1,6 @@
 package com.example.kevin.wear_where.wear;
 
-import android.widget.TextView;
-
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -31,10 +27,11 @@ public class Clothing {
         ArrayList<String> warm = new ArrayList<>();
         ArrayList<String> hot = new ArrayList<>();
 
-        freezing.add("Fur Hat");
-        chilly.add("Beanie");
-        warm.add("Snapback");
-        hot.add("Sun Hat");
+        freezing.add("fur hat");
+        chilly.add("beanie");
+        warm.add("snapback");
+        warm.add("cool hairstyle");
+        hot.add("sun hat");
 
         headWear.put(1,freezing);
         headWear.put(2,chilly);
@@ -46,11 +43,15 @@ public class Clothing {
         warm = new ArrayList<>();
         hot = new ArrayList<>();
 
-        freezing.add("Coat");
-        chilly.add("Jacket");
-        chilly.add("Hoodie");
-        warm.add("Shirt");
-        hot.add("TankTop");
+        freezing.add("coat");
+        chilly.add("jacket");
+        chilly.add("hoodie");
+        chilly.add("sweater");
+        chilly.add("long sleeve");
+        warm.add("graphic tee");
+        warm.add("flannel shirt");
+        warm.add("polo");
+        hot.add("tanktop");
 
         upperBody.put(1,freezing);
         upperBody.put(2,chilly);
@@ -62,12 +63,18 @@ public class Clothing {
         warm = new ArrayList<>();
         hot = new ArrayList<>();
 
-        freezing.add("Thermal Leggings");
-        freezing.add("Snow Pants");
-        chilly.add("Sweat Pants");
-        chilly.add("Jeans");
-        warm.add("Shorts");
-        hot.add("Short Shorts");
+        freezing.add("thermal leggings under your warmest pants");
+        freezing.add("snow pants");
+        chilly.add("sweat pants");
+        chilly.add("jeans");
+        warm.add("shorts");
+        warm.add("jeans");
+        hot.add("short shorts!");
+
+        lowerBody.put(1, freezing);
+        lowerBody.put(2, chilly);
+        lowerBody.put(3, warm);
+        lowerBody.put(4, hot);
     }
 
 
@@ -142,3 +149,4 @@ public class Clothing {
         return "Temperature out of bounds";
     }
 }
+
