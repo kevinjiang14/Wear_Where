@@ -36,11 +36,11 @@ public class DailyObject {
         return forecast.getForecastSimple().getForecastArray().getForecastItemArray().get(index).getDate().getWeekday();
     }
 
-    public String getHigh(int index){
+    public int getHigh(int index){
         return forecast.getForecastSimple().getForecastArray().getForecastItemArray().get(index).getDailyHigh().getTemperatureHigh();
     }
 
-    public String getLow(int index){
+    public int getLow(int index){
         return forecast.getForecastSimple().getForecastArray().getForecastItemArray().get(index).getDailyLow().getTemperatureLow();
     }
 

@@ -1049,21 +1049,39 @@
                         android:layout_centerHorizontal="true" />
 
                     <TextView
-                        android:id="@+id/duration"
+                        android:id="@+id/leaveText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/vacation_location_autocomplete_fragment"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="16dp"
-                        android:text="Duration of stay?"
+                        android:text="When are you going?"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textSize="20dp" />
 
-                    <CalendarView
-                        android:id="@+id/calendarView"
+                    <EditText
+                        android:id="@+id/leaveDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/duration"
+                        android:layout_below="@+id/leaveText"
+                        android:layout_centerHorizontal="true" />
+
+                    <TextView
+                        android:id="@+id/returnText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/leaveDate"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
+                        android:text="When are you returning?"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textSize="20dp" />
+
+                    <EditText
+                        android:id="@+id/returnDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/returnText"
                         android:layout_centerHorizontal="true" />
                 </RelativeLayout>
 
