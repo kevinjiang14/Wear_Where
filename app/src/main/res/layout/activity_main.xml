@@ -83,6 +83,16 @@
                         android:layout_alignLeft="@+id/title"
                         android:layout_alignStart="@+id/title" />
 
+                    <Button
+                        android:text="Menu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/location"
+                        android:layout_marginTop="17dp"
+                        android:id="@+id/button"
+                        android:onClick="showPopup"/>
+
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="100dp"

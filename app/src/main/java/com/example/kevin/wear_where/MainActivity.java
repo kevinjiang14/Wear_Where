@@ -1,5 +1,7 @@
 package com.example.kevin.wear_where;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -8,11 +10,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -137,6 +145,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private Suggestion suggestion = new Suggestion(new Clothing());
     TextView suggestText;
 
+    private Button menuButton;
+    final Context context = this;
+
     /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
        Also called whenever the application is launched and there are no existing resources to work with (i.e. first start or application was killed before) */
     @Override
@@ -252,6 +263,53 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public void onError(Status status) {
                 // TODO: Handle the error.
                 Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+        menuButton = (Button) findViewById(R.id.button);
+        // add button listener
+        menuButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+
+                // get prompts.xml view
+                LayoutInflater li = LayoutInflater.from(context);
+                View promptsView = li.inflate(R.layout.prompt, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        context);
+
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                final EditText userInput = (EditText) promptsView
+                        .findViewById(R.id.editTextDialogUserInput);
+
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        // get user input and set it to result
+                                        // edit text
+                                        //result.setText(userInput.getText());
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+
             }
         });
 
@@ -700,4 +758,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         datasource.close();
         super.onPause();
     }
+
+    /*public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.menu, popup.getMenu());
+        popup.show();
+    }*/
 }
