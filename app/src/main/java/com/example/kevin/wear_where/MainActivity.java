@@ -40,6 +40,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -49,32 +50,42 @@ import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
-    private static final String TAG = "MainActivity";
+    // Variable used to keep track of whether or not this is the initial start up of the application
+    private int firstStart = 1;
 
-    private double latitude = 0;                                    // Variables used to keep track of the current latitude and longitude
+    // Variable used to store an instance of the map in the road trip tab
+    private GoogleMap maps;
+
+    // Variable used to create an instance of the mapFragment (Call getMapAsync(this) on mapFragment to update the map)
+    private MapFragment mapFragment;
+
+    // Variable used to create an instance of the GoogleApiClient
+    private GoogleApiClient mGoogleApiClient;
+
+    // Variable used to keep track of your most recent location
+    private Location mLastLocation;
+
+    // Variables used to keep track of the latitude and longitude of your current location;
+    private double latitude = 0;
     private double longitude = 0;
 
-    // Latitude and Longitude doubles initialized to 900 since this value is impossible
-    private double vacationLatitude = 900;
-    private double vacationLongitude = 900;
-    private double startingLatitude = 900;
-    private double startingLongitude = 900;
-    private double endingLatitude = 900;
-    private double endingLongitude = 900;
-
-    private GoogleMap maps;
-    private MapFragment mapFragment;                                /* Variable used to create an instance of the mapFragment
-                                                               --> Call getMapAsync(this) on mapFragment to update the map */
-
-    private GoogleApiClient mGoogleApiClient;                       // Variable used to create an instance of the GoogleApiClient
-    private Location mLastLocation;                                 // Variable used to store the most recent location
-
+    // Variables used to create instances of the places fragments in the vacation tab and road trip tab
     private PlaceAutocompleteFragment vacationLocation;
     private PlaceAutocompleteFragment startingLocation;
     private PlaceAutocompleteFragment endingLocation;
 
+    // Latitude and Longitude doubles initialized to 900 since this value is impossible
+    private double vacationLatitude = 900;
+    private double vacationLongitude = 900;
+
+    private LatLng startingCoordinates = null;
+    private LatLng endingCoordinates = null;
+
+    // Variable that stores a parsed JSON object from the Google Diractions API Query Result
     private DirectionsObject directionsObject;
-    List<LatLng> polyline;
+
+    // Variable used to store multiple points along the route between the starting and ending locations input in the road trip tab (used to draw the polyline on the map between the two points)
+    private List<LatLng> polyline;
 
     private TextView temperature, location, description;            // TextView for current weather information
     private ImageView conditionIcon;                                // ImageView for current condition image
@@ -190,54 +201,45 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Set up PlaceAutocompleteFragments and their listeners
         vacationLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.vacation_location_autocomplete_fragment);
-        startingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.starting_location_autocomplete_fragment);
-        endingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.ending_location_autocomplete_fragment);
-
         vacationLocation.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
+                // Listener for the places fragment in the vacation tab (get whatever is needed from the places argument)
                 vacationLatitude = place.getLatLng().latitude;
                 vacationLongitude = place.getLatLng().longitude;
-                Log.i(TAG, "Place: " + place.getName());
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
+                // TODO: DO STUFF ON ERROR (Toast?)
             }
         });
 
+        startingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.starting_location_autocomplete_fragment);
         startingLocation.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                startingLatitude = place.getLatLng().latitude;
-                startingLongitude = place.getLatLng().longitude;
-                Log.i(TAG, "Place: " + place.getName());
+                // Listener for the places fragment pertaining to the starting location in the road trip tab (get whatever is needed from the places argument)
+                startingCoordinates = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
+                // TODO: DO STUFF ON ERROR (Toast?)
             }
         });
 
+        endingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.ending_location_autocomplete_fragment);
         endingLocation.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                endingLatitude = place.getLatLng().latitude;
-                endingLongitude = place.getLatLng().longitude;
-                Log.i(TAG, "Place: " + place.getName());
+                // Listener for the places fragment pertaining to the ending location in the road trip tab (get whatever is needed from the places argument)
+                endingCoordinates = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
+                // TODO: DO STUFF ON ERROR (Toast?)
             }
         });
 
@@ -371,9 +373,27 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         day7high = (TextView) findViewById(R.id.day7high);
     }
 
-    @Override
-    public void onMapReady(GoogleMap map) {
 
+    // Executes once google play services establishes a connection
+    @Override
+    public void onConnected(Bundle arg0) {
+        getLocation();
+    }
+
+    // Executes once the connection for google play services is suspended
+    @Override
+    public void onConnectionSuspended(int arg0) {
+
+    }
+
+    // Executes if the attempt to connect to google play services fails
+    @Override
+    public void onConnectionFailed(ConnectionResult arg0) {
+
+    }
+
+    //use this to get the current location
+    public void getLocation() {
         int MY_PERMISSION_ACCESS_COARSE_LOCATION = 77;
         int MY_PERMISSION_ACCESS_FINE_LOCATION = 77;
 
@@ -387,31 +407,28 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_ACCESS_FINE_LOCATION );
         }
 
-        //If the starting and ending points have been initialized then set the markers on the map
-        if (startingLatitude != 900 && endingLatitude != 900) {
-            map.addMarker(new MarkerOptions().position(new LatLng(startingLatitude, startingLongitude)));
-            map.addMarker(new MarkerOptions().position(new LatLng(endingLatitude, endingLongitude)));
-            maps = map;
+        //get the last location from the GoogleApiClient
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
+                city = addresses.get(0).getLocality();
+                state = addresses.get(0).getAdminArea();
+                location.setText(city + ", " + state);
+                getCurrentRequest();
+                getHourlyRequest();
+                getDailyRequest();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-        //Move the camera to the current location (used upon start up, may encounter bugs later on when calling getMapAsync() after startup)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
-        map.setMyLocationEnabled(true);
-    }
-
-    @Override
-    public void onConnected(Bundle arg0) {
-        getLocation(null);
-    }
-
-    @Override
-    public void onConnectionSuspended(int arg0) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult arg0) {
-
+        //update the map with the current location
+        mapFragment.getMapAsync(this);
     }
 
     private void displayCurrentResults() {
@@ -626,6 +643,71 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }.execute();
     }
 
+// Begin code for tab 4
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+
+        // Get a handle to the googleMap
+        maps = map;
+
+        int MY_PERMISSION_ACCESS_COARSE_LOCATION = 77;
+        int MY_PERMISSION_ACCESS_FINE_LOCATION = 77;
+
+        //request permission for coarse location if not granted already
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSION_ACCESS_COARSE_LOCATION );
+        }
+
+        //request permission for fine location if not granted already
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_ACCESS_FINE_LOCATION );
+        }
+
+        // First start, configure the map to how we want it (center upon current location, and enable button to focus on current location)
+        if (firstStart == 1) {
+            maps.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
+            maps.setMyLocationEnabled(true);
+            firstStart = 0;
+        }
+
+    }
+
+    public void placeMarkers(View view) {
+        //If the starting and ending points have been initialized then set the markers on the map
+        if (startingCoordinates != null && endingCoordinates != null) {
+            maps.clear();
+            maps.addMarker(new MarkerOptions().position(startingCoordinates));
+            maps.addMarker(new MarkerOptions().position(endingCoordinates));
+
+            LatLngBounds tripBounds;
+            if ((startingCoordinates.latitude < endingCoordinates.latitude) && (startingCoordinates.longitude < endingCoordinates.longitude)) {
+                // Constructor of LatLngBounds(LatLng southwest, LatLng northeast) is satisfied, just create the LatLngBounds object.
+                tripBounds = new LatLngBounds(startingCoordinates, endingCoordinates);
+            }
+
+            else if (startingCoordinates.latitude < endingCoordinates.latitude && (startingCoordinates.longitude > endingCoordinates.longitude)) {
+                // Need to swap starting & ending longitudes to satisfy constructor of LatLngBounds(LatLng southwest, LatLng northeast)
+                tripBounds = new LatLngBounds(new LatLng(startingCoordinates.latitude, endingCoordinates.longitude), new LatLng(endingCoordinates.latitude, startingCoordinates.longitude));
+            }
+
+            else if ((startingCoordinates.latitude > endingCoordinates.latitude) && (startingCoordinates.longitude < endingCoordinates.longitude)) {
+                // Need to swap starting & ending latitudes to satisfy constructor of LatLngBounds(LatLng southwest, LatLng northeast)
+                tripBounds = new LatLngBounds(new LatLng(endingCoordinates.latitude, startingCoordinates.longitude), new LatLng(startingCoordinates.latitude, endingCoordinates.longitude));
+            }
+
+            else /* (startincCoordinates.latitude > endingCoordinates.latitude) && (startingCoordinates.longitude > endingCoordinates.longitude)*/ {
+                // Need to swap starting & ending coordinates to satisfy constructor of LatLngBounds(LatLng southwest, LatLng northeast)
+                tripBounds = new LatLngBounds(endingCoordinates, startingCoordinates);
+            }
+            maps.moveCamera(CameraUpdateFactory.newLatLngBounds(tripBounds, 320, 320, 32));
+        }
+
+        //update the map with the corresponding markers for the starting and ending points
+        drawPolyline(startingCoordinates, endingCoordinates);
+        mapFragment.getMapAsync(this);
+    }
+
     public void drawPolyline(LatLng starting, LatLng ending) {
         new GoogleDirectionsAST(starting, ending) {
             @Override
@@ -640,49 +722,5 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }.execute();
     }
-
-    //use this to get the current location (just pass NULL in here)
-    public void getLocation(View view) {
-        int MY_PERMISSION_ACCESS_COARSE_LOCATION = 77;
-        int MY_PERMISSION_ACCESS_FINE_LOCATION = 77;
-
-        //request permission for coarse location if not granted already
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSION_ACCESS_COARSE_LOCATION );
-        }
-
-        //request permission for fine location if not granted already
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_ACCESS_FINE_LOCATION );
-        }
-
-        //get the last location from the GoogleApiClient
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null) {
-            latitude = mLastLocation.getLatitude();
-            longitude = mLastLocation.getLongitude();
-
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            try {
-                List<Address> addresses = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
-                city = addresses.get(0).getLocality();
-                state = addresses.get(0).getAdminArea();
-                location.setText(city + ", " + state);
-                getCurrentRequest();
-                getHourlyRequest();
-                getDailyRequest();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        //update the map with the zoom of the current location
-        mapFragment.getMapAsync(this);
-    }
-
-    public void placeMarkers(View view) {
-        //update the map with the corresponding markers for the starting and ending points
-        drawPolyline(new LatLng(startingLatitude, startingLongitude), new LatLng(endingLatitude, endingLongitude));
-        mapFragment.getMapAsync(this);
-    }
+// End Code for tab 4
 }
