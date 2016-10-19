@@ -284,7 +284,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 alertDialogBuilder.setView(promptsView);
 
                 final EditText userInput = (EditText) promptsView
-                        .findViewById(R.id.editTextDialogUserInput);
+                        .findViewById(R.id.editText);
+
+                Comment tempComment = datasource.getFirstComment();
+                if(tempComment != null){
+                    userInput.setText(tempComment.getComment());
+                }
 
                 // set dialog message
                 alertDialogBuilder
@@ -295,6 +300,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                         // get user input and set it to result
                                         // edit text
                                         //result.setText(userInput.getText());
+                                        Comment tempComment = datasource.getFirstComment();
+                                        if(tempComment == null){
+                                            datasource.createComment(userInput.getText().toString());
+                                        }
+                                        else{
+                                            datasource.deleteComment(tempComment);
+                                            datasource.createComment(userInput.getText().toString());
+                                        }
                                     }
                                 })
                         .setNegativeButton("Cancel",
