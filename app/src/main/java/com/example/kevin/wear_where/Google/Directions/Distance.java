@@ -10,13 +10,19 @@ import org.json.JSONObject;
 
 public class Distance implements JSONData {
     private String distance;
+    private String meters;
 
     @Override
     public void retrieveData(JSONObject data) {
         distance = data.optString("text");
+        meters = data.optString("value");
     }
 
     public String getDistance() {
         return distance;
+    }
+
+    public String getMeters() {
+        return meters;
     }
 }

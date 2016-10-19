@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
 import com.example.kevin.wear_where.AsyncTask.GoogleDirectionsAST;
 import com.example.kevin.wear_where.Google.Directions.DirectionsObject;
+import com.example.kevin.wear_where.Google.Directions.StepsArray;
+import com.example.kevin.wear_where.Google.Directions.StepsArrayItem;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -45,6 +47,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -704,21 +708,50 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         //update the map with the corresponding markers for the starting and ending points
-        drawPolyline(startingCoordinates, endingCoordinates);
+        getWeatherAlongRoute(startingCoordinates, endingCoordinates);
         mapFragment.getMapAsync(this);
     }
 
-    public void drawPolyline(LatLng starting, LatLng ending) {
+    public void getWeatherAlongRoute(LatLng starting, LatLng ending) {
         new GoogleDirectionsAST(starting, ending) {
             @Override
             protected void onPostExecute(DirectionsObject item) {
                 directionsObject = item;
+
+                // Store the total distance for interval calculation
+                int totalDistance = Integer.parseInt(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
+                System.out.println(totalDistance);
+
+                // Divide the total distance by 7 to get the intervals
+                int interval = totalDistance / 7;
+
+                // Create a list of LatLng objects to get the weather for
+                ArrayList<LatLng> weatherPoints = new ArrayList<LatLng>();
+
+                // Create a counter to keep track of accumulated distance between intervals
+                int counter = 0;
+
+                // Uses overview polyline (not as laggy but will do for now)
                 String encodedOverviewPolyline = directionsObject.getRoutesArray().getEncodedOverviewPolyLine().getEncodedOverviewPolyline();
                 polyline = com.google.maps.android.PolyUtil.decode(encodedOverviewPolyline);
 
                 for (int i = 0; i < polyline.size() - 1; ++i) {
-                    Polyline line = maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(5).color(Color.RED));
+                    Polyline line = maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(5).color(Color.rgb(93,188,210)));
+                    counter += com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
+                    if (counter > interval) {
+                        weatherPoints.add(polyline.get(i));
+                        counter = 0;
+                    }
                 }
+
+                // MOST ACCURATE POLYLINE, BUT EXTREMELY LAGGY!!!
+                /*ArrayList<StepsArrayItem> stepsArrayItems = directionsObject.getRoutesArray().getLegsArray().getStepsArray().getStepsArrayItems();
+                for(int i = 0; i < stepsArrayItems.size(); ++i) {
+                    List<LatLng> encodedPolyline = stepsArrayItems.get(i).getEncodedPolyline().getPolyline();
+                    for(int j = 0; j < encodedPolyline.size() - 1; ++j) {
+                        Polyline line = maps.addPolyline(new PolylineOptions().add(encodedPolyline.get(j), encodedPolyline.get(j + 1)).width(5).color(Color.RED));
+                    }
+                }*/
             }
         }.execute();
     }
