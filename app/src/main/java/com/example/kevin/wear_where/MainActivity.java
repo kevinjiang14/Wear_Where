@@ -700,7 +700,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Need to swap starting & ending coordinates to satisfy constructor of LatLngBounds(LatLng southwest, LatLng northeast)
                 tripBounds = new LatLngBounds(endingCoordinates, startingCoordinates);
             }
-            maps.moveCamera(CameraUpdateFactory.newLatLngBounds(tripBounds, 320, 320, 32));
+            maps.moveCamera(CameraUpdateFactory.newLatLngBounds(tripBounds, 48));
         }
 
         //update the map with the corresponding markers for the starting and ending points
