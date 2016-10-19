@@ -3,7 +3,8 @@ package com.example.kevin.wear_where.AsyncTask;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
+import com.example.kevin.wear_where.WundergroundData.CurrentCondition.ConditionsObject;
+import com.example.kevin.wear_where.WundergroundData.Planner.PlannerObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -12,28 +13,29 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * Created by Kevin Jiang on 10/4/16.
+ * Created by Kevin Jiang on 10/19/16.
  */
 
-public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
+public class PlannerAST extends AsyncTask<Void, PlannerObject, PlannerObject> {
 
+    private String city, state;
+    private String leaveDate, returnDate;
     private URL request;
-    private String city;
-    private String state;
 
-    public HourlyForecastAST(String city, String state){
-        this.city = city;
-        this.state = state;
+
+    public PlannerAST(){
+
     }
 
     @Override
-    protected HourlyObject doInBackground(Void... params) {
-        HourlyObject hourlyObject;
+    protected PlannerObject doInBackground(Void... params) {
+        PlannerObject plannerObject;
 
-        String hourly_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
+        String planner_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/planner_%s%s/q/%s/%s.json", Uri.encode(leaveDate), Uri.encode(returnDate), Uri.encode(state), Uri.encode(city));
+
 
         try {
-            request = new URL(hourly_link);
+            request = new URL(planner_link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link
@@ -50,9 +52,9 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
                 result.append(line);
             }
 
-            hourlyObject = new HourlyObject(result);
+            plannerObject = new PlannerObject(result);
 
-            return hourlyObject;
+            return plannerObject;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,4 +62,5 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
 
         return null;
     }
+
 }

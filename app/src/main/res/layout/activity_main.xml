@@ -1083,6 +1083,14 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/returnText"
                         android:layout_centerHorizontal="true" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/submitButton"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/returnText"
+                        android:text="Submit" />
                 </RelativeLayout>
 
                 <RelativeLayout

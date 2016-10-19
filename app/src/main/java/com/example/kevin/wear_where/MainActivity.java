@@ -15,6 +15,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
+import com.example.kevin.wear_where.Listeners.DateListener;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -133,6 +135,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private Calendar calendar;
     private DatePickerDialog.OnDateSetListener leaveDateListener, returnDateListener;
     private EditText leaveDate, returnDate;
+    private Button submitButton;
 
     private SwipeRefreshLayout refreshSwipe;
     private String city;
@@ -375,17 +378,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Leave date selector
         leaveDate = (EditText) findViewById(R.id.leaveDate);
-        calendar = Calendar.getInstance();
-        leaveDateListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                UpdateText(leaveDate);
-            }
-        };
         leaveDate.setInputType(InputType.TYPE_NULL);
+        calendar = Calendar.getInstance();
+        leaveDateListener = new DateListener(leaveDate, calendar);
         leaveDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -397,23 +392,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Return date selector
         returnDate = (EditText) findViewById(R.id.returnDate);
-        calendar = Calendar.getInstance();
-        returnDateListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, monthOfYear);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                UpdateText(returnDate);
-            }
-        };
         returnDate.setInputType(InputType.TYPE_NULL);
+        calendar = Calendar.getInstance();
+        returnDateListener = new DateListener(returnDate, calendar);
         returnDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new DatePickerDialog(MainActivity.this, returnDateListener, calendar
                         .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        // TODO: Create a class with the predefined method for the onclicklistener
+        submitButton = (Button) findViewById(R.id.submitButton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
@@ -429,11 +425,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 completeRefresh();
             }
         });
-    }
-
-    public void UpdateText(EditText textview){
-        textview.setText("" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar
-                .get(Calendar.YEAR));
     }
 
     @Override

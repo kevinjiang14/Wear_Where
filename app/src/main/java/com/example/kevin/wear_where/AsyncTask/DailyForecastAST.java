@@ -28,12 +28,12 @@ public class DailyForecastAST extends AsyncTask<Void, DailyObject, DailyObject>{
 
     @Override
     protected DailyObject doInBackground(Void... params) {
-        DailyObject forecastTemp;
+        DailyObject dailyObject;
 
-        String condition_link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/forecast10day/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
+        String daily_link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/forecast10day/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
         try {
-            request = new URL(condition_link);
+            request = new URL(daily_link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link
@@ -50,9 +50,9 @@ public class DailyForecastAST extends AsyncTask<Void, DailyObject, DailyObject>{
                 result.append(line);
             }
 
-            forecastTemp = new DailyObject(result);
+            dailyObject = new DailyObject(result);
 
-            return forecastTemp;
+            return dailyObject;
 
         } catch (Exception e) {
             e.printStackTrace();
