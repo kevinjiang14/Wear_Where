@@ -10,7 +10,7 @@ import java.util.Calendar;
  * Created by Kevin Jiang on 10/19/16.
  */
 
-public class DateListener implements DatePickerDialog.OnDateSetListener{
+public class DateListener implements DatePickerDialog.OnDateSetListener {
 
     private EditText ETview;
     private Calendar calendar;
@@ -22,10 +22,10 @@ public class DateListener implements DatePickerDialog.OnDateSetListener{
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, monthOfYear);
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            UpdateText(ETview);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, monthOfYear);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        UpdateText(ETview);
     }
 
     public void UpdateText(EditText textview){
@@ -38,18 +38,36 @@ public class DateListener implements DatePickerDialog.OnDateSetListener{
         String formattedMonth;
         String formattedDay;
 
-        // Append 0 to month if month is only 1 digit
+        // Pre-pend 0 to month if month is only 1 digit
         if(getMonth() < 10){
             formattedMonth = "0" + getMonth();
         } else formattedMonth = "" + getMonth();
 
-        // Append 0 to day if day is only 1 digit
+        // Pre-pend 0 to day if day is only 1 digit
         if(getDay() < 10){
             formattedDay = "0" + getDay();
         } else formattedDay = "" + getDay();
 
         String formatted = formattedMonth + formattedDay;
         return formatted;
+    }
+
+    public String getFormattedDay(){
+        String formattedDay;
+        if(getDay() < 10){
+            formattedDay = "0" + getDay();
+        } else formattedDay = "" + getDay();
+
+        return formattedDay;
+    }
+
+    public String getFormattedMonth(){
+        String formattedMonth;
+        if(getMonth() < 10){
+            formattedMonth = "0" + getMonth();
+        } else formattedMonth = "" + getMonth();
+
+        return formattedMonth;
     }
 
     public int getDay(){
@@ -63,4 +81,5 @@ public class DateListener implements DatePickerDialog.OnDateSetListener{
     public int getYear(){
         return calendar.get(Calendar.YEAR);
     }
+
 }

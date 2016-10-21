@@ -15,9 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TabHost;
@@ -148,6 +146,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     // Intent for new VacationDataActivity
     private Intent vacationData;
+    private List<Address> vacationAddresses;
 
 
     /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
@@ -193,7 +192,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onStart() {
         super.onStart();
-
         vacationData = new Intent(MainActivity.this, VacationDataActivity.class);
 
         //Build and instantiate an instance of the Google API Client
@@ -219,17 +217,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 vacationLongitude = place.getLatLng().longitude;
                 Log.i(TAG, "Place: " + place.getName());
                 try {
-                    List<Address> addresses = geocoder.getFromLocation(vacationLatitude, vacationLongitude, 1);
-
-                    // Pass the location that is being searched up to VacationDataActivity
-                    vacationData.putExtra("city", addresses.get(0).getAdminArea());
-                    vacationData.putExtra("state", addresses.get(0).getCountryName());
-
+                    vacationAddresses = geocoder.getFromLocation(vacationLatitude, vacationLongitude, 1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
             }
 
             @Override
@@ -429,12 +420,26 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
 
-
         // TODO: Create a class with the predefined method for the onclicklistener
         submitButton = (Button) findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(vacationAddresses.get(0).getCountryCode().equals("US")) {
+                    vacationData.putExtra("city", vacationAddresses.get(0).getLocality());
+                    vacationData.putExtra("state", vacationAddresses.get(0).getAdminArea());
+                }
+                else if(vacationAddresses.get(0).getAdminArea() == null) {
+                    vacationData.putExtra("city", vacationAddresses.get(0).getLocality());
+                    vacationData.putExtra("state", vacationAddresses.get(0).getCountryCode());
+                }
+                else {
+                    vacationData.putExtra("city", vacationAddresses.get(0).getAdminArea());
+                    vacationData.putExtra("state", vacationAddresses.get(0).getCountryCode());
+                }
+
+                vacationData.putExtra("leaveDate", leaveDate.getText().toString());
+                vacationData.putExtra("returnDate", returnDate.getText().toString());
                 startActivity(vacationData);
             }
         });
