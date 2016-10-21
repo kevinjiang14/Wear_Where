@@ -1089,7 +1089,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/submitButton"
                         android:layout_centerHorizontal="true"
-                        android:layout_below="@id/returnText"
+                        android:layout_below="@id/returnDate"
                         android:text="Submit" />
                 </RelativeLayout>
 

@@ -23,8 +23,11 @@ public class PlannerAST extends AsyncTask<Void, PlannerObject, PlannerObject> {
     private URL request;
 
 
-    public PlannerAST(){
-
+    public PlannerAST(String leaveDate, String returnDate, String city, String state){
+        this.leaveDate = leaveDate;
+        this.returnDate = returnDate;
+        this.city = city;
+        this.state = state;
     }
 
     @Override

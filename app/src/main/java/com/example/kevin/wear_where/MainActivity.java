@@ -1,6 +1,7 @@
 package com.example.kevin.wear_where;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -47,6 +48,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -141,6 +143,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String city;
     private String state;
 
+    // Global Geocoder class
+    private Geocoder geocoder;
+
+    // Intent for new VacationDataActivity
+    private Intent vacationData;
+
+
     /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
        Also called whenever the application is launched and there are no existing resources to work with (i.e. first start or application was killed before) */
     @Override
@@ -180,9 +189,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
     }
 
-    @Override   //Called when the activity becomes visible to the user. Also called when coming back to the application from another application (assuming this application wasn't killed).
+    //Called when the activity becomes visible to the user. Also called when coming back to the application from another application (assuming this application wasn't killed).
+    @Override
     protected void onStart() {
         super.onStart();
+
+        vacationData = new Intent(MainActivity.this, VacationDataActivity.class);
 
         //Build and instantiate an instance of the Google API Client
         if (mGoogleApiClient == null) {
@@ -206,6 +218,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 vacationLatitude = place.getLatLng().latitude;
                 vacationLongitude = place.getLatLng().longitude;
                 Log.i(TAG, "Place: " + place.getName());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(vacationLatitude, vacationLongitude, 1);
+
+                    // Pass the location that is being searched up to VacationDataActivity
+                    vacationData.putExtra("city", addresses.get(0).getAdminArea());
+                    vacationData.putExtra("state", addresses.get(0).getCountryName());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
             }
 
             @Override
@@ -404,12 +428,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+
+
         // TODO: Create a class with the predefined method for the onclicklistener
         submitButton = (Button) findViewById(R.id.submitButton);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(vacationData);
             }
         });
 
@@ -705,7 +731,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             latitude = mLastLocation.getLatitude();
             longitude = mLastLocation.getLongitude();
 
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            geocoder = new Geocoder(this, Locale.getDefault());
             try {
                 List<Address> addresses = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
                 city = addresses.get(0).getLocality();
