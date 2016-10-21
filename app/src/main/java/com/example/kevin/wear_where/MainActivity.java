@@ -739,10 +739,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             try {
-                List<Address> addresses = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                 city = addresses.get(0).getLocality();
                 state = addresses.get(0).getAdminArea();
                 location.setText(city + ", " + state);
+
                 getCurrentRequest();
                 getHourlyRequest();
                 getDailyRequest();
