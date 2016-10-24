@@ -18,31 +18,27 @@ public class LegsArray implements JSONArrayData {
 
     @Override
     public void retrieveData(JSONArray data) {
-
+        distance = new Distance();
         try {
-            distance = new Distance();
             JSONObject tempObject =  data.getJSONObject(0).getJSONObject("distance");
-
             distance.retrieveData(tempObject);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        duration = new Duration();
         try {
-            duration = new Duration();
             JSONObject tempObject =  data.getJSONObject(0).getJSONObject("duration");
-
             duration.retrieveData(tempObject);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        stepsArray = new StepsArray();
         try {
-            stepsArray = new StepsArray();
             JSONArray tempArray = data.getJSONObject(0).getJSONArray("steps");
-
             stepsArray.retrieveData(tempArray);
 
         } catch (JSONException e) {

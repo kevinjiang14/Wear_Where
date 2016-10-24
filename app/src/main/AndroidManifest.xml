@@ -40,10 +40,16 @@
             android:value="AIzaSyA0lYh2dLhMhxw3mQUsqBjwcLFZiPqppSw"/>
             -->
 
-<!-- Directons API Key -->
+<!-- Directons API Key
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCWbLdotKFPVqlld5nr8haQhjrh70xhXqA"/>
+            -->
+
+<!-- Distance Matrix API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC55NaA1UfwEAmJHa2sS8QAUVwEi6bHvFQ"/>
      </application>
 
  </manifest>

@@ -19,10 +19,9 @@ public class StepsArray implements JSONArrayData {
     public void retrieveData(JSONArray data) {
         stepsArrayItems = new ArrayList<>();
         for(int i = 0; i < data.length(); i++){
+            StepsArrayItem stepsArrayItem = new StepsArrayItem();
             try {
-                StepsArrayItem stepsArrayItem = new StepsArrayItem();
                 JSONObject temp = data.getJSONObject(i);
-
                 stepsArrayItem.retrieveData(temp);
 
                 stepsArrayItems.add(stepsArrayItem);
@@ -30,7 +29,6 @@ public class StepsArray implements JSONArrayData {
                 e.printStackTrace();
             }
         }
-
     }
 
     public ArrayList<StepsArrayItem> getStepsArrayItems() {

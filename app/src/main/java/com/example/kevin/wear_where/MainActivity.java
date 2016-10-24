@@ -1,26 +1,35 @@
 package com.example.kevin.wear_where;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
 import com.example.kevin.wear_where.AsyncTask.GoogleDirectionsAST;
+import com.example.kevin.wear_where.AsyncTask.GoogleDistanceAST;
+import com.example.kevin.wear_where.AsyncTask.MapsForecastAST;
 import com.example.kevin.wear_where.Google.Directions.DirectionsObject;
 import com.example.kevin.wear_where.Google.Directions.StepsArray;
 import com.example.kevin.wear_where.Google.Directions.StepsArrayItem;
+import com.example.kevin.wear_where.Google.Distance.DistanceMatrixObject;
+import com.example.kevin.wear_where.Google.Distance.ElementsArrayItem;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -43,6 +52,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -51,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
@@ -85,9 +96,26 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng startingCoordinates = null;
     private LatLng endingCoordinates = null;
 
-    // Variable that stores a parsed JSON object from the Google Diractions API Query Result
+    // Variable that stores a parsed JSON object from the Google Directions API Query Result
     private DirectionsObject directionsObject;
 
+    // Variable that stores a parsed JSON object from the Google Distance Matrix API Query Result
+    private DistanceMatrixObject distanceMatrixObject;
+
+    // Variable used to store the hourly information for a certain latlng point on the map
+    private HourlyObject mapsHourlyForecast;
+
+    // Variable used to store the interval points pending weather info
+    private ArrayList<LatLng> weatherPoints;
+
+    // Variable used to store the distances and durations between the starting point and each interval point
+    private ArrayList<ElementsArrayItem> durations;
+
+    // Variable used to store the addresses of the intervals pending weather info
+    private ArrayList<String> intervalAddresses;
+
+    // Variable used to store the markers that will be placed on the map
+    private ArrayList<MarkerOptions> markers;
     // Variable used to store multiple points along the route between the starting and ending locations input in the road trip tab (used to draw the polyline on the map between the two points)
     private List<LatLng> polyline;
 
@@ -668,6 +696,41 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_ACCESS_FINE_LOCATION );
         }
 
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+
+                Context context = getApplicationContext();
+
+                LinearLayout info = new LinearLayout(context);
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                //ImageView weather = new ImageView(context);
+                TextView title = new TextView(context);
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                TextView snippet = new TextView(context);
+                snippet.setGravity(Gravity.CENTER);
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                //info.addView(weather);
+                info.addView(title);
+                info.addView(snippet);
+
+                return info;
+            }
+        });
+
         // First start, configure the map to how we want it (center upon current location, and enable button to focus on current location)
         if (firstStart == 1) {
             maps.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
@@ -681,8 +744,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         //If the starting and ending points have been initialized then set the markers on the map
         if (startingCoordinates != null && endingCoordinates != null) {
             maps.clear();
-            maps.addMarker(new MarkerOptions().position(startingCoordinates));
-            maps.addMarker(new MarkerOptions().position(endingCoordinates));
+
+            // Get the route between starting and ending destinations
+            getRouteBetweenPoints(startingCoordinates, endingCoordinates);
+            //maps.addMarker(new MarkerOptions().position(startingCoordinates).title("Starting Location"));
+            //maps.addMarker(new MarkerOptions().position(endingCoordinates).title("Ending Location"));
 
             LatLngBounds tripBounds;
             if ((startingCoordinates.latitude < endingCoordinates.latitude) && (startingCoordinates.longitude < endingCoordinates.longitude)) {
@@ -708,25 +774,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         //update the map with the corresponding markers for the starting and ending points
-        getWeatherAlongRoute(startingCoordinates, endingCoordinates);
         mapFragment.getMapAsync(this);
     }
 
-    public void getWeatherAlongRoute(LatLng starting, LatLng ending) {
+    public void getRouteBetweenPoints(final LatLng starting, final LatLng ending) {
         new GoogleDirectionsAST(starting, ending) {
+
             @Override
             protected void onPostExecute(DirectionsObject item) {
                 directionsObject = item;
 
                 // Store the total distance for interval calculation
                 int totalDistance = Integer.parseInt(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
-                System.out.println(totalDistance);
 
                 // Divide the total distance by 7 to get the intervals
                 int interval = totalDistance / 7;
 
                 // Create a list of LatLng objects to get the weather for
-                ArrayList<LatLng> weatherPoints = new ArrayList<LatLng>();
+                weatherPoints = new ArrayList<LatLng>();
+                weatherPoints.add(starting);
 
                 // Create a counter to keep track of accumulated distance between intervals
                 int counter = 0;
@@ -735,14 +801,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 String encodedOverviewPolyline = directionsObject.getRoutesArray().getEncodedOverviewPolyLine().getEncodedOverviewPolyline();
                 polyline = com.google.maps.android.PolyUtil.decode(encodedOverviewPolyline);
 
+                // Add all LatLng objects that create the polyline
                 for (int i = 0; i < polyline.size() - 1; ++i) {
                     Polyline line = maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(5).color(Color.rgb(93,188,210)));
+
+                    // Keep track of which LatLng objects to get weather information for, store each object in weatherPoints
                     counter += com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
-                    if (counter > interval) {
+                    if (counter >= interval) {
                         weatherPoints.add(polyline.get(i));
-                        counter = 0;
+                        counter = counter - interval;
                     }
                 }
+                weatherPoints.add(ending);
+
+                // Get the distances between the starting point and each point in the interval
+                getDistancesBetweenIntervals(weatherPoints);
+
+                // Get the weather information for all objects in weatherPoints
+                //getWeatherAlongRoute(weatherPoints);
 
                 // MOST ACCURATE POLYLINE, BUT EXTREMELY LAGGY!!!
                 /*ArrayList<StepsArrayItem> stepsArrayItems = directionsObject.getRoutesArray().getLegsArray().getStepsArray().getStepsArrayItems();
@@ -755,5 +831,88 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }.execute();
     }
+
+    public void getDistancesBetweenIntervals (ArrayList<LatLng> intervals) {
+
+            // For each LatLng object inside weatherPoints
+            new GoogleDistanceAST(intervals) {
+
+                @Override
+                protected void onPostExecute(DistanceMatrixObject item) {
+                    distanceMatrixObject = item;
+
+                    intervalAddresses = new ArrayList<String>();
+                    durations = new ArrayList<ElementsArrayItem>();
+
+                    // Get the duration from start to current latlng.
+                    durations = distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems();
+
+                    // Get the addresses of each interval point
+                    intervalAddresses = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems();
+                    intervalAddresses.add(0, distanceMatrixObject.getStartingAddressesArray().getStartingAddressesArrayItems().get(0));
+
+                    // Create the markers for each list
+                    markers = new ArrayList<MarkerOptions>();
+                    for (int i = 0; i < weatherPoints.size(); ++i) {
+                        if (i == 0) {
+                            markers.add(new MarkerOptions().position(weatherPoints.get(0))
+                                    .title("Origin")
+                                    .snippet(intervalAddresses.get(0) + '\n' +
+                                            "Distance Travelled: 0 miles" + '\n' +
+                                            "Time elapsed: 0 Hours, 0 Minutes" + "\n\n" +
+                                            "Estimated Arrival Time: N/A" + '\n' +
+                                            "Weather at ETA: N/A"));
+                        }
+                        else if (i == weatherPoints.size() - 1){
+                            markers.add(new MarkerOptions().position(weatherPoints.get(i))
+                                    .title("Destination")
+                                    .snippet(intervalAddresses.get(i) + '\n' +
+                                            "Distance Travelled: " + durations.get(i - 1).getDistance().getDistance() + '\n' +
+                                            "Time elapsed: " + durations.get(i-1).getDuration().getDuration() + "\n\n" +
+                                            "Estimated Arrival Time: N/A" + '\n' +
+                                            "Weather at ETA: N/A"));
+                        }
+                        else {
+                            markers.add(new MarkerOptions().position(weatherPoints.get(i))
+                                    .title("Interval")
+                                    .snippet(intervalAddresses.get(i) + '\n' +
+                                            "Distance Travelled: " + durations.get(i - 1).getDistance().getDistance() + '\n' +
+                                            "Time elapsed: " + durations.get(i-1).getDuration().getDuration() + "\n\n" +
+                                            "Estimated Arrival Time: N/A" + '\n' +
+                                            "Weather at ETA: N/A"));
+                        }
+                    }
+
+                    for (int i = 0; i < markers.size(); ++i) {
+                        Marker temp = maps.addMarker(markers.get(i));
+                    }
+                }
+
+            }.execute();
+
+        mapFragment.getMapAsync(this);
+    }
+
+    public void getWeatherAlongRoute (ArrayList<LatLng> intervals) {
+        for (int i = 0; i < weatherPoints.size(); ++i) {
+
+            // For each LatLng object inside weatherPoints
+            new MapsForecastAST(weatherPoints.get(i)) {
+
+                @Override
+                protected void onPostExecute(HourlyObject item) {
+                    mapsHourlyForecast = item;
+
+                    // Get the hourly forecast for the current latlng with index i = how many hours it takes from start to latlng;
+                }
+
+            }.execute();
+        }
+    }
+
+    public float metersToMiles (int meters) {
+        return (float) (meters * 0.00062137);
+    }
+
 // End Code for tab 4
 }

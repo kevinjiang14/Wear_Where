@@ -19,21 +19,18 @@ public class RoutesArray implements JSONArrayData {
 
     @Override
     public void retrieveData(JSONArray data) {
-
+        legsArray = new LegsArray();
         try {
-            legsArray = new LegsArray();
             JSONArray tempArray =  data.getJSONObject(0).getJSONArray("legs");
-
             legsArray.retrieveData(tempArray);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        encodedOverviewPolyline = new EncodedOverviewPolyline();
         try {
-            encodedOverviewPolyline = new EncodedOverviewPolyline();
             JSONObject tempObject = data.getJSONObject(0).getJSONObject("overview_polyline");
-
             encodedOverviewPolyline.retrieveData(tempObject);
 
         } catch (JSONException e) {

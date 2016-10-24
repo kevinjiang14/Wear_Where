@@ -10,13 +10,19 @@ import org.json.JSONObject;
 
 public class Duration implements JSONData {
     private String duration;
+    private String seconds;
 
     @Override
     public void retrieveData(JSONObject data) {
         duration = data.optString("text");
+        seconds = data.optString("value");
     }
 
     public String getDuration() {
         return duration;
+    }
+
+    public String getSeconds() {
+        return seconds;
     }
 }
