@@ -57,6 +57,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -788,7 +789,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 int totalDistance = Integer.parseInt(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
 
                 // Divide the total distance by 7 to get the intervals
-                int interval = totalDistance / 7;
+                int interval = totalDistance / 8;
 
                 // Create a list of LatLng objects to get the weather for
                 weatherPoints = new ArrayList<LatLng>();
@@ -871,6 +872,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                             "Time elapsed: " + durations.get(i-1).getDuration().getDuration() + "\n\n" +
                                             "Estimated Arrival Time: N/A" + '\n' +
                                             "Weather at ETA: N/A"));
+
+                            //System.out.println("ETA: " + new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date (((System.currentTimeMillis()/1000) + (Long.parseLong((durations.get(i-1).getDuration().getSeconds()))))*1000)));
                         }
                         else {
                             markers.add(new MarkerOptions().position(weatherPoints.get(i))
@@ -884,7 +887,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     }
 
                     for (int i = 0; i < markers.size(); ++i) {
-                        Marker temp = maps.addMarker(markers.get(i));
+                        maps.addMarker(markers.get(i));
                     }
                 }
 
