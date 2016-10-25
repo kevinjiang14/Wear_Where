@@ -24,12 +24,14 @@ import android.widget.TextView;
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
 import com.example.kevin.wear_where.AsyncTask.GoogleDirectionsAST;
 import com.example.kevin.wear_where.AsyncTask.GoogleDistanceAST;
+import com.example.kevin.wear_where.AsyncTask.GoogleTimeZoneAST;
 import com.example.kevin.wear_where.AsyncTask.MapsForecastAST;
 import com.example.kevin.wear_where.Google.Directions.DirectionsObject;
 import com.example.kevin.wear_where.Google.Directions.StepsArray;
 import com.example.kevin.wear_where.Google.Directions.StepsArrayItem;
 import com.example.kevin.wear_where.Google.Distance.DistanceMatrixObject;
 import com.example.kevin.wear_where.Google.Distance.ElementsArrayItem;
+import com.example.kevin.wear_where.Google.TimeZone.TimeZoneObject;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -112,11 +114,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     // Variable used to store the distances and durations between the starting point and each interval point
     private ArrayList<ElementsArrayItem> durations;
 
-    // Variable used to store the addresses of the intervals pending weather info
+    // Variable used to store the time zone information for each point in weatherPoints;
+    private ArrayList<TimeZoneObject> intervalTimeZones;
+
+    // Variable used to store the addresses of the intervals pending weather info (to be used in the information window)
     private ArrayList<String> intervalAddresses;
 
     // Variable used to store the markers that will be placed on the map
     private ArrayList<MarkerOptions> markers;
+
     // Variable used to store multiple points along the route between the starting and ending locations input in the road trip tab (used to draw the polyline on the map between the two points)
     private List<LatLng> polyline;
 
@@ -785,6 +791,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             protected void onPostExecute(DirectionsObject item) {
                 directionsObject = item;
 
+                // Get the epoch time (in seconds) to be used for the Time Zone API
+                long timestamp = System.currentTimeMillis()/1000;
+
                 // Store the total distance for interval calculation
                 int totalDistance = Integer.parseInt(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
 
@@ -794,6 +803,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Create a list of LatLng objects to get the weather for
                 weatherPoints = new ArrayList<LatLng>();
                 weatherPoints.add(starting);
+
+
 
                 // Create a counter to keep track of accumulated distance between intervals
                 int counter = 0;
@@ -814,6 +825,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
                 weatherPoints.add(ending);
+
+                // Create a list of TimeZoneObjects to keep track of the time zone information for each weather point
+                intervalTimeZones = new ArrayList<TimeZoneObject>();
+                // Get the time zone information for all intervals
+                getTimeZoneObject(weatherPoints, timestamp);
 
                 // Get the distances between the starting point and each point in the interval
                 getDistancesBetweenIntervals(weatherPoints);
@@ -873,7 +889,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                             "Estimated Arrival Time: N/A" + '\n' +
                                             "Weather at ETA: N/A"));
 
-                            //System.out.println("ETA: " + new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date (((System.currentTimeMillis()/1000) + (Long.parseLong((durations.get(i-1).getDuration().getSeconds()))))*1000)));
+                            System.out.println("ETA: " + new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date (((System.currentTimeMillis()/1000) + (Long.parseLong((durations.get(i-1).getDuration().getSeconds()))))*1000)));
                         }
                         else {
                             markers.add(new MarkerOptions().position(weatherPoints.get(i))
@@ -896,11 +912,28 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
     }
 
+    public void getTimeZoneObject(ArrayList<LatLng> intervals, long timestamp) {
+        for (int i = 0; i < intervals.size(); ++i) {
+
+            new GoogleTimeZoneAST(intervals.get(i), timestamp) {
+
+                @Override
+                protected void onPostExecute(TimeZoneObject timeZoneObject) {
+                    intervalTimeZones.add(timeZoneObject);
+                    System.out.println("ADNAKJFS");
+                    System.out.println(timeZoneObject.getTimeZoneName());
+                }
+
+            }.execute();
+
+        }
+    }
+
     public void getWeatherAlongRoute (ArrayList<LatLng> intervals) {
-        for (int i = 0; i < weatherPoints.size(); ++i) {
+        for (int i = 0; i < intervals.size(); ++i) {
 
             // For each LatLng object inside weatherPoints
-            new MapsForecastAST(weatherPoints.get(i)) {
+            new MapsForecastAST(intervals.get(i)) {
 
                 @Override
                 protected void onPostExecute(HourlyObject item) {

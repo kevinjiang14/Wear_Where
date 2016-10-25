@@ -46,10 +46,16 @@
             android:value="AIzaSyCWbLdotKFPVqlld5nr8haQhjrh70xhXqA"/>
             -->
 
-<!-- Distance Matrix API Key -->
+<!-- Distance Matrix API Key
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC55NaA1UfwEAmJHa2sS8QAUVwEi6bHvFQ"/>
+            -->
+
+        <!-- Time Zone API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB18rwgSopgUCkqrRg3oQ3udaXK0Ic0kOs"/>
      </application>
 
  </manifest>
