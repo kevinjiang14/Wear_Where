@@ -2,6 +2,7 @@ package com.example.kevin.wear_where;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.example.kevin.wear_where.wear.Clothing;
+import com.example.kevin.wear_where.wear.ClothingActivity;
 import com.example.kevin.wear_where.wear.Suggestion;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -54,6 +56,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -143,8 +146,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private CommentsDataSource datasource;
 
-    private Suggestion suggestion = new Suggestion(new Clothing());
-    TextView suggestText;
+    private Clothing clothes = new Clothing();
+    public final static String MESSAGE = "com.example.kevin.wear_where.MESSAGE";
 
     private Button menuButton;
     final Context context = this;
@@ -190,12 +193,66 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         datasource = new CommentsDataSource(this);
         datasource.open();
 
-        //Initialize button on tab2 and refresh suggestions
-        Button refresh = (Button)findViewById(R.id.refreshBTN);
-        refresh.setOnClickListener(new View.OnClickListener() {
+        //Initialize buttons on tab2
+        Button headwear = (Button)findViewById(R.id.headwear);
+        Button upperbody = (Button)findViewById(R.id.upperbody);
+        Button lowerbody = (Button)findViewById(R.id.lowerbody);
+        Button shoes = (Button)findViewById(R.id.shoes);
+
+        //Start onclick functions of buttons
+        headwear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                suggestText.setText(suggestion.getSuggestion(currentForecast.getTemperature(),currentForecast.getCondition()));
+                ArrayList<String> headwear = clothes.getHeadWear(currentForecast.getTemperature());
+                String[] headwearList = new String[headwear.size()];
+                for (int i = 0; i < headwear.size(); i++){
+                    headwearList[i] = headwear.get(i);
+                }
+                Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
+                myIntent.putExtra(MESSAGE, headwearList);
+                startActivity(myIntent);
+            }
+        });
+
+        upperbody.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> upperbody = clothes.getUpperBody(currentForecast.getTemperature());
+                String[] upperbodyList = new String[upperbody.size()];
+                for (int i = 0; i < upperbody.size(); i++){
+                    upperbodyList[i] = upperbody.get(i);
+                }
+                Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
+                myIntent.putExtra(MESSAGE, upperbodyList);
+                startActivity(myIntent);
+            }
+        });
+
+        lowerbody.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> lowerbody = clothes.getLowerBody(currentForecast.getTemperature());
+                String[] lowerbodyList = new String[lowerbody.size()];
+                for (int i = 0; i < lowerbody.size(); i++){
+                    lowerbodyList[i] = lowerbody.get(i);
+                }
+                Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
+                myIntent.putExtra(MESSAGE, lowerbodyList);
+                startActivity(myIntent);
+            }
+        });
+
+        shoes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> shoes = clothes.getShoes(currentForecast.getTemperature());
+                String[] shoesList = new String[shoes.size()];
+                for (int i = 0; i < shoes.size(); i++){
+                    shoesList[i] = shoes.get(i);
+                }
+                Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
+                myIntent.putExtra(MESSAGE, shoesList);
+                startActivity(myIntent);
             }
         });
     }
@@ -452,8 +509,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         description.setText("" + currentForecast.getCondition());
         location.setText("" + city + ", " + state);
 
-        suggestText = (TextView)findViewById(R.id.suggestionText);
-        suggestText.setText(suggestion.getSuggestion(currentForecast.getTemperature(),currentForecast.getCondition()));
     }
 
     public void displayHourlyResults(){

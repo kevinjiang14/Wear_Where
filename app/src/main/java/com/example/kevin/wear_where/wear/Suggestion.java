@@ -25,9 +25,9 @@ public class Suggestion {
         ArrayList<String> upperbody;
         ArrayList<String> lowerbody;
         if (temp < 32){
-            headwear = _clothes.getHeadWear().get(1);
-            upperbody = _clothes.getUpperBody().get(1);
-            lowerbody = _clothes.getLowerBody().get(1);
+            headwear = _clothes.getHeadWear(temperature);
+            upperbody = _clothes.getUpperBody(temperature);
+            lowerbody = _clothes.getLowerBody(temperature);
             Collections.shuffle(headwear);
             Collections.shuffle(upperbody);
             Collections.shuffle(lowerbody);
@@ -40,9 +40,9 @@ public class Suggestion {
             }
         }
         else if (temp >= 32 && temp < 55){
-            headwear = _clothes.getHeadWear().get(2);
-            upperbody = _clothes.getUpperBody().get(2);
-            lowerbody = _clothes.getLowerBody().get(2);
+            headwear = _clothes.getHeadWear(temperature);
+            upperbody = _clothes.getUpperBody(temperature);
+            lowerbody = _clothes.getLowerBody(temperature);
             Collections.shuffle(headwear);
             Collections.shuffle(upperbody);
             Collections.shuffle(lowerbody);
@@ -55,9 +55,9 @@ public class Suggestion {
             }
         }
         else if (temp >= 55 && temp < 75){
-            headwear = _clothes.getHeadWear().get(3);
-            upperbody = _clothes.getUpperBody().get(3);
-            lowerbody = _clothes.getLowerBody().get(3);
+            headwear = _clothes.getHeadWear(temperature);
+            upperbody = _clothes.getUpperBody(temperature);
+            lowerbody = _clothes.getLowerBody(temperature);
             Collections.shuffle(headwear);
             Collections.shuffle(upperbody);
             Collections.shuffle(lowerbody);
@@ -70,9 +70,9 @@ public class Suggestion {
             }
         }
         else if (temp >= 75){
-            headwear = _clothes.getHeadWear().get(4);
-            upperbody = _clothes.getUpperBody().get(4);
-            lowerbody = _clothes.getLowerBody().get(4);
+            headwear = _clothes.getHeadWear(temperature);
+            upperbody = _clothes.getUpperBody(temperature);
+            lowerbody = _clothes.getLowerBody(temperature);
             Collections.shuffle(headwear);
             Collections.shuffle(upperbody);
             Collections.shuffle(lowerbody);
