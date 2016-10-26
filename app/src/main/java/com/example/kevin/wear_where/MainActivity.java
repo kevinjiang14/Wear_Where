@@ -789,6 +789,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                 .setPositiveButton("OK",
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog,int id) {
+                                                final String city_input = cityInput.getText().toString();
+                                                final String state_input = stateInput.getText().toString();
+
                                                 // get search_result.xml view
                                                 LayoutInflater li3 = LayoutInflater.from(context);
                                                 View promptsView3 = li3.inflate(R.layout.search_result, null);
@@ -798,9 +801,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                 // set prompts.xml to alertdialog builder
                                                 alertDialogBuilder3.setView(promptsView3);
 
-                                                TextView searchResult = (TextView) promptsView3.findViewById(R.id.searchResult);
-                                                searchResult.setText("The weather in city, state is 73" + (char) 0x00B0 + " F");
+                                                final TextView searchResult = (TextView) promptsView3.findViewById(R.id.searchResult);
 
+                                                new CurrentConditionAST(city_input, state_input){
+                                                    @Override
+                                                    protected void onPostExecute(ConditionsObject item) {
+                                                        ConditionsObject resultForecast = item;
+                                                        searchResult.setText("The weather in " + city_input + ", " + state_input + " is " + resultForecast.getTemperature() + (char) 0x00B0 + " F");
+                                                        displayCurrentResults();
+                                                    }
+                                                }.execute();
 
                                                 // set dialog message
                                                 alertDialogBuilder3
