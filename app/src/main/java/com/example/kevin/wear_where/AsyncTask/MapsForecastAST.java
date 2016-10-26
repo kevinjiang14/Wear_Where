@@ -28,7 +28,7 @@ public class MapsForecastAST extends AsyncTask<Void, Void, HourlyObject> {
     protected HourlyObject doInBackground(Void... params) {
         HourlyObject hourlyForecastTemp;
 
-        String condition_link = String.format("http://api.wunderground.com/api/fe0b389aa655786c/hourly/q/%s,%s.json", Uri.encode(Double.toString(this.latlng.latitude)), Uri.encode(Double.toString(this.latlng.longitude)));
+        String condition_link = String.format("http://api.wunderground.com/api/fe0b389aa655786c/hourly10day/q/%s,%s.json", Uri.encode(Double.toString(this.latlng.latitude)), Uri.encode(Double.toString(this.latlng.longitude)));
 
         try {
             request = new URL(condition_link);

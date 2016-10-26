@@ -38,7 +38,7 @@ public class GoogleDistanceAST extends AsyncTask<Void, Void, DistanceMatrixObjec
 
         //https://maps.googleapis.com/maps/api/distancematrix/outputFormat?parameters
         String condition_link = String.format("https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=AIzaSyCWbLdotKFPVqlld5nr8haQhjrh70xhXqA", Uri.encode(origins), Uri.encode(destinations));
-        System.out.println(condition_link);
+
         try {
             request = new URL(condition_link);
 

@@ -1029,7 +1029,7 @@
                         class="com.google.android.gms.maps.MapFragment"
                         android:id="@+id/map"
                         android:layout_width="match_parent"
-                        android:layout_height="960px"
+                        android:layout_height="360dp"
                         />
 
                     <ScrollView

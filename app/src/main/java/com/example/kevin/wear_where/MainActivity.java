@@ -111,7 +111,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private ArrayList<TimeZoneObject> intervalTimeZones;
 
     // Variable used to store the hourly information for a certain latlng point on the map
-    private HourlyObject mapsHourlyForecast;
+    private ArrayList<HourlyObject> mapsHourlyForecast;
 
     // Variable used to store the interval points pending weather info
     private ArrayList<LatLng> weatherPoints;
@@ -827,14 +827,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Create a list of TimeZoneObjects to keep track of the time zone information for each weather point
                 intervalTimeZones = new ArrayList<TimeZoneObject>();
 
+                // Create a list of HourlyObjects to keep track of the weather information for each weather point
+                mapsHourlyForecast = new ArrayList<HourlyObject>();
+
                 // Get the time zone information for all intervals
                 getTimeZoneObject(weatherPoints, timestamp);
 
                 // Get the distances between the starting point and each point in the interval
                 getDistancesBetweenIntervals(weatherPoints);
-
-                // Get the weather information for all objects in weatherPoints
-                //getWeatherAlongRoute(weatherPoints);
 
                 // MOST ACCURATE POLYLINE, BUT EXTREMELY LAGGY!!!
                 /*ArrayList<StepsArrayItem> stepsArrayItems = directionsObject.getRoutesArray().getLegsArray().getStepsArray().getStepsArrayItems();
@@ -856,7 +856,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 protected void onPostExecute(DistanceMatrixObject item) {
                     distanceMatrixObject = item;
-                    intervalAddresses = new ArrayList<String>();
 
                     // Get the addresses of each interval point
                     intervalAddresses = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems();
@@ -872,17 +871,19 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         Long intervalDuration = Long.parseLong((durations.get(i).getDuration().getSeconds()))*1000;
                         Long endingDSTOffset = Long.parseLong(intervalTimeZones.get(i).getDstOffset())*1000;
                         Long endingRawOffset = Long.parseLong(intervalTimeZones.get(i).getRawOffset())*1000;
+                        String estimatedTimeOfArrival = new java.text.SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n' + intervalTimeZones.get(i).getTimeZoneName();
+                        String precipitation = mapsHourlyForecast.get(i).getCondition((int) (intervalDuration / (3600*1000)));
+                        String temperatureF = Integer.toString(mapsHourlyForecast.get(i).getTemperatureF((int) (intervalDuration / (3600*1000)))) + (char) 0x00B0 + " F";
+                        //String iconURL = hourlyForecast.getIconURL((int) (intervalDuration / (3600*1000)));
 
                         if (i == 0) {
                             markers.add(new MarkerOptions().position(weatherPoints.get(0))
                                     .title("Origin")
                                     .snippet(intervalAddresses.get(0) + '\n' +
-                                            "Distance Travelled: 0 miles" + '\n' +
-                                            "Time elapsed: 0 Hours, 0 Minutes" + "\n\n" +
-                                            "Time at beginning of trip: " + '\n' +
-                                                    new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n'
-                                                            + intervalTimeZones.get(i).getTimeZoneName() + "\n\n" +
-                                            "Weather at ETA: N/A"));
+                                            "Distance Travelled: " + durations.get(i).getDistance().getDistance() + '\n' +
+                                            "Time elapsed: " + durations.get(i).getDuration().getDuration() + "\n\n" +
+                                            "Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                                            "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF));
                         }
 
                         else if (i == weatherPoints.size() - 1){
@@ -891,10 +892,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                     .snippet(intervalAddresses.get(i) + '\n' +
                                             "Distance Travelled: " + durations.get(i).getDistance().getDistance() + '\n' +
                                             "Time elapsed: " + durations.get(i).getDuration().getDuration() + "\n\n" +
-                                            "Estimated Arrival Time: " + '\n' +
-                                                    new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n'
-                                                            + intervalTimeZones.get(i).getTimeZoneName() + "\n\n" +
-                                            "Weather at ETA: N/A"));
+                                            "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                                            "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF));
                         }
 
                         else {
@@ -903,10 +902,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                     .snippet(intervalAddresses.get(i) + '\n' +
                                             "Distance Travelled: " + durations.get(i).getDistance().getDistance() + '\n' +
                                             "Time elapsed: " + durations.get(i).getDuration().getDuration() + "\n\n" +
-                                            "Estimated Arrival Time: " + '\n' +
-                                                    new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n'
-                                                            + intervalTimeZones.get(i).getTimeZoneName() + "\n\n" +
-                                            "Weather at ETA: N/A"));
+                                            "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                                            "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF));
                         }
                     }
 
@@ -921,8 +918,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void getTimeZoneObject(ArrayList<LatLng> intervals, long timestamp) {
+        // For each LatLng object inside intervals (weatherObjects)
         for (int i = 0; i < intervals.size(); ++i) {
 
+            // Get the TimeZoneObject and add it to timeZoneObject
             new GoogleTimeZoneAST(intervals.get(i), timestamp) {
 
                 @Override
@@ -932,20 +931,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             }.execute();
 
-        }
-    }
-
-    public void getWeatherAlongRoute (ArrayList<LatLng> intervals) {
-        for (int i = 0; i < intervals.size(); ++i) {
-
-            // For each LatLng object inside weatherPoints
+            // For each LatLng object inside intervals (weatherObjects)
             new MapsForecastAST(intervals.get(i)) {
 
                 @Override
                 protected void onPostExecute(HourlyObject item) {
-                    mapsHourlyForecast = item;
-
-                    // Get the hourly forecast for the current latlng with index i = how many hours it takes from start to latlng;
+                    mapsHourlyForecast.add(item);
                 }
 
             }.execute();

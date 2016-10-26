@@ -1,8 +1,10 @@
 package com.example.kevin.wear_where.Google.Directions;
 
 import com.example.kevin.wear_where.Interface.JSONData;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -12,6 +14,8 @@ import org.json.JSONObject;
 public class StepsArrayItem implements JSONData {
     private Distance distance;
     private Duration duration;
+    private LatLng endLocation;
+    private LatLng startLocation;
     private EncodedPolyline encodedPolyline;
 
     @Override
@@ -24,6 +28,18 @@ public class StepsArrayItem implements JSONData {
 
         encodedPolyline = new EncodedPolyline();
         encodedPolyline.retrieveData(data.optJSONObject("polyline"));
+
+        try {
+            startLocation = new LatLng(Double.parseDouble(data.optJSONObject("start_location").getString("lat")), Double.parseDouble(data.optJSONObject("start_location").getString("lng")));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            endLocation = new LatLng(Double.parseDouble(data.optJSONObject("end_location").getString("lat")), Double.parseDouble(data.optJSONObject("end_location").getString("lng")));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public Distance getDistance() {
