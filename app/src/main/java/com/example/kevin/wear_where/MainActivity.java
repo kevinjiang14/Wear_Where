@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -267,64 +268,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         menuButton = (Button) findViewById(R.id.button);
-        // add button listener
-        menuButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                // get prompts.xml view
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.prompt, null);
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                        context);
-
-                // set prompts.xml to alertdialog builder
-                alertDialogBuilder.setView(promptsView);
-
-                final EditText userInput = (EditText) promptsView
-                        .findViewById(R.id.editText);
-
-                Comment tempComment = datasource.getFirstComment();
-                if(tempComment != null){
-                    userInput.setText(tempComment.getComment());
-                }
-
-                // set dialog message
-                alertDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        // get user input and set it to result
-                                        // edit text
-                                        //result.setText(userInput.getText());
-                                        Comment tempComment = datasource.getFirstComment();
-                                        if(tempComment == null){
-                                            datasource.createComment(userInput.getText().toString());
-                                        }
-                                        else{
-                                            datasource.deleteComment(tempComment);
-                                            datasource.createComment(userInput.getText().toString());
-                                        }
-                                    }
-                                })
-                        .setNegativeButton("Cancel",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                // create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-
-                // show it
-                alertDialog.show();
-
-            }
-        });
 
         // Assign hourly forecast widgets
         temperature = (TextView) findViewById(R.id.temperature);
@@ -773,10 +716,128 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         super.onPause();
     }
 
-    /*public void showPopup(View v) {
+    /* Menu code */
+    public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.menu, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.favtemp:
+                        // get prompts.xml view
+                        LayoutInflater li = LayoutInflater.from(context);
+                        View promptsView = li.inflate(R.layout.prompt, null);
+
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+                        // set prompts.xml to alertdialog builder
+                        alertDialogBuilder.setView(promptsView);
+
+                        final EditText userInput = (EditText) promptsView.findViewById(R.id.editText);
+
+                        Comment tempComment = datasource.getFirstComment();
+                        if(tempComment != null){
+                            userInput.setText(tempComment.getComment());
+                        }
+
+                        // set dialog message
+                        alertDialogBuilder
+                                .setCancelable(false)
+                                .setPositiveButton("OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,int id) {
+                                                Comment tempComment = datasource.getFirstComment();
+                                                if(tempComment == null){
+                                                    datasource.createComment(userInput.getText().toString());
+                                                }
+                                                else{
+                                                    datasource.deleteComment(tempComment);
+                                                    datasource.createComment(userInput.getText().toString());
+                                                }
+                                            }
+                                        })
+                                .setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+
+                        // show it
+                        alertDialog.show();
+                        return true;
+                    case R.id.search:
+                        // get search_input.xml view
+                        LayoutInflater li2 = LayoutInflater.from(context);
+                        View promptsView2 = li2.inflate(R.layout.search_input, null);
+
+                        AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(context);
+
+                        // set prompts.xml to alertdialog builder
+                        alertDialogBuilder2.setView(promptsView2);
+
+                        final EditText cityInput = (EditText) promptsView2.findViewById(R.id.cityInput);
+                        final EditText stateInput = (EditText) promptsView2.findViewById(R.id.stateInput);
+
+                        // set dialog message
+                        alertDialogBuilder2
+                                .setCancelable(false)
+                                .setPositiveButton("OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,int id) {
+                                                // get search_result.xml view
+                                                LayoutInflater li3 = LayoutInflater.from(context);
+                                                View promptsView3 = li3.inflate(R.layout.search_result, null);
+
+                                                AlertDialog.Builder alertDialogBuilder3 = new AlertDialog.Builder(context);
+
+                                                // set prompts.xml to alertdialog builder
+                                                alertDialogBuilder3.setView(promptsView3);
+
+                                                TextView searchResult = (TextView) promptsView3.findViewById(R.id.searchResult);
+                                                searchResult.setText("The weather in city, state is 73" + (char) 0x00B0 + " F");
+
+
+                                                // set dialog message
+                                                alertDialogBuilder3
+                                                        .setCancelable(false)
+                                                        .setPositiveButton("OK",
+                                                                new DialogInterface.OnClickListener() {
+                                                                    public void onClick(DialogInterface dialog, int id) {
+                                                                        dialog.cancel();
+                                                                    }
+                                                                });
+
+                                                // create alert dialog
+                                                AlertDialog alertDialog3 = alertDialogBuilder3.create();
+
+                                                // show it
+                                                alertDialog3.show();
+                                            }
+                                        })
+                                .setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+
+                        // create alert dialog
+                        AlertDialog alertDialog2 = alertDialogBuilder2.create();
+
+                        // show it
+                        alertDialog2.show();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        popup.inflate(R.menu.menu);
         popup.show();
-    }*/
+    }
 }
