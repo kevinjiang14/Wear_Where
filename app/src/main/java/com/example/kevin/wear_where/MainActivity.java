@@ -62,9 +62,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
@@ -105,17 +107,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     // Variable that stores a parsed JSON object from the Google Distance Matrix API Query Result
     private DistanceMatrixObject distanceMatrixObject;
 
+    // Variable used to store the parsed JSON objecgt from the Google Time Zone API Query Result for each point in weatherPoints
+    private ArrayList<TimeZoneObject> intervalTimeZones;
+
     // Variable used to store the hourly information for a certain latlng point on the map
     private HourlyObject mapsHourlyForecast;
 
     // Variable used to store the interval points pending weather info
     private ArrayList<LatLng> weatherPoints;
 
-    // Variable used to store the distances and durations between the starting point and each interval point
+    // Variable used to store the distances and durations between the starting point and each interval point (distance matrix API)
     private ArrayList<ElementsArrayItem> durations;
-
-    // Variable used to store the time zone information for each point in weatherPoints;
-    private ArrayList<TimeZoneObject> intervalTimeZones;
 
     // Variable used to store the addresses of the intervals pending weather info (to be used in the information window)
     private ArrayList<String> intervalAddresses;
@@ -754,8 +756,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             // Get the route between starting and ending destinations
             getRouteBetweenPoints(startingCoordinates, endingCoordinates);
-            //maps.addMarker(new MarkerOptions().position(startingCoordinates).title("Starting Location"));
-            //maps.addMarker(new MarkerOptions().position(endingCoordinates).title("Ending Location"));
 
             LatLngBounds tripBounds;
             if ((startingCoordinates.latitude < endingCoordinates.latitude) && (startingCoordinates.longitude < endingCoordinates.longitude)) {
@@ -773,7 +773,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 tripBounds = new LatLngBounds(new LatLng(endingCoordinates.latitude, startingCoordinates.longitude), new LatLng(startingCoordinates.latitude, endingCoordinates.longitude));
             }
 
-            else /* (startincCoordinates.latitude > endingCoordinates.latitude) && (startingCoordinates.longitude > endingCoordinates.longitude)*/ {
+            else /* (startingCoordinates.latitude > endingCoordinates.latitude) && (startingCoordinates.longitude > endingCoordinates.longitude)*/ {
                 // Need to swap starting & ending coordinates to satisfy constructor of LatLngBounds(LatLng southwest, LatLng northeast)
                 tripBounds = new LatLngBounds(endingCoordinates, startingCoordinates);
             }
@@ -804,8 +804,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 weatherPoints = new ArrayList<LatLng>();
                 weatherPoints.add(starting);
 
-
-
                 // Create a counter to keep track of accumulated distance between intervals
                 int counter = 0;
 
@@ -828,6 +826,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // Create a list of TimeZoneObjects to keep track of the time zone information for each weather point
                 intervalTimeZones = new ArrayList<TimeZoneObject>();
+
                 // Get the time zone information for all intervals
                 getTimeZoneObject(weatherPoints, timestamp);
 
@@ -857,47 +856,56 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 protected void onPostExecute(DistanceMatrixObject item) {
                     distanceMatrixObject = item;
-
                     intervalAddresses = new ArrayList<String>();
-                    durations = new ArrayList<ElementsArrayItem>();
+
+                    // Get the addresses of each interval point
+                    intervalAddresses = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems();
 
                     // Get the duration from start to current latlng.
                     durations = distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems();
 
-                    // Get the addresses of each interval point
-                    intervalAddresses = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems();
-                    intervalAddresses.add(0, distanceMatrixObject.getStartingAddressesArray().getStartingAddressesArrayItems().get(0));
-
                     // Create the markers for each list
                     markers = new ArrayList<MarkerOptions>();
                     for (int i = 0; i < weatherPoints.size(); ++i) {
+
+                        Long currentTime = System.currentTimeMillis() - ((new GregorianCalendar().getTimeZone().getRawOffset()) + new GregorianCalendar().getTimeZone().getDSTSavings());
+                        Long intervalDuration = Long.parseLong((durations.get(i).getDuration().getSeconds()))*1000;
+                        Long endingDSTOffset = Long.parseLong(intervalTimeZones.get(i).getDstOffset())*1000;
+                        Long endingRawOffset = Long.parseLong(intervalTimeZones.get(i).getRawOffset())*1000;
+
                         if (i == 0) {
                             markers.add(new MarkerOptions().position(weatherPoints.get(0))
                                     .title("Origin")
                                     .snippet(intervalAddresses.get(0) + '\n' +
                                             "Distance Travelled: 0 miles" + '\n' +
                                             "Time elapsed: 0 Hours, 0 Minutes" + "\n\n" +
-                                            "Estimated Arrival Time: N/A" + '\n' +
+                                            "Time at beginning of trip: " + '\n' +
+                                                    new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n'
+                                                            + intervalTimeZones.get(i).getTimeZoneName() + "\n\n" +
                                             "Weather at ETA: N/A"));
                         }
+
                         else if (i == weatherPoints.size() - 1){
                             markers.add(new MarkerOptions().position(weatherPoints.get(i))
                                     .title("Destination")
                                     .snippet(intervalAddresses.get(i) + '\n' +
-                                            "Distance Travelled: " + durations.get(i - 1).getDistance().getDistance() + '\n' +
-                                            "Time elapsed: " + durations.get(i-1).getDuration().getDuration() + "\n\n" +
-                                            "Estimated Arrival Time: N/A" + '\n' +
+                                            "Distance Travelled: " + durations.get(i).getDistance().getDistance() + '\n' +
+                                            "Time elapsed: " + durations.get(i).getDuration().getDuration() + "\n\n" +
+                                            "Estimated Arrival Time: " + '\n' +
+                                                    new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n'
+                                                            + intervalTimeZones.get(i).getTimeZoneName() + "\n\n" +
                                             "Weather at ETA: N/A"));
-
-                            System.out.println("ETA: " + new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date (((System.currentTimeMillis()/1000) + (Long.parseLong((durations.get(i-1).getDuration().getSeconds()))))*1000)));
                         }
+
                         else {
                             markers.add(new MarkerOptions().position(weatherPoints.get(i))
                                     .title("Interval")
                                     .snippet(intervalAddresses.get(i) + '\n' +
-                                            "Distance Travelled: " + durations.get(i - 1).getDistance().getDistance() + '\n' +
-                                            "Time elapsed: " + durations.get(i-1).getDuration().getDuration() + "\n\n" +
-                                            "Estimated Arrival Time: N/A" + '\n' +
+                                            "Distance Travelled: " + durations.get(i).getDistance().getDistance() + '\n' +
+                                            "Time elapsed: " + durations.get(i).getDuration().getDuration() + "\n\n" +
+                                            "Estimated Arrival Time: " + '\n' +
+                                                    new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n'
+                                                            + intervalTimeZones.get(i).getTimeZoneName() + "\n\n" +
                                             "Weather at ETA: N/A"));
                         }
                     }
@@ -920,8 +928,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 protected void onPostExecute(TimeZoneObject timeZoneObject) {
                     intervalTimeZones.add(timeZoneObject);
-                    System.out.println("ADNAKJFS");
-                    System.out.println(timeZoneObject.getTimeZoneName());
                 }
 
             }.execute();

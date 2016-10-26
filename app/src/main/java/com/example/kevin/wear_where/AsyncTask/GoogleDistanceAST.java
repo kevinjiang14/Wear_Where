@@ -31,14 +31,14 @@ public class GoogleDistanceAST extends AsyncTask<Void, Void, DistanceMatrixObjec
         DistanceMatrixObject distanceMatrixObject;
 
         String origins = new String(Double.toString(this.intervals.get(0).latitude) + "," + Double.toString(this.intervals.get(0).longitude));
-        String destinations = new String(Double.toString(this.intervals.get(1).latitude) + "," + Double.toString(this.intervals.get(1).longitude));
-        for (int i = 2; i < intervals.size(); ++i) {
+        String destinations = new String(Double.toString(this.intervals.get(0).latitude) + "," + Double.toString(this.intervals.get(0).longitude));
+        for (int i = 1; i < intervals.size(); ++i) {
             destinations += "|" + Double.toString(this.intervals.get(i).latitude) + "," + Double.toString(this.intervals.get(i).longitude);
         }
 
         //https://maps.googleapis.com/maps/api/distancematrix/outputFormat?parameters
         String condition_link = String.format("https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=AIzaSyCWbLdotKFPVqlld5nr8haQhjrh70xhXqA", Uri.encode(origins), Uri.encode(destinations));
-
+        System.out.println(condition_link);
         try {
             request = new URL(condition_link);
 
