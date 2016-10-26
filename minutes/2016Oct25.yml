@@ -1,0 +1,15 @@
+date: October 25, 2016
+meeting_type: group
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: save temperature between running app sessions},
+  {ubit: calvinzh, progress: new activity for custom listview},
+  {ubit: hermesko, progress: implemented timezone api},
+  {ubit: kevinjia, progress: started new activity for vacation planner}
+  ]
+issues: []
+Notes: |
+  - calendar algorithm dissection
+  - discussion on sprint progress and code documentation
