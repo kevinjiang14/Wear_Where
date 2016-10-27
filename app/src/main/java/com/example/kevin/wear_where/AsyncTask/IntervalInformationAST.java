@@ -85,7 +85,43 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
             return null;
         }
 
-        // Begin GoogleTimeZoneAST & MapsForecastAST
+        // Begin MapsForecastAST
+        for (int i = 0; i < intervals.size(); ++i) {
+            condition_link = String.format("http://api.wunderground.com/api/fe0b389aa655786c/hourly10day/q/%s,%s.json", Uri.encode(Double.toString(this.intervals.get(i).latitude)), Uri.encode(Double.toString(this.intervals.get(i).longitude)));
+
+            try {
+                request = new URL(condition_link);
+
+                // Open a URL connection to link
+                URLConnection urlConnection = request.openConnection();
+
+                // Get the input stream of link
+                InputStream in = urlConnection.getInputStream();
+
+                // Read buffer
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+                // Store the buffer of link into result
+                StringBuilder result = new StringBuilder();
+
+                // Store each line of buffer into line
+                String line;
+
+                // Get each line from buffer and stores them into result
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+
+                mapsHourlyForecast.add(new HourlyObject(result));
+            }
+
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        // Begin GoogleTimeZoneAST
         for (int i = 0; i < intervals.size(); ++i) {
 
             //https://maps.googleapis.com/maps/api/timezone/outputFormat?parameters
@@ -122,38 +158,6 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
                 return null;
             }
 
-            condition_link = String.format("http://api.wunderground.com/api/fe0b389aa655786c/hourly10day/q/%s,%s.json", Uri.encode(Double.toString(this.intervals.get(i).latitude)), Uri.encode(Double.toString(this.intervals.get(i).longitude)));
-
-            try {
-                request = new URL(condition_link);
-
-                // Open a URL connection to link
-                URLConnection urlConnection = request.openConnection();
-
-                // Get the input stream of link
-                InputStream in = urlConnection.getInputStream();
-
-                // Read buffer
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-                // Store the buffer of link into result
-                StringBuilder result = new StringBuilder();
-
-                // Store each line of buffer into line
-                String line;
-
-                // Get each line from buffer and stores them into result
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-
-                mapsHourlyForecast.add(new HourlyObject(result));
-            }
-
-            catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
         }
 
         if (distanceMatrixObject != null) {
