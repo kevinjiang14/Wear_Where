@@ -765,12 +765,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Get the epoch time (in seconds) to be used for the Time Zone API
                 long timestamp = System.currentTimeMillis()/1000;
 
-                // Store the total distance for interval calculation
-                int totalDistance = Integer.parseInt(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
-
-                // Divide the total distance by 7 to get the intervals
-                double interval = totalDistance / 7;
-
                 // Create a list of LatLng objects to get the weather for
                 weatherPoints = new ArrayList<LatLng>();
                 weatherPoints.add(starting);
@@ -782,9 +776,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 String encodedOverviewPolyline = directionsObject.getRoutesArray().getEncodedOverviewPolyLine().getEncodedOverviewPolyline();
                 polyline = com.google.maps.android.PolyUtil.decode(encodedOverviewPolyline);
 
+                // Store the total distance for interval calculation
+                double totalDistance = Double.parseDouble(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
+
+                // Divide the total distance by 8 to get the intervals
+                double interval = totalDistance / 8;
+
                 // Add all LatLng objects that create the polyline
                 for (int i = 0; i < polyline.size() - 1; ++i) {
-                    Polyline line = maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(5).color(Color.rgb(93,188,210)));
+                    Polyline line = maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(8).color(Color.rgb(93,188,210)));
 
                     // Keep track of which LatLng objects to get weather information for, store each object in weatherPoints
                     counter += com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
@@ -792,6 +792,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         weatherPoints.add(polyline.get(i));
                         counter = 0 - com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
                     }
+                }
+                // Remove last added LatLng to avoid a LatLng object similar to the destination LatLng
+                if (weatherPoints.size() == 9) {
+                    weatherPoints.remove(weatherPoints.size() - 1);
                 }
                 weatherPoints.add(ending);
 

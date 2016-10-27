@@ -1,7 +1,10 @@
 package com.example.kevin.wear_where.AsyncTask;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 
@@ -91,7 +94,7 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
 
             try {
                 request = new URL(condition_link);
-
+                System.out.println(condition_link);
                 // Open a URL connection to link
                 URLConnection urlConnection = request.openConnection();
 
@@ -117,7 +120,7 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
 
             catch (Exception e) {
                 e.printStackTrace();
-                return null;
+                i--;
             }
         }
 
@@ -182,6 +185,9 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
                         urlConnection.connect();
                         InputStream input = urlConnection.getInputStream();
                         bitmap = BitmapFactory.decodeStream(input);
+                        if (bitmap != null) {
+                            bitmap = Bitmap.createScaledBitmap(bitmap, (int) (24 * Resources.getSystem().getDisplayMetrics().density), (int) (24 * Resources.getSystem().getDisplayMetrics().density), false);
+                        }
                     }
 
                     catch (Exception e) {
