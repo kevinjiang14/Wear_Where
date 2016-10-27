@@ -59,9 +59,11 @@ public class GoogleDirectionsAST extends AsyncTask<Void, Void, DirectionsObject>
             directionsObject = new DirectionsObject(result);
             return directionsObject;
         }
+
         catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 }
