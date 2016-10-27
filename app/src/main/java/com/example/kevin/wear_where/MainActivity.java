@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
 import com.example.kevin.wear_where.AsyncTask.GoogleDirectionsAST;
@@ -767,15 +768,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Store the total distance for interval calculation
                 int totalDistance = Integer.parseInt(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
 
-                // Divide the total distance by 8 to get the intervals
-                int interval = totalDistance / 7;
+                // Divide the total distance by 7 to get the intervals
+                double interval = totalDistance / 7;
 
                 // Create a list of LatLng objects to get the weather for
                 weatherPoints = new ArrayList<LatLng>();
                 weatherPoints.add(starting);
 
                 // Create a counter to keep track of accumulated distance between intervals
-                int counter = 0;
+                double counter = 0;
 
                 // Uses overview polyline (not as laggy but will do for now)
                 String encodedOverviewPolyline = directionsObject.getRoutesArray().getEncodedOverviewPolyLine().getEncodedOverviewPolyline();
@@ -789,7 +790,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     counter += com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
                     if (counter >= interval) {
                         weatherPoints.add(polyline.get(i));
-                        counter = counter - interval;
+                        counter = 0 - com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
                     }
                 }
                 weatherPoints.add(ending);
@@ -825,7 +826,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     }
 
                     else {
-                        //TODO - Getting the info failed.
+                        Toast toast = Toast.makeText(getApplicationContext(), "An error has occured while trying to fetch the queried route." + '\n' + "Please try again!", Toast.LENGTH_SHORT);
+                        toast.show();
                         maps.clear();
                     }
 

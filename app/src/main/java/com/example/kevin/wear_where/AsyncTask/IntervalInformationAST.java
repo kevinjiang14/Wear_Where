@@ -1,17 +1,21 @@
 package com.example.kevin.wear_where.AsyncTask;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.example.kevin.wear_where.Google.Distance.DistanceMatrixObject;
 import com.example.kevin.wear_where.Google.TimeZone.TimeZoneObject;
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -119,7 +123,6 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
             }
 
             condition_link = String.format("http://api.wunderground.com/api/fe0b389aa655786c/hourly10day/q/%s,%s.json", Uri.encode(Double.toString(this.intervals.get(i).latitude)), Uri.encode(Double.toString(this.intervals.get(i).longitude)));
-            System.out.println(condition_link);
 
             try {
                 request = new URL(condition_link);
@@ -158,6 +161,7 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
 
                 // Create the list of MarkerOptions to add to the map
                 for (int i = 0; i < intervals.size(); ++i) {
+                    Bitmap bitmap;
                     Long currentTime = System.currentTimeMillis() - ((new GregorianCalendar().getTimeZone().getRawOffset()) + new GregorianCalendar().getTimeZone().getDSTSavings());
                     Long intervalDuration = Long.parseLong((distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getSeconds())) * 1000;
                     Long endingDSTOffset = Long.parseLong(intervalTimeZones.get(i).getDstOffset()) * 1000;
@@ -165,7 +169,20 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
                     String estimatedTimeOfArrival = new java.text.SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n' + intervalTimeZones.get(i).getTimeZoneName();
                     String precipitation = mapsHourlyForecast.get(i).getCondition((int) (intervalDuration / (3600 * 1000)));
                     String temperatureF = Integer.toString(mapsHourlyForecast.get(i).getTemperatureF((int) (intervalDuration / (3600 * 1000)))) + (char) 0x00B0 + " F";
-                    //String iconURL = hourlyForecast.getIconURL((int) (intervalDuration / (3600*1000)));
+                    String iconURL = mapsHourlyForecast.get(i).getIconURL((int) (intervalDuration / (3600*1000)));
+
+                    try {
+                        URL request = new URL(iconURL);
+                        HttpURLConnection urlConnection = (HttpURLConnection) request.openConnection();
+                        urlConnection.setDoInput(true);
+                        urlConnection.connect();
+                        InputStream input = urlConnection.getInputStream();
+                        bitmap = BitmapFactory.decodeStream(input);
+                    }
+
+                    catch (Exception e) {
+                        return null;
+                    }
 
                     if (i == 0) {
                         intervalInformation.add(new MarkerOptions().position(intervals.get(0))
@@ -174,7 +191,8 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
                                         "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
                                         "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
                                         "Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF));
+                                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                                .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
                     }
 
                     else if (i == intervals.size() - 1) {
@@ -184,7 +202,8 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
                                         "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
                                         "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
                                         "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF));
+                                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                                .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
                     }
 
                     else {
@@ -194,7 +213,8 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
                                         "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
                                         "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
                                         "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF));
+                                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                                .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
                     }
                 }
             }
