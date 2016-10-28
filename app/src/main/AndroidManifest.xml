@@ -47,12 +47,29 @@
             android:value="AIzaSyBeX6ViGnMShEvlK-Z3Kxa_VProP9CJZX8"/>
             -->
 
-        <!-- Places API Key -->
+<!-- Places API Key
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA0lYh2dLhMhxw3mQUsqBjwcLFZiPqppSw"/>
+            -->
 
-    </application>
+<!-- Directons API Key
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCWbLdotKFPVqlld5nr8haQhjrh70xhXqA"/>
+            -->
 
-</manifest>
+<!-- Distance Matrix API Key
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC55NaA1UfwEAmJHa2sS8QAUVwEi6bHvFQ"/>
+            -->
+
+        <!-- Time Zone API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB18rwgSopgUCkqrRg3oQ3udaXK0Ic0kOs"/>
+     </application>
+
+ </manifest>

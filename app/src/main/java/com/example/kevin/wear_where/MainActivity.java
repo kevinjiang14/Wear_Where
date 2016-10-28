@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -22,15 +24,21 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
+import com.example.kevin.wear_where.AsyncTask.GoogleDirectionsAST;
+import com.example.kevin.wear_where.AsyncTask.IntervalInformationAST;
+import com.example.kevin.wear_where.Google.Directions.DirectionsObject;
 import com.example.kevin.wear_where.Listeners.DateListener;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.example.kevin.wear_where.wear.Clothing;
@@ -59,38 +67,63 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener {
 
-    private static final String TAG = "MainActivity";
+    // Variable used to keep track of whether or not this is the initial start up of the application
+    private int firstStart = 1;
 
-    private double latitude = 0;                                    // Variables used to keep track of the current latitude and longitude
+    // Variable used to store an instance of the map in the road trip tab
+    private GoogleMap maps;
+
+    // Variable used to create an instance of the mapFragment (Call getMapAsync(this) on mapFragment to update the map)
+    private MapFragment mapFragment;
+
+    // Variable used to create an instance of the GoogleApiClient
+    private GoogleApiClient mGoogleApiClient;
+
+    // Variable used to keep track of your most recent location
+    private Location mLastLocation;
+
+    // Variables used to keep track of the latitude and longitude of your current location;
+    private double latitude = 0;
     private double longitude = 0;
+
+    // Variables used to create instances of the places fragments in the vacation tab and road trip tab
+    private PlaceAutocompleteFragment vacationLocation;
+    private PlaceAutocompleteFragment startingLocation;
+    private PlaceAutocompleteFragment endingLocation;
 
     // Latitude and Longitude doubles initialized to 900 since this value is impossible
     private double vacationLatitude = 900;
     private double vacationLongitude = 900;
-    private double startingLatitude = 900;
-    private double startingLongitude = 900;
-    private double endingLatitude = 900;
-    private double endingLongitude = 900;
 
-    private MapFragment mapFragment;                                /* Variable used to create an instance of the mapFragment
-                                                               --> Call getMapAsync(this) on mapFragment to update the map */
+    private LatLng startingCoordinates = null;
+    private LatLng endingCoordinates = null;
 
-    private GoogleApiClient mGoogleApiClient;                       // Variable used to create an instance of the GoogleApiClient
-    private Location mLastLocation;                                 // Variable used to store the most recent location
+    // Variable that stores a parsed JSON object from the Google Directions API Query Result
+    private DirectionsObject directionsObject;
 
-    private PlaceAutocompleteFragment vacationLocation;
-    private PlaceAutocompleteFragment startingLocation;
-    private PlaceAutocompleteFragment endingLocation;
+    // Variable used to store the interval points pending weather info
+    private ArrayList<LatLng> weatherPoints;
+
+    // Variable used to store the markers that will be placed on the map
+    private ArrayList<MarkerOptions> markers;
+
+    // Variable used to store multiple points along the route between the starting and ending locations input in the road trip tab (used to draw the polyline on the map between the two points)
+    private List<LatLng> polyline;
 
     private TextView temperature, location, description;            // TextView for current weather information
     private ImageView conditionIcon;                                // ImageView for current condition image
@@ -296,13 +329,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Set up PlaceAutocompleteFragments and their listeners
         vacationLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.vacation_location_autocomplete_fragment);
-        startingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.starting_location_autocomplete_fragment);
-        endingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.ending_location_autocomplete_fragment);
-
         vacationLocation.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
+                // Listener for the places fragment in the vacation tab (get whatever is needed from the places argument)
                 vacationLatitude = place.getLatLng().latitude;
                 vacationLongitude = place.getLatLng().longitude;
                 Log.i(TAG, "Place: " + place.getName());
@@ -315,40 +345,35 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
+                // TODO: DO STUFF ON ERROR (Toast?)
             }
         });
 
+        startingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.starting_location_autocomplete_fragment);
         startingLocation.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                startingLatitude = place.getLatLng().latitude;
-                startingLongitude = place.getLatLng().longitude;
-                Log.i(TAG, "Place: " + place.getName());
+                // Listener for the places fragment pertaining to the starting location in the road trip tab (get whatever is needed from the places argument)
+                startingCoordinates = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
+                // TODO: DO STUFF ON ERROR (Toast?)
             }
         });
 
+        endingLocation = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.ending_location_autocomplete_fragment);
         endingLocation.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                endingLatitude = place.getLatLng().latitude;
-                endingLongitude = place.getLatLng().longitude;
-                Log.i(TAG, "Place: " + place.getName());
+                // Listener for the places fragment pertaining to the ending location in the road trip tab (get whatever is needed from the places argument)
+                endingCoordinates = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
+                // TODO: DO STUFF ON ERROR (Toast?)
             }
         });
 
@@ -550,9 +575,27 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    @Override
-    public void onMapReady(GoogleMap map) {
 
+    // Executes once google play services establishes a connection
+    @Override
+    public void onConnected(Bundle arg0) {
+        getLocation();
+    }
+
+    // Executes once the connection for google play services is suspended
+    @Override
+    public void onConnectionSuspended(int arg0) {
+
+    }
+
+    // Executes if the attempt to connect to google play services fails
+    @Override
+    public void onConnectionFailed(ConnectionResult arg0) {
+
+    }
+
+    //use this to get the current location
+    public void getLocation() {
         int MY_PERMISSION_ACCESS_COARSE_LOCATION = 77;
         int MY_PERMISSION_ACCESS_FINE_LOCATION = 77;
 
@@ -566,33 +609,28 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_ACCESS_FINE_LOCATION );
         }
 
-        //If the starting and ending points have been initialized then set the markers on the map
-        if (startingLatitude != 900 && startingLongitude != 900) {
-            map.addMarker(new MarkerOptions().position(new LatLng(startingLatitude, startingLongitude)));
+        //get the last location from the GoogleApiClient
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            try {
+                List<Address> addresses = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
+                city = addresses.get(0).getLocality();
+                state = addresses.get(0).getAdminArea();
+                location.setText(city + ", " + state);
+                getCurrentRequest();
+                getHourlyRequest();
+                getDailyRequest();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-        if (endingLatitude != 900 && endingLongitude != 900) {
-            map.addMarker(new MarkerOptions().position(new LatLng(endingLatitude, endingLongitude)));
-        }
-
-        //Move the camera to the current location (used upon start up, may encounter bugs later on when calling getMapAsync() after startup)
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
-        map.setMyLocationEnabled(true);
-    }
-
-    @Override
-    public void onConnected(Bundle arg0) {
-        getLocation(null);
-    }
-
-    @Override
-    public void onConnectionSuspended(int arg0) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult arg0) {
-
+        //update the map with the current location
+        mapFragment.getMapAsync(this);
     }
 
     private void displayCurrentResults() {
@@ -808,8 +846,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }.execute();
     }
 
-    //use this to get the current location (just pass NULL in here)
-    public void getLocation(View view) {
+// Begin code for tab 4
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+
+        // Get a handle to the googleMap
+        maps = map;
+
         int MY_PERMISSION_ACCESS_COARSE_LOCATION = 77;
         int MY_PERMISSION_ACCESS_FINE_LOCATION = 77;
 
@@ -823,11 +867,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_ACCESS_FINE_LOCATION );
         }
 
-        //get the last location from the GoogleApiClient
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null) {
-            latitude = mLastLocation.getLatitude();
-            longitude = mLastLocation.getLongitude();
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
             geocoder = new Geocoder(this, Locale.getDefault());
             try {
@@ -841,14 +881,83 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 getDailyRequest();
             } catch (Exception e) {
                 e.printStackTrace();
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                // Return null so getInfoContents will be called
+                return null;
             }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+
+                // Create the layout that will be used for the information window
+                Context context = getApplicationContext();
+
+                LinearLayout info = new LinearLayout(context);
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                // TextView used to tell the user if it is a starting, interval, or ending point
+                TextView title = new TextView(context);
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                // TextView used to tell the user the information pertaining to the corresponding interval
+                TextView snippet = new TextView(context);
+                snippet.setGravity(Gravity.CENTER);
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                // Add the textViews to the LinearLayout
+                info.addView(title);
+                info.addView(snippet);
+
+                // Return the layout that will be used for the marker information window
+                return info;
+            }
+        });
+
+        // First start, configure the map to how we want it (center upon current location, and enable button to focus on current location)
+        if (firstStart == 1) {
+            maps.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
+            maps.setMyLocationEnabled(true);
+            firstStart = 0;
         }
 
-        //update the map with the zoom of the current location
-        mapFragment.getMapAsync(this);
     }
 
     public void placeMarkers(View view) {
+        //If the starting and ending points have been initialized then set the markers on the map
+        if (startingCoordinates != null && endingCoordinates != null) {
+            maps.clear();
+
+            // Get the route between starting and ending destinations
+            getRouteBetweenPoints(startingCoordinates, endingCoordinates);
+
+            LatLngBounds tripBounds;
+            if ((startingCoordinates.latitude < endingCoordinates.latitude) && (startingCoordinates.longitude < endingCoordinates.longitude)) {
+                // Constructor of LatLngBounds(LatLng southwest, LatLng northeast) is satisfied, just create the LatLngBounds object.
+                tripBounds = new LatLngBounds(startingCoordinates, endingCoordinates);
+            }
+
+            else if (startingCoordinates.latitude < endingCoordinates.latitude && (startingCoordinates.longitude > endingCoordinates.longitude)) {
+                // Need to swap starting & ending longitudes to satisfy constructor of LatLngBounds(LatLng southwest, LatLng northeast)
+                tripBounds = new LatLngBounds(new LatLng(startingCoordinates.latitude, endingCoordinates.longitude), new LatLng(endingCoordinates.latitude, startingCoordinates.longitude));
+            }
+
+            else if ((startingCoordinates.latitude > endingCoordinates.latitude) && (startingCoordinates.longitude < endingCoordinates.longitude)) {
+                // Need to swap starting & ending latitudes to satisfy constructor of LatLngBounds(LatLng southwest, LatLng northeast)
+                tripBounds = new LatLngBounds(new LatLng(endingCoordinates.latitude, startingCoordinates.longitude), new LatLng(startingCoordinates.latitude, endingCoordinates.longitude));
+            }
+
+            else /* (startingCoordinates.latitude > endingCoordinates.latitude) && (startingCoordinates.longitude > endingCoordinates.longitude)*/ {
+                // Need to swap starting & ending coordinates to satisfy constructor of LatLngBounds(LatLng southwest, LatLng northeast)
+                tripBounds = new LatLngBounds(endingCoordinates, startingCoordinates);
+            }
+            maps.moveCamera(CameraUpdateFactory.newLatLngBounds(tripBounds, 48));
+        }
+
         //update the map with the corresponding markers for the starting and ending points
         mapFragment.getMapAsync(this);
     }
@@ -1003,4 +1112,97 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void completeRefresh(){
         refreshSwipe.setRefreshing(false);
     }
+
+    public void getRouteBetweenPoints(final LatLng starting, final LatLng ending) {
+        new GoogleDirectionsAST(starting, ending) {
+
+            @Override
+            protected void onPostExecute(DirectionsObject item) {
+                directionsObject = item;
+
+                // Create a list of LatLng objects to get the weather for
+                weatherPoints = new ArrayList<LatLng>();
+                weatherPoints.add(starting);
+
+                // Create a counter to keep track of accumulated distance between intervals
+                double counter = 0;
+
+                // Uses overview polyline (not as laggy but will do for now)
+                String encodedOverviewPolyline = directionsObject.getRoutesArray().getEncodedOverviewPolyLine().getEncodedOverviewPolyline();
+                polyline = com.google.maps.android.PolyUtil.decode(encodedOverviewPolyline);
+
+                // Store the total distance for interval calculation
+                double totalDistance = Double.parseDouble(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
+
+                // Divide the total distance by 10 to get the intervals
+                double interval = totalDistance / 10;
+
+                // Add all LatLng objects that create the polyline
+                for (int i = 0; i < polyline.size() - 1; ++i) {
+                    // Add the interval polyline to the map
+                    maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(8).color(Color.rgb(93,188,210)));
+
+                    // Keep track of which LatLng objects to get weather information for, store each object in weatherPoints
+                    counter += com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
+                    if (counter >= interval) {
+                        weatherPoints.add(polyline.get(i));
+                        counter = 0 - com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
+                    }
+                }
+
+                // Remove last added LatLng to avoid a LatLng object similar to the destination LatLng
+                if (weatherPoints.size() == 10) {
+                    weatherPoints.remove(weatherPoints.size() - 1);
+                }
+
+                // Add the final interval point
+                weatherPoints.add(ending);
+
+                // Get the information pertaining to each interval in weatherPoints
+                getIntervalInformation(weatherPoints);
+
+                // MOST ACCURATE POLYLINE, BUT EXTREMELY LAGGY!!!
+                /*ArrayList<StepsArrayItem> stepsArrayItems = directionsObject.getRoutesArray().getLegsArray().getStepsArray().getStepsArrayItems();
+                for(int i = 0; i < stepsArrayItems.size(); ++i) {
+                    List<LatLng> encodedPolyline = stepsArrayItems.get(i).getEncodedPolyline().getPolyline();
+                    for(int j = 0; j < encodedPolyline.size() - 1; ++j) {
+                        Polyline line = maps.addPolyline(new PolylineOptions().add(encodedPolyline.get(j), encodedPolyline.get(j + 1)).width(5).color(Color.RED));
+                    }
+                }*/
+            }
+        }.execute();
+    }
+
+    public void getIntervalInformation (ArrayList<LatLng> intervals) {
+
+            // Get the MarkerOptions for the intervals passed into the markers
+            new IntervalInformationAST(intervals) {
+
+                @Override
+                protected void onPostExecute(ArrayList<MarkerOptions> intervalInformation) {
+                    markers = intervalInformation;
+
+                    // If the returned list is not null, then add the markers to the map
+                    if (markers != null) {
+                        for (int i = 0; i < markers.size(); ++i) {
+                            maps.addMarker(markers.get(i));
+                        }
+                    }
+
+                    // Else, notify the user that the attempt to get information has failed.
+                    else {
+                        Toast toast = Toast.makeText(getApplicationContext(), "An error has occured while trying to fetch the queried route." + '\n' + "Please try again!", Toast.LENGTH_SHORT);
+                        toast.show();
+                        maps.clear();
+                    }
+
+                }
+
+            }.execute();
+
+        // Refresh the map
+        mapFragment.getMapAsync(this);
+    }
+
+// End Code for tab 4
 }
