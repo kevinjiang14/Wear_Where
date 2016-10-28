@@ -11,9 +11,9 @@
     tools:context="com.example.kevin.wear_where.MainActivity">
 
     <TabHost
+        android:id="@+id/tabHost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/tabHost"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true">
 
@@ -26,8 +26,7 @@
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:tabStripEnabled="false">
-            </TabWidget>
+                android:tabStripEnabled="false"></TabWidget>
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
@@ -40,67 +39,67 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Wear Where"
-                        android:id="@+id/title"
-                        android:layout_centerHorizontal="true"
-                        android:textStyle="bold"
-                        android:textSize="50dp" />
+                    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/refresh"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignBottom="@+id/hourlyForecast"
+                        android:layout_toLeftOf="@+id/hourlyForecast"
+                        android:layout_toStartOf="@+id/hourlyForecast">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/title"
-                        android:layout_centerHorizontal="true"
-                        android:id="@+id/temperature"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/temperature"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:layout_centerHorizontal="true"
-                        android:id="@+id/description" />
+                            <TextView
+                                android:id="@+id/location"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:id="@+id/location"
-                        android:layout_below="@+id/description" />
+                            <TextView
+                                android:id="@+id/temperature"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/description"
+                                android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/cast_album_art_placeholder"
-                        android:id="@+id/conditionIcon"
-                        android:layout_below="@+id/title"
-                        android:layout_alignLeft="@+id/title"
-                        android:layout_alignStart="@+id/title" />
+                            <TextView
+                                android:id="@+id/description"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/location"
+                                android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                    <Button
-                        android:text="Menu"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/location"
-                        android:layout_marginTop="17dp"
-                        android:id="@+id/button"
-                        android:onClick="showPopup"/>
+                            <ImageView
+                                android:id="@+id/conditionIcon"
+                                android:layout_width="150px"
+                                android:layout_height="150px"
+                                android:layout_below="@+id/temperature"
+                                android:maxHeight="150dp"
+                                android:maxWidth="150dp"
+                                app:srcCompat="@drawable/cast_album_art_placeholder" />
+
+                            <Button
+                                android:text="Menu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/conditionIcon"
+                                android:layout_marginTop="17dp"
+                                android:id="@+id/button"
+                                android:onClick="showPopup"/>
+                        </RelativeLayout>
+
+                    </android.support.v4.widget.SwipeRefreshLayout>
 
                     <HorizontalScrollView
+                        android:id="@+id/dailyForecast"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
-                        android:layout_marginBottom="119dp"
-                        android:id="@+id/dailyForecast">
+                        android:scrollbars="none">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -111,33 +110,35 @@
                                 android:layout_height="match_parent">
 
                                 <ImageView
+                                    android:id="@+id/day1icon"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:id="@+id/day1icon"/>
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
 
                                 <TextView
+                                    android:id="@+id/day1weekday"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@+id/day1icon"
-                                    android:id="@+id/day1weekday"/>
+                                    android:layout_toRightOf="@+id/day1icon" />
 
                                 <TextView
+                                    android:id="@+id/day1condition"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day1weekday"
-                                    android:id="@+id/day1condition"/>
+                                    android:layout_below="@+id/day1weekday" />
 
                                 <TextView
+                                    android:id="@+id/day1high"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day1condition"
-                                    android:id="@+id/day1high"/>
+                                    android:layout_below="@+id/day1condition" />
 
                                 <TextView
+                                    android:id="@+id/day1low"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day1high"
-                                    android:id="@+id/day1low"/>
+                                    android:layout_below="@+id/day1high" />
 
                             </RelativeLayout>
 
@@ -146,33 +147,35 @@
                                 android:layout_height="match_parent">
 
                                 <ImageView
+                                    android:id="@+id/day2icon"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:id="@+id/day2icon"/>
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
 
                                 <TextView
+                                    android:id="@+id/day2weekday"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@+id/day2icon"
-                                    android:id="@+id/day2weekday"/>
+                                    android:layout_toRightOf="@+id/day2icon" />
 
                                 <TextView
+                                    android:id="@+id/day2condition"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day2weekday"
-                                    android:id="@+id/day2condition"/>
+                                    android:layout_below="@+id/day2weekday" />
 
                                 <TextView
+                                    android:id="@+id/day2high"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day2condition"
-                                    android:id="@+id/day2high"/>
+                                    android:layout_below="@+id/day2condition" />
 
                                 <TextView
+                                    android:id="@+id/day2low"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day2high"
-                                    android:id="@+id/day2low"/>
+                                    android:layout_below="@+id/day2high" />
 
                             </RelativeLayout>
 
@@ -181,33 +184,35 @@
                                 android:layout_height="match_parent">
 
                                 <ImageView
+                                    android:id="@+id/day3icon"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:id="@+id/day3icon"/>
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
 
                                 <TextView
+                                    android:id="@+id/day3weekday"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@+id/day3icon"
-                                    android:id="@+id/day3weekday"/>
+                                    android:layout_toRightOf="@+id/day3icon" />
 
                                 <TextView
+                                    android:id="@+id/day3condition"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day3weekday"
-                                    android:id="@+id/day3condition"/>
+                                    android:layout_below="@+id/day3weekday" />
 
                                 <TextView
+                                    android:id="@+id/day3high"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day3condition"
-                                    android:id="@+id/day3high"/>
+                                    android:layout_below="@+id/day3condition" />
 
                                 <TextView
+                                    android:id="@+id/day3low"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day3high"
-                                    android:id="@+id/day3low"/>
+                                    android:layout_below="@+id/day3high" />
 
                             </RelativeLayout>
 
@@ -216,33 +221,35 @@
                                 android:layout_height="match_parent">
 
                                 <ImageView
+                                    android:id="@+id/day4icon"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:id="@+id/day4icon"/>
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
 
                                 <TextView
+                                    android:id="@+id/day4weekday"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@+id/day4icon"
-                                    android:id="@+id/day4weekday"/>
+                                    android:layout_toRightOf="@+id/day4icon" />
 
                                 <TextView
+                                    android:id="@+id/day4condition"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day4weekday"
-                                    android:id="@+id/day4condition"/>
+                                    android:layout_below="@+id/day4weekday" />
 
                                 <TextView
+                                    android:id="@+id/day4high"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day4condition"
-                                    android:id="@+id/day4high"/>
+                                    android:layout_below="@+id/day4condition" />
 
                                 <TextView
+                                    android:id="@+id/day4low"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day4high"
-                                    android:id="@+id/day4low"/>
+                                    android:layout_below="@+id/day4high" />
 
                             </RelativeLayout>
 
@@ -251,33 +258,35 @@
                                 android:layout_height="match_parent">
 
                                 <ImageView
+                                    android:id="@+id/day5icon"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:id="@+id/day5icon"/>
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
 
                                 <TextView
+                                    android:id="@+id/day5weekday"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@+id/day5icon"
-                                    android:id="@+id/day5weekday"/>
+                                    android:layout_toRightOf="@+id/day5icon" />
 
                                 <TextView
+                                    android:id="@+id/day5condition"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day5weekday"
-                                    android:id="@+id/day5condition"/>
+                                    android:layout_below="@+id/day5weekday" />
 
                                 <TextView
+                                    android:id="@+id/day5high"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day5condition"
-                                    android:id="@+id/day5high"/>
+                                    android:layout_below="@+id/day5condition" />
 
                                 <TextView
+                                    android:id="@+id/day5low"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day5high"
-                                    android:id="@+id/day5low"/>
+                                    android:layout_below="@+id/day5high" />
 
                             </RelativeLayout>
 
@@ -286,33 +295,35 @@
                                 android:layout_height="match_parent">
 
                                 <ImageView
+                                    android:id="@+id/day6icon"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:id="@+id/day6icon"/>
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
 
                                 <TextView
+                                    android:id="@+id/day6weekday"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@+id/day6icon"
-                                    android:id="@+id/day6weekday"/>
+                                    android:layout_toRightOf="@+id/day6icon" />
 
                                 <TextView
+                                    android:id="@+id/day6condition"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day6weekday"
-                                    android:id="@+id/day6condition"/>
+                                    android:layout_below="@+id/day6weekday" />
 
                                 <TextView
+                                    android:id="@+id/day6high"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day6condition"
-                                    android:id="@+id/day6high"/>
+                                    android:layout_below="@+id/day6condition" />
 
                                 <TextView
+                                    android:id="@+id/day6low"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day6high"
-                                    android:id="@+id/day6low"/>
+                                    android:layout_below="@+id/day6high" />
 
                             </RelativeLayout>
 
@@ -321,33 +332,35 @@
                                 android:layout_height="match_parent">
 
                                 <ImageView
+                                    android:id="@+id/day7icon"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:id="@+id/day7icon"/>
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
 
                                 <TextView
+                                    android:id="@+id/day7weekday"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_toRightOf="@+id/day7icon"
-                                    android:id="@+id/day7weekday"/>
+                                    android:layout_toRightOf="@+id/day7icon" />
 
                                 <TextView
+                                    android:id="@+id/day7condition"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day7weekday"
-                                    android:id="@+id/day7condition"/>
+                                    android:layout_below="@+id/day7weekday" />
 
                                 <TextView
+                                    android:id="@+id/day7high"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day7condition"
-                                    android:id="@+id/day7high"/>
+                                    android:layout_below="@+id/day7condition" />
 
                                 <TextView
+                                    android:id="@+id/day7low"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_below="@+id/day7high"
-                                    android:id="@+id/day7low"/>
+                                    android:layout_below="@+id/day7high" />
 
                             </RelativeLayout>
 
@@ -355,582 +368,615 @@
 
                     </HorizontalScrollView>
 
-                    <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginBottom="19dp"
-                        android:id="@+id/hourlyForecast">
+                    <ScrollView
+                        android:id="@+id/hourlyForecast"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/dailyForecast"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="10dp"
+                        android:scrollbars="none">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour1">
+                                android:id="@+id/hour1"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature1"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature1" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon1"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature1" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature1"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description1"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon1" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon1"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time1"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description1" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description1"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour2">
+                                android:id="@+id/hour2"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature2"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature2" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon2"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature2" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature2"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description2"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon2" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon2"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time2"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description2" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description2"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour3">
+                                android:id="@+id/hour3"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature3" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon3"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature3" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature3"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description3"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon3" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon3"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time3"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description3" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description3"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour4">
+                                android:id="@+id/hour4"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature4"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature4" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon4"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature4" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature4"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description4"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon4" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon4"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time4"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description4" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description4"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour5">
+                                android:id="@+id/hour5"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature5"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature5" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon5"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature5" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature5"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description5"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon5" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon5"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time5"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description5" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description5"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour6">
+                                android:id="@+id/hour6"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature6"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature6" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon6"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature6" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature6"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description6"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon6" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon6"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time6"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description6" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description6"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour7">
+                                android:id="@+id/hour7"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature7"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature7" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon7"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature7" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature7"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description7"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon7" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon7"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time7"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description7" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description7"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour8">
+                                android:id="@+id/hour8"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature8"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature8" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon8"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature8" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature8"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description8"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon8" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon8"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time8"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description8" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description8"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour9">
+                                android:id="@+id/hour9"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature9"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature9" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon9"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature9" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature9"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description9"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon9" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon9"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time9"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description9" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description9"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour10">
+                                android:id="@+id/hour10"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature10"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature10" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon10"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature10" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature10"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description10"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon10" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon10"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time10"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description10" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description10"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour11">
+                                android:id="@+id/hour11"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature11"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature11" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon11"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature11" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature11"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description11"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon11" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon11"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time11"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description11" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description11"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour12">
+                                android:id="@+id/hour12"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature12"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature12" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon12"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature12" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature12"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description12"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon12" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon12"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time12"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description12" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description12"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour13">
+                                android:id="@+id/hour13"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature13"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature13" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon13"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature13" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature13"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description13"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon13" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon13"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time13"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description13" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description13"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour14">
+                                android:id="@+id/hour14"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature14"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature14" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon14"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature14" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature14"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description14"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon14" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon14"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time14"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description14" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description14"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour15">
+                                android:id="@+id/hour15"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature15"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature15" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon15"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature15" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature15"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description15"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon15" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon15"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time15"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description15" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description15"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                             <RelativeLayout
-                                android:layout_width="100dp"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:id="@+id/hour16">
+                                android:id="@+id/hour16"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/temperature16"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
-                                    android:id="@+id/temperature16" />
+                                    android:layout_centerHorizontal="true" />
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
                                     android:id="@+id/icon16"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/temperature16" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/temperature16"
+                                    android:layout_centerHorizontal="true"
+                                    android:maxHeight="25dp"
+                                    android:maxWidth="25dp" />
+
+                                <TextView
                                     android:id="@+id/description16"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/icon16" />
-
-                                <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:layout_below="@+id/icon16"
+                                    android:layout_centerHorizontal="true" />
+
+                                <TextView
                                     android:id="@+id/time16"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_below="@+id/description16" />
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/description16"
+                                    android:layout_centerHorizontal="true" />
 
                             </RelativeLayout>
 
                         </LinearLayout>
 
-                    </HorizontalScrollView>
+                    </ScrollView>
 
                 </RelativeLayout>
 
@@ -998,41 +1044,66 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/vacationTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="Where are you headed?"
-                        android:id="@+id/vacationTitle"
-                        android:textSize="20dp"
                         android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"/>
+                        android:layout_centerHorizontal="true"
+                        android:text="Where are you headed?"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textSize="20dp" />
 
                     <fragment
                         android:id="@+id/vacation_location_autocomplete_fragment"
+                        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                         android:layout_below="@+id/vacationTitle"
-                        android:layout_centerHorizontal="true"
-                        />
+                        android:layout_centerHorizontal="true" />
 
                     <TextView
+                        android:id="@+id/leaveText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="Duration of stay?"
-                        android:id="@+id/duration"
-                        android:layout_marginTop="16dp"
                         android:layout_below="@+id/vacation_location_autocomplete_fragment"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
+                        android:text="When are you going?"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textSize="20dp" />
 
-                    <CalendarView
+                    <EditText
+                        android:id="@+id/leaveDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/calendarView"
-                        android:layout_below="@+id/duration"
+                        android:layout_below="@+id/leaveText"
                         android:layout_centerHorizontal="true" />
+
+                    <TextView
+                        android:id="@+id/returnText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/leaveDate"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
+                        android:text="When are you returning?"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textSize="20dp" />
+
+                    <EditText
+                        android:id="@+id/returnDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/returnText"
+                        android:layout_centerHorizontal="true" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/submitButton"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/returnDate"
+                        android:text="Submit" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -1042,21 +1113,21 @@
                     android:orientation="vertical">
 
                     <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/roadTripTextView"
-                    android:layout_centerHorizontal="true"
-                    android:text='Road Trip!'
-                    android:textStyle="bold"
+                        android:id="@+id/roadTripTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text='Road Trip!'
+                        android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textSize="50dp"
-                        android:textAppearance="?android:attr/textAppearanceLarge"/>
+                        android:textStyle="bold" />
 
                     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                        android:name="com.google.android.gms.maps.MapFragment"
                         android:id="@+id/map"
-                        android:layout_below="@+id/roadTripTextView"
+                        android:name="com.google.android.gms.maps.MapFragment"
                         android:layout_width="match_parent"
-                        android:layout_height="320sp"/>
+                        android:layout_height="320sp"
+                        android:layout_below="@+id/roadTripTextView" />
 
                     <ScrollView
                         android:layout_width="match_parent"
@@ -1070,54 +1141,53 @@
                             android:paddingTop="@dimen/activity_vertical_margin">
 
                             <TextView
-                                android:paddingTop="16dp"
+                                android:id="@+id/startingLocationTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:id="@+id/startingLocationTextView"
                                 android:layout_centerHorizontal="true"
-                                android:text="Enter a Starting Location..."/>
+                                android:paddingTop="16dp"
+                                android:text="Enter a Starting Location..."
+                                android:textAppearance="?android:attr/textAppearanceMedium" />
 
                             <fragment
                                 android:id="@+id/starting_location_autocomplete_fragment"
+                                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                                 android:layout_below="@+id/startingLocationTextView"
-                                android:layout_centerHorizontal="true"
-                                />
+                                android:layout_centerHorizontal="true" />
 
                             <TextView
-                                android:paddingTop="16dp"
+                                android:id="@+id/endingLocationTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:id="@+id/endingLocationTextView"
                                 android:layout_below="@+id/starting_location_autocomplete_fragment"
                                 android:layout_centerHorizontal="true"
-                                android:text="Enter an Ending Location..."/>
+                                android:paddingTop="16dp"
+                                android:text="Enter an Ending Location..."
+                                android:textAppearance="?android:attr/textAppearanceMedium" />
 
                             <fragment
                                 android:id="@+id/ending_location_autocomplete_fragment"
+                                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
                                 android:layout_below="@+id/endingLocationTextView"
-                                android:layout_centerHorizontal="true"
-                                />
+                                android:layout_centerHorizontal="true" />
 
                             <Button
+                                android:id="@+id/getRoadTripWeatherButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Let's Go!"
-                                android:id="@+id/getRoadTripWeatherButton"
                                 android:layout_below="@+id/ending_location_autocomplete_fragment"
                                 android:layout_centerHorizontal="true"
-                                android:onClick="placeMarkers"/>
+                                android:onClick="placeMarkers"
+                                android:text="Let's Go!" />
                         </RelativeLayout>
                     </ScrollView>
                 </RelativeLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>
+
 </RelativeLayout>

@@ -15,7 +15,13 @@ public class FCTtime implements JSONData {
 
     @Override
     public void retrieveData(JSONObject data) {
-        hour = data.optInt("hour");
+        if(data.optInt("hour") <= 12 && data.optInt("hour") >= 1) {
+            hour = data.optInt("hour");
+        }
+        else if(data.optInt("hour") == 0){
+            hour = data.optInt("hour") + 12;
+        }
+        else hour = data.optInt("hour") - 12;
 
         ampm = data.optString("ampm");
     }

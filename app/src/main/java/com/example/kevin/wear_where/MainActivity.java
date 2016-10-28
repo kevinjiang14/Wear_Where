@@ -3,6 +3,8 @@ package com.example.kevin.wear_where;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -12,7 +14,9 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +31,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.AsyncTask.DailyForecastAST;
+import com.example.kevin.wear_where.Listeners.DateListener;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.example.kevin.wear_where.wear.Clothing;
 import com.example.kevin.wear_where.wear.ClothingActivity;
@@ -57,6 +62,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -141,6 +148,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private ImageView day7icon;
     private TextView day7weekday, day7condition, day7low, day7high;
 
+    private Calendar calendar;
+    private DatePickerDialog.OnDateSetListener leaveDateListener, returnDateListener;
+    private EditText leaveDate, returnDate;
+    private Button submitButton;
+
+    private SwipeRefreshLayout refreshSwipe;
     private String city;
     private String state;
 
@@ -151,6 +164,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Button menuButton;
     final Context context = this;
+
+    // Global Geocoder class
+    private Geocoder geocoder;
+
+    // Intent for new VacationDataActivity
+    private Intent vacationData;
+    private List<Address> vacationAddresses;
+
 
     /* Called BEFORE the activity is visible! i.e. do anything that needs to be done before the application is visible.
        Also called whenever the application is launched and there are no existing resources to work with (i.e. first start or application was killed before) */
@@ -257,9 +278,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    @Override   //Called when the activity becomes visible to the user. Also called when coming back to the application from another application (assuming this application wasn't killed).
+    //Called when the activity becomes visible to the user. Also called when coming back to the application from another application (assuming this application wasn't killed).
+    @Override
     protected void onStart() {
         super.onStart();
+        vacationData = new Intent(MainActivity.this, VacationDataActivity.class);
 
         //Build and instantiate an instance of the Google API Client
         if (mGoogleApiClient == null) {
@@ -283,6 +306,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 vacationLatitude = place.getLatLng().latitude;
                 vacationLongitude = place.getLatLng().longitude;
                 Log.i(TAG, "Place: " + place.getName());
+                try {
+                    vacationAddresses = geocoder.getFromLocation(vacationLatitude, vacationLongitude, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -454,6 +482,72 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         day7condition = (TextView) findViewById(R.id.day7condition);
         day7low = (TextView) findViewById(R.id.day7low);
         day7high = (TextView) findViewById(R.id.day7high);
+
+        // Leave date selector
+        leaveDate = (EditText) findViewById(R.id.leaveDate);
+        leaveDate.setInputType(InputType.TYPE_NULL);
+        calendar = Calendar.getInstance();
+        leaveDateListener = new DateListener(leaveDate, calendar);
+        leaveDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(MainActivity.this, leaveDateListener, calendar
+                        .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        // Return date selector
+        returnDate = (EditText) findViewById(R.id.returnDate);
+        returnDate.setInputType(InputType.TYPE_NULL);
+        calendar = Calendar.getInstance();
+        returnDateListener = new DateListener(returnDate, calendar);
+        returnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(MainActivity.this, returnDateListener, calendar
+                        .get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+
+        // TODO: Create a class with the predefined method for the onclicklistener
+        submitButton = (Button) findViewById(R.id.submitButton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(vacationAddresses.get(0).getCountryCode().equals("US")) {
+                    vacationData.putExtra("city", vacationAddresses.get(0).getLocality());
+                    vacationData.putExtra("state", vacationAddresses.get(0).getAdminArea());
+                }
+                else if(vacationAddresses.get(0).getAdminArea() == null) {
+                    vacationData.putExtra("city", vacationAddresses.get(0).getLocality());
+                    vacationData.putExtra("state", vacationAddresses.get(0).getCountryCode());
+                }
+                else {
+                    vacationData.putExtra("city", vacationAddresses.get(0).getAdminArea());
+                    vacationData.putExtra("state", vacationAddresses.get(0).getCountryCode());
+                }
+
+                vacationData.putExtra("leaveDate", leaveDate.getText().toString());
+                vacationData.putExtra("returnDate", returnDate.getText().toString());
+                startActivity(vacationData);
+            }
+        });
+
+
+        // Refresh Handler
+        refreshSwipe = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        refreshSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                displayCurrentResults();
+                displayHourlyResults();
+                displayDailyResults();
+                completeRefresh();
+            }
+        });
     }
 
     @Override
@@ -561,67 +655,67 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         new ImageLoaderAST(iconURL, icon16).execute();
 
         temperature1.setText("" + hourlyForecast.getTemperatureF(0) + (char) 0x00B0 + " F");
-        time1.setText("" + hourlyForecast.getHour(0) + ":00");
+        time1.setText("" + hourlyForecast.getHour(0) + ":00" + hourlyForecast.getAMPM(0));
         description1.setText("" + hourlyForecast.getCondition(0));
 
         temperature2.setText("" + hourlyForecast.getTemperatureF(1) + (char) 0x00B0 + " F");
-        time2.setText("" + hourlyForecast.getHour(1) + ":00");
+        time2.setText("" + hourlyForecast.getHour(1) + ":00" + hourlyForecast.getAMPM(1));
         description2.setText("" + hourlyForecast.getCondition(1));
 
         temperature3.setText("" + hourlyForecast.getTemperatureF(2) + (char) 0x00B0 + " F");
-        time3.setText("" + hourlyForecast.getHour(2) + ":00");
+        time3.setText("" + hourlyForecast.getHour(2) + ":00" + hourlyForecast.getAMPM(2));
         description3.setText("" + hourlyForecast.getCondition(2));
 
         temperature4.setText("" + hourlyForecast.getTemperatureF(3) + (char) 0x00B0 + " F");
-        time4.setText("" + hourlyForecast.getHour(3) + ":00");
+        time4.setText("" + hourlyForecast.getHour(3) + ":00" + hourlyForecast.getAMPM(3));
         description4.setText("" + hourlyForecast.getCondition(3));
 
         temperature5.setText("" + hourlyForecast.getTemperatureF(4) + (char) 0x00B0 + " F");
-        time5.setText("" + hourlyForecast.getHour(4) + ":00");
+        time5.setText("" + hourlyForecast.getHour(4) + ":00" + hourlyForecast.getAMPM(4));
         description5.setText("" + hourlyForecast.getCondition(4));
 
         temperature6.setText("" + hourlyForecast.getTemperatureF(5) + (char) 0x00B0 + " F");
-        time6.setText("" + hourlyForecast.getHour(5) + ":00");
+        time6.setText("" + hourlyForecast.getHour(5) + ":00" + hourlyForecast.getAMPM(5));
         description6.setText("" + hourlyForecast.getCondition(5));
 
         temperature7.setText("" + hourlyForecast.getTemperatureF(6) + (char) 0x00B0 + " F");
-        time7.setText("" + hourlyForecast.getHour(6) + ":00");
+        time7.setText("" + hourlyForecast.getHour(6) + ":00" + hourlyForecast.getAMPM(6));
         description7.setText("" + hourlyForecast.getCondition(6));
 
         temperature8.setText("" + hourlyForecast.getTemperatureF(7) + (char) 0x00B0 + " F");
-        time8.setText("" + hourlyForecast.getHour(7) + ":00");
+        time8.setText("" + hourlyForecast.getHour(7) + ":00" + hourlyForecast.getAMPM(7));
         description8.setText("" + hourlyForecast.getCondition(7));
 
         temperature9.setText("" + hourlyForecast.getTemperatureF(8) + (char) 0x00B0 + " F");
-        time9.setText("" + hourlyForecast.getHour(8) + ":00");
+        time9.setText("" + hourlyForecast.getHour(8) + ":00" + hourlyForecast.getAMPM(8));
         description9.setText("" + hourlyForecast.getCondition(8));
 
         temperature10.setText("" + hourlyForecast.getTemperatureF(9) + (char) 0x00B0 + " F");
-        time10.setText("" + hourlyForecast.getHour(9) + ":00");
+        time10.setText("" + hourlyForecast.getHour(9) + ":00" + hourlyForecast.getAMPM(9));
         description10.setText("" + hourlyForecast.getCondition(9));
 
         temperature11.setText("" + hourlyForecast.getTemperatureF(10) + (char) 0x00B0 + " F");
-        time11.setText("" + hourlyForecast.getHour(10) + ":00");
+        time11.setText("" + hourlyForecast.getHour(10) + ":00" + hourlyForecast.getAMPM(10));
         description11.setText("" + hourlyForecast.getCondition(10));
 
         temperature12.setText("" + hourlyForecast.getTemperatureF(11) + (char) 0x00B0 + " F");
-        time12.setText("" + hourlyForecast.getHour(11) + ":00");
+        time12.setText("" + hourlyForecast.getHour(11) + ":00" + hourlyForecast.getAMPM(11));
         description12.setText("" + hourlyForecast.getCondition(11));
 
         temperature13.setText("" + hourlyForecast.getTemperatureF(12) + (char) 0x00B0 + " F");
-        time13.setText("" + hourlyForecast.getHour(12) + ":00");
+        time13.setText("" + hourlyForecast.getHour(12) + ":00" + hourlyForecast.getAMPM(12));
         description13.setText("" + hourlyForecast.getCondition(12));
 
         temperature14.setText("" + hourlyForecast.getTemperatureF(13) + (char) 0x00B0 + " F");
-        time14.setText("" + hourlyForecast.getHour(13) + ":00");
+        time14.setText("" + hourlyForecast.getHour(13) + ":00" + hourlyForecast.getAMPM(13));
         description14.setText("" + hourlyForecast.getCondition(13));
 
         temperature15.setText("" + hourlyForecast.getTemperatureF(14) + (char) 0x00B0 + " F");
-        time15.setText("" + hourlyForecast.getHour(14) + ":00");
+        time15.setText("" + hourlyForecast.getHour(14) + ":00" + hourlyForecast.getAMPM(14));
         description15.setText("" + hourlyForecast.getCondition(14));
 
         temperature16.setText("" + hourlyForecast.getTemperatureF(15) + (char) 0x00B0 + " F");
-        time16.setText("" + hourlyForecast.getHour(15) + ":00");
+        time16.setText("" + hourlyForecast.getHour(15) + ":00" + hourlyForecast.getAMPM(15));
         description16.setText("" + hourlyForecast.getCondition(15));
 
     }
@@ -735,7 +829,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             latitude = mLastLocation.getLatitude();
             longitude = mLastLocation.getLongitude();
 
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            geocoder = new Geocoder(this, Locale.getDefault());
             try {
                 List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                 city = addresses.get(0).getLocality();
@@ -904,5 +998,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
         popup.inflate(R.menu.menu);
         popup.show();
+    }
+
+    public void completeRefresh(){
+        refreshSwipe.setRefreshing(false);
     }
 }
