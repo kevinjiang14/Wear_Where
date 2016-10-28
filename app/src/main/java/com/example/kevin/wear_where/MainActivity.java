@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.app.DatePickerDialog;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -17,12 +16,8 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Gravity;
 import android.view.View;
@@ -43,7 +38,14 @@ import com.example.kevin.wear_where.Listeners.DateListener;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.example.kevin.wear_where.wear.Clothing;
 import com.example.kevin.wear_where.wear.ClothingActivity;
-import com.example.kevin.wear_where.wear.Suggestion;
+import com.example.kevin.wear_where.AsyncTask.CurrentConditionAST;
+import com.example.kevin.wear_where.AsyncTask.HourlyForecastAST;
+import com.example.kevin.wear_where.AsyncTask.ImageLoaderAST;
+import com.example.kevin.wear_where.WundergroundData.CurrentCondition.ConditionsObject;
+import com.example.kevin.wear_where.Database.Comment;
+import com.example.kevin.wear_where.Database.CommentsDataSource;
+import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -54,15 +56,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.example.kevin.wear_where.AsyncTask.CurrentConditionAST;
-import com.example.kevin.wear_where.AsyncTask.HourlyForecastAST;
-import com.example.kevin.wear_where.AsyncTask.ImageLoaderAST;
-import com.example.kevin.wear_where.WundergroundData.CurrentCondition.ConditionsObject;
-import com.example.kevin.wear_where.Database.Comment;
-import com.example.kevin.wear_where.Database.CommentsDataSource;
-import com.example.kevin.wear_where.Database.MySQLiteHelper;
-
-import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -70,13 +63,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -335,7 +326,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Listener for the places fragment in the vacation tab (get whatever is needed from the places argument)
                 vacationLatitude = place.getLatLng().latitude;
                 vacationLongitude = place.getLatLng().longitude;
-                Log.i(TAG, "Place: " + place.getName());
+
                 try {
                     vacationAddresses = geocoder.getFromLocation(vacationLatitude, vacationLongitude, 1);
                 } catch (IOException e) {
@@ -869,18 +860,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
-            geocoder = new Geocoder(this, Locale.getDefault());
-            try {
-                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                city = addresses.get(0).getLocality();
-                state = addresses.get(0).getAdminArea();
-                location.setText(city + ", " + state);
-
-                getCurrentRequest();
-                getHourlyRequest();
-                getDailyRequest();
-            } catch (Exception e) {
-                e.printStackTrace();
             @Override
             public View getInfoWindow(Marker arg0) {
                 // Return null so getInfoContents will be called
