@@ -29,14 +29,12 @@ public class MapsForecastAST extends AsyncTask<Void, Void, HourlyObject> {
         HourlyObject hourlyForecastTemp;
 
         String condition_link = String.format("http://api.wunderground.com/api/fe0b389aa655786c/hourly10day/q/%s,%s.json", Uri.encode(Double.toString(this.latlng.latitude)), Uri.encode(Double.toString(this.latlng.longitude)));
-        System.out.println(condition_link);
 
         hourlyForecastTemp = this.loop(condition_link);
 
         // If the connection failed, try again.
         if (hourlyForecastTemp == null) {
             hourlyForecastTemp = this.loop(condition_link);
-            System.out.println("Connection broke, trying again");
         }
 
         return hourlyForecastTemp;

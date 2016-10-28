@@ -23,7 +23,6 @@ public class TimeZoneObject {
             timeZoneId = baseObject.optString("timeZoneId");
             timeZoneName = baseObject.optString("timeZoneName");
             status = baseObject.optString("status");
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

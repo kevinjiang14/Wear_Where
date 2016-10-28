@@ -27,11 +27,6 @@ public class GoogleDistanceAST extends AsyncTask<Void, Void, DistanceMatrixObjec
         this.intervals = intervals;
     }
 
-    public GoogleDistanceAST (List<LatLng> intervals) {
-        this.intervals = new ArrayList<>();
-        this.intervals.addAll(intervals);
-    }
-
     @Override
     protected DistanceMatrixObject doInBackground(Void... params) {
         DistanceMatrixObject distanceMatrixObject;
@@ -44,7 +39,7 @@ public class GoogleDistanceAST extends AsyncTask<Void, Void, DistanceMatrixObjec
 
         //https://maps.googleapis.com/maps/api/distancematrix/outputFormat?parameters
         String condition_link = String.format("https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=AIzaSyCWbLdotKFPVqlld5nr8haQhjrh70xhXqA", Uri.encode(origins), Uri.encode(destinations));
-        System.out.println(condition_link);
+
         try {
             request = new URL(condition_link);
 
@@ -71,9 +66,11 @@ public class GoogleDistanceAST extends AsyncTask<Void, Void, DistanceMatrixObjec
             distanceMatrixObject = new DistanceMatrixObject(result);
             return distanceMatrixObject;
         }
+
         catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 }

@@ -34,7 +34,7 @@ public class GoogleTimeZoneAST extends AsyncTask<Void, Void, TimeZoneObject> {
 
         //https://maps.googleapis.com/maps/api/timezone/outputFormat?parameters
         String condition_link = String.format("https://maps.googleapis.com/maps/api/timezone/json?location=%s&timestamp=%s&key=AIzaSyCWbLdotKFPVqlld5nr8haQhjrh70xhXqA", Uri.encode(Double.toString(this.destination.latitude) + "," + Double.toString(this.destination.longitude)), Uri.encode(Long.toString(this.timestamp)));
-        System.out.println(condition_link);
+
         try {
             request = new URL(condition_link);
 

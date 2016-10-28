@@ -680,33 +680,37 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             public View getInfoWindow(Marker arg0) {
+                // Return null so getInfoContents will be called
                 return null;
             }
 
             @Override
             public View getInfoContents(Marker marker) {
 
+                // Create the layout that will be used for the information window
                 Context context = getApplicationContext();
 
                 LinearLayout info = new LinearLayout(context);
                 info.setOrientation(LinearLayout.VERTICAL);
 
-                //ImageView weather = new ImageView(context);
+                // TextView used to tell the user if it is a starting, interval, or ending point
                 TextView title = new TextView(context);
                 title.setTextColor(Color.BLACK);
                 title.setGravity(Gravity.CENTER);
                 title.setTypeface(null, Typeface.BOLD);
                 title.setText(marker.getTitle());
 
+                // TextView used to tell the user the information pertaining to the corresponding interval
                 TextView snippet = new TextView(context);
                 snippet.setGravity(Gravity.CENTER);
                 snippet.setTextColor(Color.GRAY);
                 snippet.setText(marker.getSnippet());
 
-                //info.addView(weather);
+                // Add the textViews to the LinearLayout
                 info.addView(title);
                 info.addView(snippet);
 
+                // Return the layout that will be used for the marker information window
                 return info;
             }
         });
@@ -772,15 +776,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Uses overview polyline (not as laggy but will do for now)
                 String encodedOverviewPolyline = directionsObject.getRoutesArray().getEncodedOverviewPolyLine().getEncodedOverviewPolyline();
                 polyline = com.google.maps.android.PolyUtil.decode(encodedOverviewPolyline);
-                System.out.println(polyline);
+
                 // Store the total distance for interval calculation
                 double totalDistance = Double.parseDouble(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
 
-                // Divide the total distance by 8 to get the intervals
-                double interval = totalDistance / 8;
+                // Divide the total distance by 10 to get the intervals
+                double interval = totalDistance / 10;
 
                 // Add all LatLng objects that create the polyline
                 for (int i = 0; i < polyline.size() - 1; ++i) {
+                    // Add the interval polyline to the map
                     maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(8).color(Color.rgb(93,188,210)));
 
                     // Keep track of which LatLng objects to get weather information for, store each object in weatherPoints
@@ -790,14 +795,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         counter = 0 - com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
                     }
                 }
+
                 // Remove last added LatLng to avoid a LatLng object similar to the destination LatLng
-                if (weatherPoints.size() == 8) {
+                if (weatherPoints.size() == 10) {
                     weatherPoints.remove(weatherPoints.size() - 1);
                 }
 
+                // Add the final interval point
                 weatherPoints.add(ending);
 
-                // Get the distances between the starting point and each point in the interval
+                // Get the information pertaining to each interval in weatherPoints
                 getIntervalInformation(weatherPoints);
 
                 // MOST ACCURATE POLYLINE, BUT EXTREMELY LAGGY!!!
@@ -814,19 +821,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void getIntervalInformation (ArrayList<LatLng> intervals) {
 
-            // For each LatLng object inside weatherPoints
+            // Get the MarkerOptions for the intervals passed into the markers
             new IntervalInformationAST(intervals) {
 
                 @Override
                 protected void onPostExecute(ArrayList<MarkerOptions> intervalInformation) {
                     markers = intervalInformation;
 
+                    // If the returned list is not null, then add the markers to the map
                     if (markers != null) {
                         for (int i = 0; i < markers.size(); ++i) {
                             maps.addMarker(markers.get(i));
                         }
                     }
 
+                    // Else, notify the user that the attempt to get information has failed.
                     else {
                         Toast toast = Toast.makeText(getApplicationContext(), "An error has occured while trying to fetch the queried route." + '\n' + "Please try again!", Toast.LENGTH_SHORT);
                         toast.show();
@@ -837,6 +846,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             }.execute();
 
+        // Refresh the map
         mapFragment.getMapAsync(this);
     }
 
