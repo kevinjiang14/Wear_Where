@@ -1,0 +1,15 @@
+date: October 27, 2016
+meeting_type: group + ta
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: added api call to search},
+  {ubit: calvinzh, progress: setup code template for content submission},
+  {ubit: hermesko, progress: optimizing time complexity of map on road trip},
+  {ubit: kevinjia, progress: added more functions uses of the api}
+  ]
+issues: []
+Notes: |
+    - Talked about current bugs in our code that we need to fix
+    - Ideas for using database in the future for app

@@ -1,0 +1,70 @@
+            Gender:
+        Upper Body Wear
+    freezing
+{
+
+}
+    chilly
+{
+
+}
+    warm
+{
+
+}
+    hot
+{
+
+}
+        Lower Body Wear
+    freezing
+{
+
+}
+    chilly
+{
+
+}
+    warm
+{
+
+}
+    hot
+{
+
+}
+        Footwear
+    freezing
+{
+
+}
+    chilly
+{
+
+}
+    warm
+{
+
+}
+    hot
+{
+
+}
+        Miscellaneous
+    freezing
+{
+
+}
+    chilly
+{
+
+}
+    warm
+{
+
+}
+    hot
+{
+
+}
+--
