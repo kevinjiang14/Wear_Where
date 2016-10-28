@@ -1,0 +1,14 @@
+date: October 18, 2016
+meeting_type: group
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: added code for SQL database},
+  {ubit: calvinzh, progress: Got clothing tab to show suggestions based on temperature},
+  {ubit: hermesko, progress: Got roadtrip map to display route from address to address},
+  {ubit: kevinjia, progress: created daily forecast for 7 days}
+  ]
+issues: [AndroidStudio project broke for some members, git hub branch issues]
+Notes: |
+  -Brainstorming ways to setup content creation

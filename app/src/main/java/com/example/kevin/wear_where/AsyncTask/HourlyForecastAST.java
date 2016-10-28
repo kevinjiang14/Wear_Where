@@ -28,12 +28,12 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
 
     @Override
     protected HourlyObject doInBackground(Void... params) {
-        HourlyObject hourlyForecastTemp;
+        HourlyObject hourlyObject;
 
-        String condition_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
+        String hourly_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
         try {
-            request = new URL(condition_link);
+            request = new URL(hourly_link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link
@@ -50,9 +50,9 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
                 result.append(line);
             }
 
-            hourlyForecastTemp = new HourlyObject(result);
+            hourlyObject = new HourlyObject(result);
 
-            return hourlyForecastTemp;
+            return hourlyObject;
 
         } catch (Exception e) {
             e.printStackTrace();

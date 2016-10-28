@@ -14,7 +14,7 @@ public class Date implements JSONData{
 
     @Override
     public void retrieveData(JSONObject data) {
-        weekday = data.optString("weekday_short");
+        weekday = data.optString("weekday");
     }
 
     public String getWeekday() {

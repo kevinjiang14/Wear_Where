@@ -1,5 +1,6 @@
 package com.example.kevin.wear_where.AsyncTask;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -43,8 +44,15 @@ public class ImageLoaderAST extends AsyncTask<Void, Void, Bitmap>{
     }
 
     @Override
-    protected void onPostExecute(Bitmap result){
+    protected void onPostExecute(Bitmap result) {
         super.onPostExecute(result);
-        imageView.setImageBitmap(result);
+
+        //TODO: Fix scaling of images
+        int IVHeight = imageView.getMaxHeight();
+        int IVWidth = imageView.getMaxWidth();
+
+        Bitmap scaled = Bitmap.createScaledBitmap(result, IVWidth, IVHeight, true);
+
+        imageView.setImageBitmap(scaled);
     }
 }

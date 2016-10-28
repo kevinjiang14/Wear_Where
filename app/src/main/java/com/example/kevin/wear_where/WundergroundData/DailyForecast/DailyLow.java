@@ -10,14 +10,14 @@ import org.json.JSONObject;
 
 public class DailyLow implements JSONData{
 
-    private String temperatureLow;
+    private int temperatureLow;
 
     @Override
     public void retrieveData(JSONObject data) {
-        temperatureLow = data.optString("fahrenheit");
+        temperatureLow = data.optInt("fahrenheit");
     }
 
-    public String getTemperatureLow() {
+    public int getTemperatureLow() {
         return temperatureLow;
     }
 }

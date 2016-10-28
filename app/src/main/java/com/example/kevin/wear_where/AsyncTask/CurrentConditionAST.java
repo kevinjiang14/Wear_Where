@@ -27,12 +27,12 @@ public class CurrentConditionAST extends AsyncTask<Void, ConditionsObject, Condi
 
     @Override
     protected ConditionsObject doInBackground(Void... params) {
-        ConditionsObject forecastTemp;
+        ConditionsObject conditionsObject;
 
-        String condition_link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/conditions/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
+        String current_link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/conditions/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
         try {
-            request = new URL(condition_link);
+            request = new URL(current_link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link
@@ -49,9 +49,9 @@ public class CurrentConditionAST extends AsyncTask<Void, ConditionsObject, Condi
                 result.append(line);
             }
 
-            forecastTemp = new ConditionsObject(result);
+            conditionsObject = new ConditionsObject(result);
 
-            return forecastTemp;
+            return conditionsObject;
 
         } catch (Exception e) {
             e.printStackTrace();
