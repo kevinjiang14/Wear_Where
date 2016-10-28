@@ -762,9 +762,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             protected void onPostExecute(DirectionsObject item) {
                 directionsObject = item;
 
-                // Get the epoch time (in seconds) to be used for the Time Zone API
-                long timestamp = System.currentTimeMillis()/1000;
-
                 // Create a list of LatLng objects to get the weather for
                 weatherPoints = new ArrayList<LatLng>();
                 weatherPoints.add(starting);
@@ -775,7 +772,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Uses overview polyline (not as laggy but will do for now)
                 String encodedOverviewPolyline = directionsObject.getRoutesArray().getEncodedOverviewPolyLine().getEncodedOverviewPolyline();
                 polyline = com.google.maps.android.PolyUtil.decode(encodedOverviewPolyline);
-
+                System.out.println(polyline);
                 // Store the total distance for interval calculation
                 double totalDistance = Double.parseDouble(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
 
@@ -784,7 +781,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // Add all LatLng objects that create the polyline
                 for (int i = 0; i < polyline.size() - 1; ++i) {
-                    Polyline line = maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(8).color(Color.rgb(93,188,210)));
+                    maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(8).color(Color.rgb(93,188,210)));
 
                     // Keep track of which LatLng objects to get weather information for, store each object in weatherPoints
                     counter += com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
@@ -794,9 +791,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
                 // Remove last added LatLng to avoid a LatLng object similar to the destination LatLng
-                if (weatherPoints.size() == 9) {
+                if (weatherPoints.size() == 8) {
                     weatherPoints.remove(weatherPoints.size() - 1);
                 }
+
                 weatherPoints.add(ending);
 
                 // Get the distances between the starting point and each point in the interval

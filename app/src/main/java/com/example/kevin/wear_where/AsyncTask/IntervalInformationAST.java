@@ -30,212 +30,138 @@ import java.util.GregorianCalendar;
 
 public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<MarkerOptions>> {
 
-    private URL request;
     private ArrayList<LatLng> intervals;
-    private long timestamp;
+    private ArrayList<MarkerOptions> intervalInformation;
+    private ArrayList<TimeZoneObject> intervalTimeZones;
+    private ArrayList<HourlyObject> mapsHourlyForecast;
+    private DistanceMatrixObject distanceMatrixObject;
 
     public IntervalInformationAST(ArrayList<LatLng> intervals) {
         this.intervals = intervals;
-        this.timestamp = System.currentTimeMillis()/1000;
-    }
 
-    @Override
-    protected ArrayList<MarkerOptions> doInBackground(Void... params) throws IllegalStateException{
+        intervalInformation = new ArrayList<>();
+        intervalTimeZones = new ArrayList<>();
+        mapsHourlyForecast = new ArrayList<>();
 
-        ArrayList<MarkerOptions> intervalInformation = new ArrayList<>();
-        ArrayList<TimeZoneObject> intervalTimeZones = new ArrayList<>();
-        ArrayList<HourlyObject> mapsHourlyForecast = new ArrayList<>();
-        DistanceMatrixObject distanceMatrixObject = null;
+        distanceMatrixObject = null;
 
         // Begin GoogleDistanceAST
-        String origins = new String(Double.toString(this.intervals.get(0).latitude) + "," + Double.toString(this.intervals.get(0).longitude));
-        String destinations = new String(Double.toString(this.intervals.get(0).latitude) + "," + Double.toString(this.intervals.get(0).longitude));
-        for (int i = 1; i < intervals.size(); ++i) {
-            destinations += "|" + Double.toString(this.intervals.get(i).latitude) + "," + Double.toString(this.intervals.get(i).longitude);
-        }
+        new GoogleDistanceAST(intervals) {
 
-        //https://maps.googleapis.com/maps/api/distancematrix/outputFormat?parameters
-        String condition_link = String.format("https://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&key=AIzaSyCWbLdotKFPVqlld5nr8haQhjrh70xhXqA", Uri.encode(origins), Uri.encode(destinations));
-
-        try {
-            request = new URL(condition_link);
-
-            // Open a URL connection to link
-            URLConnection urlConnection = request.openConnection();
-
-            // Get the input stream of link
-            InputStream in = urlConnection.getInputStream();
-
-            // Read buffer
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-            // Store the buffer of link into result
-            StringBuilder result = new StringBuilder();
-
-            // Store each line of buffer into line
-            String line;
-
-            // Get each line from buffer and stores them into result
-            while ((line = reader.readLine()) != null) {
-                result.append(line);
+            @Override
+            protected void onPostExecute(DistanceMatrixObject item) {
+                distanceMatrixObject = item;
             }
 
-            distanceMatrixObject = new DistanceMatrixObject(result);
-        }
-
-        catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        }.execute();
 
         // Begin MapsForecastAST
         for (int i = 0; i < intervals.size(); ++i) {
-            condition_link = String.format("http://api.wunderground.com/api/fe0b389aa655786c/hourly10day/q/%s,%s.json", Uri.encode(Double.toString(this.intervals.get(i).latitude)), Uri.encode(Double.toString(this.intervals.get(i).longitude)));
 
-            try {
-                request = new URL(condition_link);
-                System.out.println(condition_link);
-                // Open a URL connection to link
-                URLConnection urlConnection = request.openConnection();
+            new MapsForecastAST(intervals.get(i)) {
 
-                // Get the input stream of link
-                InputStream in = urlConnection.getInputStream();
-
-                // Read buffer
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-                // Store the buffer of link into result
-                StringBuilder result = new StringBuilder();
-
-                // Store each line of buffer into line
-                String line;
-
-                // Get each line from buffer and stores them into result
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
+                @Override
+                protected void onPostExecute(HourlyObject item) {
+                    mapsHourlyForecast.add(item);
                 }
 
-                mapsHourlyForecast.add(new HourlyObject(result));
-            }
+            }.execute();
 
-            catch (Exception e) {
-                e.printStackTrace();
-                i--;
-            }
         }
 
-        // Begin GoogleTimeZoneAST
         for (int i = 0; i < intervals.size(); ++i) {
 
-            //https://maps.googleapis.com/maps/api/timezone/outputFormat?parameters
-            condition_link = String.format("https://maps.googleapis.com/maps/api/timezone/json?location=%s&timestamp=%s&key=AIzaSyCWbLdotKFPVqlld5nr8haQhjrh70xhXqA", Uri.encode(Double.toString(this.intervals.get(i).latitude) + "," + Double.toString(this.intervals.get(i).longitude)), Uri.encode(Long.toString(this.timestamp)));
+            new GoogleTimeZoneAST(intervals.get(i), System.currentTimeMillis()/1000) {
 
-            try {
-                request = new URL(condition_link);
-
-                // Open a URL connection to link
-                URLConnection urlConnection = request.openConnection();
-
-                // Get the input stream of link
-                InputStream in = urlConnection.getInputStream();
-
-                // Read buffer
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-                // Store the buffer of link into result
-                StringBuilder result = new StringBuilder();
-
-                // Store each line of buffer into line
-                String line;
-
-                // Get each line from buffer and stores them into result
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
+                @Override
+                protected void onPostExecute(TimeZoneObject item) {
+                    intervalTimeZones.add(item);
                 }
 
-                intervalTimeZones.add(new TimeZoneObject(result));
+            }.execute();
+
+        }
+    }
+
+    @Override
+    protected ArrayList<MarkerOptions> doInBackground(Void... params) throws IllegalStateException {
+
+        // Don't proceed until we have the distanceMatrixObject
+        while (distanceMatrixObject == null) {
+        }
+
+        // Don't proceed until we have all information for all intervals
+        while (intervals.size() != mapsHourlyForecast.size() && intervals.size() != intervalTimeZones.size()) {
+        }
+
+        // Create the list of MarkerOptions to add to the map
+        for (int i = 0; i < intervals.size(); ++i) {
+            Bitmap bitmap;
+            Long currentTime = System.currentTimeMillis() - ((new GregorianCalendar().getTimeZone().getRawOffset()) + new GregorianCalendar().getTimeZone().getDSTSavings());
+            Long intervalDuration = Long.parseLong((distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getSeconds())) * 1000;
+            Long endingDSTOffset = Long.parseLong(intervalTimeZones.get(i).getDstOffset()) * 1000;
+            Long endingRawOffset = Long.parseLong(intervalTimeZones.get(i).getRawOffset()) * 1000;
+            String estimatedTimeOfArrival = new java.text.SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n' + intervalTimeZones.get(i).getTimeZoneName();
+            int index = (int) (intervalDuration / (3600 * 1000));
+            String precipitation, temperatureF, iconURL;
+                if (index <= 240) {
+                    precipitation = mapsHourlyForecast.get(i).getCondition(index);
+                    temperatureF = Integer.toString(mapsHourlyForecast.get(i).getTemperatureF(index)) + (char) 0x00B0 + " F";
+                    iconURL = mapsHourlyForecast.get(i).getIconURL(index);
+                }
+                else {
+                    precipitation = "Cannot get hourly information more than 10 days ahead!";
+                    temperatureF = "";
+                    iconURL = "http://www.errorfixz.com/wp-content/uploads/2016/02/question_red.png";
+                }
+            try {
+                URL request = new URL(iconURL);
+                HttpURLConnection urlConnection = (HttpURLConnection) request.openConnection();
+                urlConnection.setDoInput(true);
+                urlConnection.connect();
+                InputStream input = urlConnection.getInputStream();
+                bitmap = BitmapFactory.decodeStream(input);
+                if (bitmap != null) {
+                    bitmap = Bitmap.createScaledBitmap(bitmap, (int) (24 * Resources.getSystem().getDisplayMetrics().density), (int) (24 * Resources.getSystem().getDisplayMetrics().density), false);
+                }
             }
 
             catch (Exception e) {
-                e.printStackTrace();
                 return null;
             }
 
-        }
+            if (i == 0) {
+                intervalInformation.add(new MarkerOptions().position(intervals.get(0))
+                        .title("Origin")
+                        .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(0) + '\n' +
+                                "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
+                                "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
+                                "Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                                "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                        .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+            }
 
-        if (distanceMatrixObject != null) {
-            if ((intervals.size() == intervalTimeZones.size()) && (intervals.size() ==  mapsHourlyForecast.size())) {
-
-                // Create the list of MarkerOptions to add to the map
-                for (int i = 0; i < intervals.size(); ++i) {
-                    Bitmap bitmap;
-                    Long currentTime = System.currentTimeMillis() - ((new GregorianCalendar().getTimeZone().getRawOffset()) + new GregorianCalendar().getTimeZone().getDSTSavings());
-                    Long intervalDuration = Long.parseLong((distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getSeconds())) * 1000;
-                    Long endingDSTOffset = Long.parseLong(intervalTimeZones.get(i).getDstOffset()) * 1000;
-                    Long endingRawOffset = Long.parseLong(intervalTimeZones.get(i).getRawOffset()) * 1000;
-                    String estimatedTimeOfArrival = new java.text.SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n' + intervalTimeZones.get(i).getTimeZoneName();
-                    String precipitation = mapsHourlyForecast.get(i).getCondition((int) (intervalDuration / (3600 * 1000)));
-                    String temperatureF = Integer.toString(mapsHourlyForecast.get(i).getTemperatureF((int) (intervalDuration / (3600 * 1000)))) + (char) 0x00B0 + " F";
-                    String iconURL = mapsHourlyForecast.get(i).getIconURL((int) (intervalDuration / (3600*1000)));
-
-                    try {
-                        URL request = new URL(iconURL);
-                        HttpURLConnection urlConnection = (HttpURLConnection) request.openConnection();
-                        urlConnection.setDoInput(true);
-                        urlConnection.connect();
-                        InputStream input = urlConnection.getInputStream();
-                        bitmap = BitmapFactory.decodeStream(input);
-                        if (bitmap != null) {
-                            bitmap = Bitmap.createScaledBitmap(bitmap, (int) (24 * Resources.getSystem().getDisplayMetrics().density), (int) (24 * Resources.getSystem().getDisplayMetrics().density), false);
-                        }
-                    }
-
-                    catch (Exception e) {
-                        return null;
-                    }
-
-                    if (i == 0) {
-                        intervalInformation.add(new MarkerOptions().position(intervals.get(0))
-                                .title("Origin")
-                                .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(0) + '\n' +
-                                        "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
-                                        "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
-                                        "Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
-                                .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
-                    }
-
-                    else if (i == intervals.size() - 1) {
-                        intervalInformation.add(new MarkerOptions().position(intervals.get(i))
-                                .title("Destination")
-                                .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i) + '\n' +
-                                        "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
-                                        "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
-                                        "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
-                                .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
-                    }
-
-                    else {
-                        intervalInformation.add(new MarkerOptions().position(intervals.get(i))
-                                .title("Interval")
-                                .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i) + '\n' +
-                                        "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
-                                        "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
-                                        "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
-                                .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
-                    }
-                }
+            else if (i == intervals.size() - 1) {
+                intervalInformation.add(new MarkerOptions().position(intervals.get(i))
+                        .title("Destination")
+                        .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i) + '\n' +
+                                "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
+                                "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
+                                "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                                "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                        .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
             }
 
             else {
-                return null;
+                intervalInformation.add(new MarkerOptions().position(intervals.get(i))
+                        .title("Interval")
+                        .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i) + '\n' +
+                                "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
+                                "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
+                                "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                                "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                        .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
             }
-        }
-
-        else {
-            return null;
         }
 
         return intervalInformation;
