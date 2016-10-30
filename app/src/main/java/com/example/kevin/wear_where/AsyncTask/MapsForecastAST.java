@@ -34,6 +34,7 @@ public class MapsForecastAST extends AsyncTask<Void, Void, HourlyObject> {
 
         // If the connection failed, try again.
         if (hourlyForecastTemp == null) {
+            System.out.println("failed");
             hourlyForecastTemp = this.loop(condition_link);
         }
 
@@ -43,7 +44,7 @@ public class MapsForecastAST extends AsyncTask<Void, Void, HourlyObject> {
     private HourlyObject loop (String link) {
         try {
             request = new URL(link);
-
+            System.out.println(link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link
