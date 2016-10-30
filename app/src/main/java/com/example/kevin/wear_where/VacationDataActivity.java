@@ -177,11 +177,12 @@ public class VacationDataActivity extends AppCompatActivity {
                 // If day exceeds number of days in month then move to the next month
                 tempStartDay -= DaysInMonth(tempStartMonth);
                 tempStartMonth++;
-
-                if(tempStartMonth == tempEndMonth && tempStartDay > tempEndDay){
-                    tempStartDay = tempEndDay;
-                }
             }
+
+            if(tempStartMonth == tempEndMonth && tempStartDay > tempEndDay){
+                tempStartDay = tempEndDay;
+            }
+
             // Add timeframe to index and increment index
             tempTimeFrames[index] = FormatDate(tempStartMonth, tempStartDay);
             index++;
