@@ -1,19 +1,13 @@
 package com.example.kevin.wear_where;
 
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.AsyncTask.PlannerAST;
 import com.example.kevin.wear_where.WundergroundData.Planner.PlannerObject;
-import com.google.android.gms.vision.text.Text;
 
 public class VacationDataActivity extends AppCompatActivity {
 
