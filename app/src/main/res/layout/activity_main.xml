@@ -78,8 +78,7 @@
                                 android:layout_height="150px"
                                 android:layout_below="@+id/temperature"
                                 android:maxHeight="150dp"
-                                android:maxWidth="150dp"
-                                app:srcCompat="@drawable/cast_album_art_placeholder" />
+                                android:maxWidth="150dp" />
 
                             <Button
                                 android:text="Menu"
