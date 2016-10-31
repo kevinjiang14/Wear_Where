@@ -9,31 +9,11 @@ import java.util.HashMap;
 /**
  * Specifications:
  * There are commented regions below to specify what clothing type to 
- * enter into the ArrayLists initialized above. 
- * When adding clothing items, capitalize the first letter of each word.
- * You can use at most one adjective to help describe the clothing item you're inputting.
- * Or you can include the brand name of the clothing in your description if it makes 
- * a difference in their effectiveness during certain weather. 
+ * enter into the ArrayLists initialized. Look at the examples in each
+ * region to get an idea of what to do. The examples only adds one item
+ * into each temperature range but you can add as many items as you want.
  * 
- * Example: "Ripped Jeans"
- * 			"Baggy Sweatpants"
- * 			"Graphic Tee"
- * 			"Timberland Boots"
- *			"Light Jacket"
- *			"Denim Jacket"
- * 
- * * Refrain from using color descriptions also like: "Blue Shirt", "White Shirt"
- * 
- * Please don't add clothing items in the form of:
- * 		"Superbly Expensive Cashmere Sweater"
- * 		"My Favorite Pair of Jordans"
- * 		"Mom's Dress"
- * 		** No trolling. **
- * 
- * You can add multiple items into each ArrayList.
- * You can also duplicate items if you wear them in multiple temperature ranges.
- * For example, you wear jeans on both chilly and warm days so you put "Jeans"
- * into both the chilly ArrayList and warm ArrayList.
+ * Specify your gender before you start adding items into the ArrayLists.
  * 
  * DONT ADD EXTRA CODE BESIDES THE CLOTHING REGIONS SPECIFIED IN COMMENTED 
  * SECTIONS DOWN BELOW. ONLY ADD ITEMS INTO ARRAYLIST, EVERYTHING ELSE IS ALREADY
@@ -44,7 +24,9 @@ public class Wardrobe{
 
     private HashMap<Integer,ArrayList<String>> upperBody = new HashMap<>();
     private HashMap<Integer,ArrayList<String>> lowerBody = new HashMap<>();
+    private HashMap<Integer,ArrayList<String>> overalls = new HashMap<>();
     private HashMap<Integer,ArrayList<String>> shoes = new HashMap<>();
+    private HashMap<Integer,ArrayList<String>> miscellaneous = new HashMap<>();
     ArrayList<String> freezing;
     ArrayList<String> chilly;
     ArrayList<String> warm;
@@ -114,6 +96,30 @@ public class Wardrobe{
         hot = new ArrayList<>();
         
         /**
+         * Overalls region
+         *	Example:
+         *		freezing.add("Snow Overalls");
+         *		warm.add("Romper");
+         *		hot.add("Dress");
+         */
+        
+        //Begin inserting overalls code lines here
+        
+        
+        
+        //End Overalls region
+        
+        overalls.put(1, freezing);
+        overalls.put(2, chilly);
+        overalls.put(3, warm);
+        overalls.put(4, hot);
+        
+        freezing = new ArrayList<>();
+        chilly = new ArrayList<>();
+        warm = new ArrayList<>();
+        hot = new ArrayList<>();
+        
+        /**
          * Shoes region
          *	Example:
          *		freezing.add("Timberland Boots");
@@ -132,6 +138,31 @@ public class Wardrobe{
         shoes.put(2, chilly);
         shoes.put(3, warm);
         shoes.put(4, hot);
+        
+        freezing = new ArrayList<>();
+        chilly = new ArrayList<>();
+        warm = new ArrayList<>();
+        hot = new ArrayList<>();
+        
+        /**
+         * Miscellaneous region
+         *	Example:
+         *		freezing.add("Scarf");
+         *		chilly.add("Beanie");
+         *		warm.add("Sunglasses");
+         *		hot.add("Sunscreen");
+         */
+        
+        //Begin inserting miscellaneous code lines here
+        
+        
+        
+        //End Miscellaneous region
+        
+        miscellaneous.put(1, freezing);
+        miscellaneous.put(2, chilly);
+        miscellaneous.put(3, warm);
+        miscellaneous.put(4, hot);
         
         /**
          * Your content is very important to us and helps us
