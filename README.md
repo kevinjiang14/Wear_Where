@@ -3,13 +3,14 @@ An android app to suggest clothing and accessories based on the weather of your 
 
 # Working Functionality
 
-- Weather Tab: Currently displays the weather in your current location, as well as an hour-by-hour weather forecast.
+- Weather Tab: Currently displays the weather of your current location, as well as daily and hour-by-hour weather forecasts. User's favorite temperature is stored in a database. Can search a place to get the current temperature of that place.
 
-- Apparel Tab: Back-end for clothing suggestions
+- Apparel Tab: Back-end for clothing suggestions. Headwear, Upperbody, Lowerbody, and Shoes buttons to suggest apparel based on the weather in your current location.
 
-- Vacation Tab: In Progress
+- Vacation Tab: Functionality to properly allow user to search for the weather conditions for a queried place during a specified interval.
 
-- Road Trip Tab: Can search places (suggested places show up while searching) for starting and ending points, and place these points on the map as markers. Can also view your current location.
+- Road Trip Tab: Can search places (suggested places show up while searching) for starting and ending points, and place these points on the map as markers. Can also view your current location. Functionality to properly allow users to search for the weather conditions at pre-specified intervals throughout a queried route. Map updates with an estimated route between the specified locations with weather icons, interval locations, distance traveled from the starting location, time elapsed from the starting location (based on non-stop driving after querying the route), Estimated Arrival Time (correct with respect to the time zone of the interval), and temperature and conditions at the Estimated Arrival Time.
+
 # Pending Functionality
 
 - Weather Tab: 10-day forecast in your current location.
