@@ -1,11 +1,6 @@
 CLOTHING CONTENT SUBMISSION INSTRUCTIONS
 
-READ CAREFULLY!!! THERE ARE SOME VERY SPECIFIC STUFF FOR YOU TO KNOW BEFORE YOU BEGIN.
-
-- If you are choosing to use the java code template then skip this file and proceed
-to the Wardrobe.java file. There are separate instructions and specifications in there.
-
-- If you are filling out the myClothes.txt, please continue.
+****READ CAREFULLY!!! THERE ARE SOME VERY SPECIFIC STUFF FOR YOU TO KNOW BEFORE YOU BEGIN.****
 
 
     Based on the weather, think about which of your clothes you'd wear during
@@ -17,7 +12,7 @@ to the Wardrobe.java file. There are separate instructions and specifications in
     Do not worry about conditions like rain/snow. We will account for those on our end.
     
     
-    There's an upperbody, lowerbody, overall, and shoe section in the myClothes.txt file. Each section
+    There's an upperbody, lowerbody, overall, and shoe section in the layout. Each section
     separates into freezing, chilly, warm, and hot brackets. You'll enter clothes that you think 
     corresponds to that temperature. However you do not need to put all the layers of clothes into
     one bracket. 
@@ -69,8 +64,11 @@ to the Wardrobe.java file. There are separate instructions and specifications in
  * 		"Mom's Dress"
  * 		** No trolling. **
 
+** If you're using the Wardrobe.java file to submit content please open that now 
+** and disregard the rest of the README. Otherwise please continue reading.
 
- The format will be like the following example:
+
+ The format of the myClothes.txt file will be like the following example:
 
 *           Gender: Male
 *       Upper Body Wear
