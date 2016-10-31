@@ -13,13 +13,13 @@ An android app to suggest clothing and accessories based on the weather of your 
 
 # Pending Functionality
 
-- Weather Tab: 10-day forecast in your current location.
+- Weather Tab: Save user preferences like temperature ranges.
 
-- Apparel Tab: Front-end for suggesting clothing based on current weather.
+- Apparel Tab: Clothing suggestions influenced by weather changes throughout the day.
 
-- Vacation Tab: Will provide apparel suggestions based on the weather at the input destination for the specified duration of stay.
+- Vacation Tab: Save vacations, update weather closer to starting date of vacation.
 
-- Road Trip Tab: Ability to view route between starting and ending points on map, as well as the weather during short periods of time throughout the trip. 
+- Road Trip Tab: Add clothing suggestions based on the weather on the route.
 
 # How to run
 
