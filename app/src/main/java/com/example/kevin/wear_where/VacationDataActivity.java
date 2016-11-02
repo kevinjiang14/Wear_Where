@@ -2,12 +2,16 @@ package com.example.kevin.wear_where;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.AsyncTask.PlannerAST;
 import com.example.kevin.wear_where.WundergroundData.Planner.PlannerObject;
+
+
 
 public class VacationDataActivity extends AppCompatActivity {
 
@@ -18,13 +22,10 @@ public class VacationDataActivity extends AppCompatActivity {
     private TextView destinationTV, dateTV;
     private Button returnButton;
 
-    // Vacation Data views
-    private TextView frameDate, belowFreezing1, cloudy1, fog1, snow1, rain1, windy1, humid1;
+    // Linear Layout we are adding timeframe layout to
+    private LinearLayout tfList;
 
     private int vacationDuration, vacationTimeFrameLength, numofTimeFrames;
-
-    private PlannerObject plannerObject;
-
     private String timeFrames[];
 
     @Override
@@ -60,7 +61,8 @@ public class VacationDataActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+        // Assign the Linear Layout to variable
+        tfList = (LinearLayout) findViewById(R.id.TimeFrameList);
         // Get the length of the vacation
         vacationDuration = CalculateDuration(leaveTime, returnTime);
         // Get the suitable timeframe length
@@ -70,16 +72,23 @@ public class VacationDataActivity extends AppCompatActivity {
         // Get an array of the timeframes being looked up
         timeFrames = CreateTimeFrames(vacationTimeFrameLength, leaveTime, returnTime, numofTimeFrames);
 
-        AssignViews();
-
-
         for(int i = 1; i < timeFrames.length; i++){
-            new PlannerAST(timeFrames[0], timeFrames[timeFrames.length - 1], city, state){
+            // Layout Inflater
+            LayoutInflater li = LayoutInflater.from(this);
+            // Timeframe view to be added to linear layout list
+            final View timeframe = li.inflate(R.layout.timeframe, null);
+
+            // Update text for date
+            TextView tempTextView = (TextView) timeframe.findViewById(R.id.Date);
+            DisplayDate(timeFrames[i - 1], timeFrames[i], tempTextView);
+
+            new PlannerAST(timeFrames[i - 1], timeFrames[i], city, state){
                 @Override
                 protected void onPostExecute(PlannerObject result){
-                    plannerObject = result;
-                    DisplayDate(timeFrames[0], timeFrames[timeFrames.length - 1]);
-                    DisplayResults();
+                    // Updates condition chances
+                    DisplayResults(result, timeframe);
+                    // Add timeframe view to
+                    tfList.addView(timeframe);
                 }
             }.execute();
         }
@@ -210,28 +219,24 @@ public class VacationDataActivity extends AppCompatActivity {
     }
 
     // Displays the data of the given timeframe
-    public void DisplayResults() {
-        belowFreezing1.setText("" + plannerObject.getBelowFreezingChance() + "%");
-        cloudy1.setText("" + plannerObject.getCloudyChance() + "%");
-        fog1.setText("" + plannerObject.getFogChance() + "%");
-        snow1.setText("" + plannerObject.getSnowChance() + "%");
-        rain1.setText("" + plannerObject.getRainChance() + "%");
-        windy1.setText("" + plannerObject.getWindyChance() + "%");
-        humid1.setText("" + plannerObject.getHumidChance() + "%");
+    public void DisplayResults(PlannerObject plannerObject, View timeframe) {
+        TextView tempText = (TextView) timeframe.findViewById(R.id.BelowFreezingPercent);
+        tempText.setText("" + plannerObject.getBelowFreezingChance() + "%");
+        tempText = (TextView) timeframe.findViewById(R.id.CloudyPercent);
+        tempText.setText("" + plannerObject.getCloudyChance() + "%");
+        tempText = (TextView) timeframe.findViewById(R.id.FogPercent);
+        tempText.setText("" + plannerObject.getFogChance() + "%");
+        tempText = (TextView) timeframe.findViewById(R.id.SnowPercent);
+        tempText.setText("" + plannerObject.getSnowChance() + "%");
+        tempText = (TextView) timeframe.findViewById(R.id.RainPercent);
+        tempText.setText("" + plannerObject.getRainChance() + "%");
+        tempText = (TextView) timeframe.findViewById(R.id.WindyPercent);
+        tempText.setText("" + plannerObject.getWindyChance() + "%");
+        tempText = (TextView) timeframe.findViewById(R.id.HumidPercent);
+        tempText.setText("" + plannerObject.getHumidChance() + "%");
     }
 
-    public void DisplayDate(String start, String end){
-        frameDate.setText("" + start.charAt(0) + start.charAt(1) + "/" + start.charAt(2) + start.charAt(3) + " - " + end.charAt(0) + end.charAt(1) + "/" + end.charAt(2) + end.charAt(3));
-    }
-
-    public void AssignViews(){
-        frameDate = (TextView) findViewById(R.id.Date1);
-        belowFreezing1 = (TextView) findViewById(R.id.BelowFreezingPercent1);
-        cloudy1 = (TextView) findViewById(R.id.CloudyPercent1);
-        fog1 = (TextView) findViewById(R.id.FogPercent1);
-        snow1 = (TextView) findViewById(R.id.SnowPercent1);
-        rain1 = (TextView) findViewById(R.id.RainPercent1);
-        windy1 = (TextView) findViewById(R.id.WindyPercent1);
-        humid1 = (TextView) findViewById(R.id.HumidPercent1);
+    public void DisplayDate(String start, String end, TextView view){
+        view.setText("" + start.charAt(0) + start.charAt(1) + "/" + start.charAt(2) + start.charAt(3) + " - " + end.charAt(0) + end.charAt(1) + "/" + end.charAt(2) + end.charAt(3));
     }
 }
