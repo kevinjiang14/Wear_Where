@@ -18,7 +18,7 @@ public class HourlyForecastArray implements JSONArrayData {
     @Override
     public void retrieveData(JSONArray data) {
         FCTtimeArray = new ArrayList<>();
-
+System.out.println("I SHOULDN'T B HERE");
         for (int i = 0; i < data.length(); i++) {
             try {
                 HourlyItem FCTtemp = new HourlyItem();
@@ -31,6 +31,22 @@ public class HourlyForecastArray implements JSONArrayData {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void retrieveData(JSONArray data, int index) {
+        FCTtimeArray = new ArrayList<>();
+
+        try {
+            HourlyItem FCTtemp = new HourlyItem();
+            JSONObject temp = data.getJSONObject(index);
+
+
+            FCTtemp.retrieveData(temp);
+
+            FCTtimeArray.add(FCTtemp);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

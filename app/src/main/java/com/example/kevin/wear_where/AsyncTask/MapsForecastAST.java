@@ -19,13 +19,16 @@ import java.net.URLConnection;
 public class MapsForecastAST extends AsyncTask<Void, Void, HourlyObject> {
     private URL request;
     private LatLng latlng;
+    private int index;
 
-    public MapsForecastAST(LatLng latlng){
+    public MapsForecastAST(LatLng latlng, int index){
         this.latlng = latlng;
+        this.index = index;
     }
 
     @Override
     protected HourlyObject doInBackground(Void... params) {
+
         HourlyObject hourlyForecastTemp;
 
         String condition_link = String.format("http://api.wunderground.com/api/fe0b389aa655786c/hourly10day/q/%s,%s.json", Uri.encode(Double.toString(this.latlng.latitude)), Uri.encode(Double.toString(this.latlng.longitude)));
@@ -33,7 +36,7 @@ public class MapsForecastAST extends AsyncTask<Void, Void, HourlyObject> {
         hourlyForecastTemp = this.loop(condition_link);
 
         // If the connection failed, try again.
-        if (hourlyForecastTemp == null) {
+        if (hourlyForecastTemp == null && index != -1) {
             System.out.println("failed");
             hourlyForecastTemp = this.loop(condition_link);
         }
@@ -61,7 +64,13 @@ public class MapsForecastAST extends AsyncTask<Void, Void, HourlyObject> {
                 result.append(line);
             }
 
-            return new HourlyObject(result);
+            if (index == -1) {
+                // Creating a dummy hourly object to keep everything in order while returning null (don't want this task to finish out of place)
+                HourlyObject temp = new HourlyObject(result, 0);
+                return null;
+            }
+
+            return new HourlyObject(result, index);
         }
 
         catch (Exception e) {

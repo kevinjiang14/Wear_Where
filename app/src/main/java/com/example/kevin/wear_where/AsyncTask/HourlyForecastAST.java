@@ -31,7 +31,7 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
         HourlyObject hourlyObject;
 
         String hourly_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
-
+        System.out.println(hourly_link);
         try {
             request = new URL(hourly_link);
             // Open a URL connection to link

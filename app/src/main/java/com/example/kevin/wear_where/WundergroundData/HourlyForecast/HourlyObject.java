@@ -24,6 +24,18 @@ public class HourlyObject {
         }
     }
 
+    public HourlyObject(StringBuilder results, int index) {
+        HFarray = new HourlyForecastArray();
+        try {
+            baseObject = new JSONObject(results.toString());
+
+            HFarray.retrieveData(baseObject.optJSONArray("hourly_forecast"), index);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public JSONObject getBaseObject() {
         return baseObject;
     }
