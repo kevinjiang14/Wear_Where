@@ -11,22 +11,13 @@ import android.widget.TextView;
 import com.example.kevin.wear_where.AsyncTask.PlannerAST;
 import com.example.kevin.wear_where.WundergroundData.Planner.PlannerObject;
 
-
-
 public class VacationDataActivity extends AppCompatActivity {
 
     // Variables containing information passed from MainActivity
     private String city, state, leaveTime, returnTime;
 
-    // Vacation information views
-    private TextView destinationTV, dateTV;
-    private Button returnButton;
-
     // Linear Layout we are adding timeframe layout to
     private LinearLayout tfList;
-
-    private int vacationDuration, vacationTimeFrameLength, numofTimeFrames;
-    private String timeFrames[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +26,24 @@ public class VacationDataActivity extends AppCompatActivity {
 
 
         // Assign views to variables
-        destinationTV = (TextView) findViewById(R.id.Destination);
-        dateTV = (TextView) findViewById(R.id.Date);
+        TextView destinationTV = (TextView) findViewById(R.id.Destination);
+        TextView dateTV = (TextView) findViewById(R.id.Date);
 
         // Button to return back to MainActivity
-        returnButton = (Button) findViewById(R.id.returnButton);
+        Button returnButton = (Button) findViewById(R.id.returnButton);
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        // Button to save vacation
+        Button saveButton = (Button) findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO: Set what clicking this button does
             }
         });
 
@@ -64,20 +64,19 @@ public class VacationDataActivity extends AppCompatActivity {
         // Assign the Linear Layout to variable
         tfList = (LinearLayout) findViewById(R.id.TimeFrameList);
         // Get the length of the vacation
-        vacationDuration = CalculateDuration(leaveTime, returnTime);
+        int vacationDuration = CalculateDuration(leaveTime, returnTime);
         // Get the suitable timeframe length
-        vacationTimeFrameLength = CalculateTimeFrame(vacationDuration);
+        int vacationTimeFrameLength = CalculateTimeFrame(vacationDuration);
         // Get the number of timeframes given the duration and timeframe length
-        numofTimeFrames = CalculateNumberofTimeFrames(vacationDuration, vacationTimeFrameLength);
+        int numofTimeFrames = CalculateNumberofTimeFrames(vacationDuration, vacationTimeFrameLength);
         // Get an array of the timeframes being looked up
-        timeFrames = CreateTimeFrames(vacationTimeFrameLength, leaveTime, returnTime, numofTimeFrames);
+        final String timeFrames[] = CreateTimeFrames(vacationTimeFrameLength, leaveTime, returnTime, numofTimeFrames);
 
         for(int i = 1; i < timeFrames.length; i++){
             // Layout Inflater
             LayoutInflater li = LayoutInflater.from(this);
             // Timeframe view to be added to linear layout list
             final View timeframe = li.inflate(R.layout.timeframe, null);
-
             // Update text for date
             TextView tempTextView = (TextView) timeframe.findViewById(R.id.Date);
             DisplayDate(timeFrames[i - 1], timeFrames[i], tempTextView);
