@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 
 import com.example.kevin.wear_where.Google.Distance.DistanceMatrixObject;
 import com.example.kevin.wear_where.Google.TimeZone.TimeZoneObject;
+import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyItem;
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -53,7 +54,7 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
     private ArrayList<TimeZoneObject> intervalTimeZones;
 
     // ArrayList to keep track of the Wunderground 10 Day Hourly API information for each interval
-    private ArrayList<HourlyObject> mapsHourlyForecast;
+    private ArrayList<HourlyItem> mapsHourlyForecast;
 
     // Get the current UTC Epoch Time in milliseconds
     private Long currentTimeSeconds = System.currentTimeMillis() - ((new GregorianCalendar().getTimeZone().getRawOffset()) + new GregorianCalendar().getTimeZone().getDSTSavings());
@@ -98,17 +99,13 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
         // For each object in the intervals ArrayList, get the corresponding HourlyObject
         for (int i = 0; i < intervals.size(); ++i) {
 
-            new MapsForecastAST(intervals.get(i), hourlyIndices[i]) {
+            try {
+                mapsHourlyForecast.add(new MapsForecastAST(intervals.get(i), hourlyIndices[i]).execute().get());
+            }
 
-                @Override
-                protected void onPostExecute(HourlyObject item) {
-
-                    // Add the HourlyObject returned to the mapsHourlyForecast (if all goes well, the order of objects added will correspond to the order of intervals)
-                    mapsHourlyForecast.add(item);
-
-                }
-
-            }.execute();
+            catch(Exception e) {
+                e.printStackTrace();
+            }
 
         }
 
@@ -162,9 +159,9 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
 
             // If the index is within range of the 10 days, then initialize the strings to the correct information from the corresponding hourly object
             if (mapsHourlyForecast.get(i) != null) {
-                precipitation = mapsHourlyForecast.get(i).getCondition(0);
-                temperatureF = Integer.toString(mapsHourlyForecast.get(i).getTemperatureF(0)) + (char) 0x00B0 + " F";
-                iconURL = mapsHourlyForecast.get(i).getIconURL(0);
+                precipitation = mapsHourlyForecast.get(i).getCondition();
+                temperatureF = Integer.toString(mapsHourlyForecast.get(i).getTemperature().getTemperature()) + (char) 0x00B0 + " F";
+                iconURL = mapsHourlyForecast.get(i).getIconURL();
             }
 
             // Else, tell the user that we cannot get information for this interval
