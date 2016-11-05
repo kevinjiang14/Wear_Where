@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 
 import com.example.kevin.wear_where.Google.Distance.DistanceMatrixObject;
 import com.example.kevin.wear_where.Google.TimeZone.TimeZoneObject;
+import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyItem;
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -22,7 +23,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Hermes on 10/23/2016.
@@ -51,12 +54,12 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
     private ArrayList<TimeZoneObject> intervalTimeZones;
 
     // ArrayList to keep track of the Wunderground 10 Day Hourly API information for each interval
-    private ArrayList<HourlyObject> mapsHourlyForecast;
+    private ArrayList<HourlyItem> mapsHourlyForecast;
 
     // Get the current UTC Epoch Time in milliseconds
     private Long currentTimeSeconds = System.currentTimeMillis() - ((new GregorianCalendar().getTimeZone().getRawOffset()) + new GregorianCalendar().getTimeZone().getDSTSavings());
 
-    public IntervalInformationAST(ArrayList<LatLng> intervals) {
+    public IntervalInformationAST(final ArrayList<LatLng> intervals) {
 
         // Save parameter for future use
         this.intervals = intervals;
@@ -67,34 +70,41 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
         mapsHourlyForecast = new ArrayList<>();
 
         // Begin GoogleDistanceAST
-        new GoogleDistanceAST(intervals) {
+        try {
+            distanceMatrixObject = new GoogleDistanceAST(intervals).execute().get();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            @Override
-            protected void onPostExecute(DistanceMatrixObject item) {
+        // Get indexes of each interval for retrieving weather info
+        int[] hourlyIndices = new int[intervals.size()];
+        for (int i = 0; i < intervals.size(); ++i) {
 
-                // Get a handle to the returned object from GoogleDistanceAST
-                distanceMatrixObject = item;
+            // Get the duration for the current interval in milliseconds
+            Long intervalDuration = Long.parseLong((distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getSeconds())) * 1000;
 
+            // Add the index for getting the correct hourly information (the index is how many hours it takes to get to the current interval location)
+            int index = (int) (intervalDuration / (3600 * 1000));
+
+            if (index <= 239) {
+                hourlyIndices[i] = index;
             }
 
-        }.execute();
+            else {
+                hourlyIndices[i] = -1;
+            }
+        }
 
         // For each object in the intervals ArrayList, get the corresponding HourlyObject
         for (int i = 0; i < intervals.size(); ++i) {
+            try {
+                mapsHourlyForecast.add(new MapsForecastAST(intervals.get(i), hourlyIndices[i]).execute().get());
+            }
 
-            // Begin MapsForecastAST (if all goes well, the AsyncTasks will complete in the order they started)
-            new MapsForecastAST(intervals.get(i)) {
-
-                @Override
-                protected void onPostExecute(HourlyObject item) {
-
-                    // Add the HourlyObject returned to the mapsHourlyForecast (if all goes well, the order of objects added will correspond to the order of intervals)
-                    mapsHourlyForecast.add(item);
-
-                }
-
-            }.execute();
-
+            catch(Exception e) {
+                e.printStackTrace();
+            }
         }
 
         // For each object in the intervals ArrayList, get the corresponding TimeZoneObject
@@ -114,14 +124,11 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
             }.execute();
 
         }
+
     }
 
     @Override
     protected ArrayList<MarkerOptions> doInBackground(Void... params) throws IllegalStateException {
-
-        // Don't proceed until we have the distanceMatrixObject
-        while (distanceMatrixObject == null) {
-        }
 
         // Don't proceed until we have all information for all intervals
         while (intervals.size() != mapsHourlyForecast.size() && intervals.size() != intervalTimeZones.size()) {
@@ -145,17 +152,14 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
             // Create the string representing the estimated time of arrival to the current interval point
             String estimatedTimeOfArrival = new java.text.SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n' + intervalTimeZones.get(i).getTimeZoneName();
 
-            // Set the index for getting the correct hourly information (the index is how many hours it takes to get to the current interval location)
-            int index = (int) (intervalDuration / (3600 * 1000));
-
             // Declare the strings that will be used to represent the precipitation, temperature (in farenheit), and the iconURL
             String precipitation, temperatureF, iconURL;
 
             // If the index is within range of the 10 days, then initialize the strings to the correct information from the corresponding hourly object
-            if (index <= 240) {
-                precipitation = mapsHourlyForecast.get(i).getCondition(index);
-                temperatureF = Integer.toString(mapsHourlyForecast.get(i).getTemperatureF(index)) + (char) 0x00B0 + " F";
-                iconURL = mapsHourlyForecast.get(i).getIconURL(index);
+            if (mapsHourlyForecast.get(i) != null) {
+                precipitation = mapsHourlyForecast.get(i).getCondition();
+                temperatureF = Integer.toString(mapsHourlyForecast.get(i).getTemperature().getTemperature()) + (char) 0x00B0 + " F";
+                iconURL = mapsHourlyForecast.get(i).getIconURL();
             }
 
             // Else, tell the user that we cannot get information for this interval

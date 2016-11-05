@@ -11,6 +11,14 @@ public class Temperature implements JSONData {
 
     private int temperature;
 
+    public Temperature() {
+
+    }
+
+    public Temperature (int temp) {
+        this.temperature = temp;
+    }
+
     @Override
     public void retrieveData(JSONObject data) {
         temperature = data.optInt("english");
