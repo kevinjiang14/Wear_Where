@@ -1114,8 +1114,34 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // Store the total distance for interval calculation
                 double totalDistance = Double.parseDouble(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
 
-                // Divide the total distance by 10 to get the intervals
-                double interval = totalDistance / 10;
+                /*  Get the number of intervals we should have based on the distance between starting and ending
+                    we should only get the weather if the trip is greater than 80km  */
+                double numIntervals = 0.0;
+                if (totalDistance >= 80000) {
+                    // Divide the total distance by 80km to get how many intervals we should have
+                    numIntervals = totalDistance / 80000;
+                }
+
+                // If the number of intervals is less than 2 and the trip is greater than 1 mile, make an interval at midpoint between starting and ending
+                if (totalDistance >= 1609 && numIntervals < 2) {
+                    numIntervals = 2;
+                }
+
+                // If we have more than 9 intervals, reduce the number of intervals to 9.
+                if (numIntervals > 9) {
+                    numIntervals = 9;
+                }
+
+                // Get the distance between each interval and the previous interval
+                double interval;
+                if (numIntervals > 0.0) {
+                    // Divide the total distance by the number of intervals to get the distance between each interval
+                    interval = totalDistance / (int) numIntervals;
+                }
+                else {
+                    // Else we shouldn't have any intervals other than starting and ending points
+                    interval = Double.MAX_VALUE;
+                }
 
                 // Add all LatLng objects that create the polyline
                 for (int i = 0; i < polyline.size() - 1; ++i) {
@@ -1126,17 +1152,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     counter += com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
                     if (counter >= interval) {
                         weatherPoints.add(polyline.get(i));
-                        counter = 0 - com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
+                        counter = com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
                     }
-                }
-
-                // Remove last added LatLng to avoid a LatLng object similar to the destination LatLng
-                if (weatherPoints.size() == 10) {
-                    weatherPoints.remove(weatherPoints.size() - 1);
                 }
 
                 // Add the final interval point
                 weatherPoints.add(ending);
+
+                // If there are more than 3 points on the map...
+                if (weatherPoints.size() > 3) {
+
+                    // Check whether the second to last point is too close to the ending point
+                    double distBetweenEndingAndSecondToEnding = com.google.maps.android.SphericalUtil.computeDistanceBetween(weatherPoints.get(weatherPoints.size() - 2), weatherPoints.get(weatherPoints.size() - 1));
+                    double distBetweenSecondToEndingAndThirdToEnding = com.google.maps.android.SphericalUtil.computeDistanceBetween(weatherPoints.get(weatherPoints.size() - 3), weatherPoints.get(weatherPoints.size() - 2));
+                    if (distBetweenEndingAndSecondToEnding < 0.5 * distBetweenSecondToEndingAndThirdToEnding) {
+                        weatherPoints.remove(weatherPoints.size() - 2);
+                    }
+
+                }
 
                 // Get the information pertaining to each interval in weatherPoints
                 getIntervalInformation(weatherPoints);
@@ -1155,34 +1188,37 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void getIntervalInformation (ArrayList<LatLng> intervals) {
 
-            // Get the MarkerOptions for the intervals passed into the markers
-            new IntervalInformationAST(intervals) {
+        // Get the MarkerOptions for the intervals passed into the markers
+        new IntervalInformationAST(intervals) {
 
-                @Override
-                protected void onPostExecute(ArrayList<MarkerOptions> intervalInformation) {
-                    markers = intervalInformation;
+            @Override
+            protected void onPostExecute(ArrayList<MarkerOptions> intervalInformation) {
+                markers = intervalInformation;
 
-                    // If the returned list is not null, then add the markers to the map
-                    if (markers != null) {
-                        for (int i = 0; i < markers.size(); ++i) {
-                            maps.addMarker(markers.get(i));
-                        }
+                // If the returned list is not null, then add the markers to the map
+                if (markers != null) {
+                    for (int i = 0; i < markers.size(); ++i) {
+                        maps.addMarker(markers.get(i));
                     }
-
-                    // Else, notify the user that the attempt to get information has failed.
-                    else {
-                        Toast toast = Toast.makeText(getApplicationContext(), "An error has occured while trying to fetch the queried route." + '\n' + "Please try again!", Toast.LENGTH_SHORT);
-                        toast.show();
-                        maps.clear();
-                    }
-
                 }
 
-            }.execute();
+                // Else, notify the user that the attempt to get information has failed.
+                else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "An error has occured while trying to fetch the queried route." + '\n' + "Please try again!", Toast.LENGTH_SHORT);
+                    toast.show();
+                    maps.clear();
+                }
+
+            }
+
+        }.execute();
 
         // Refresh the map
-        mapFragment.getMapAsync(this);
+        this.updateMap();
     }
 
+    public void updateMap() {
+        mapFragment.getMapAsync(this);
+    }
 // End Code for tab 4
 }

@@ -87,7 +87,7 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
             // Add the index for getting the correct hourly information (the index is how many hours it takes to get to the current interval location)
             int index = (int) (intervalDuration / (3600 * 1000));
 
-            if (index <= 240) {
+            if (index <= 239) {
                 hourlyIndices[i] = index;
             }
 
@@ -98,7 +98,6 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
 
         // For each object in the intervals ArrayList, get the corresponding HourlyObject
         for (int i = 0; i < intervals.size(); ++i) {
-
             try {
                 mapsHourlyForecast.add(new MapsForecastAST(intervals.get(i), hourlyIndices[i]).execute().get());
             }
@@ -106,7 +105,6 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
             catch(Exception e) {
                 e.printStackTrace();
             }
-
         }
 
         // For each object in the intervals ArrayList, get the corresponding TimeZoneObject
