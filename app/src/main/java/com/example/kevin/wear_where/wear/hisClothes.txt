@@ -1,0 +1,103 @@
+            Gender:
+        Upper Body Wear
+    freezing
+{
+Canada Goose Coat
+}
+    chilly
+{
+North Face Jacket
+Hoodie
+Sweater
+Long Sleeve
+}
+    warm
+{
+T-Shirt
+Flannel Shirt
+Button Down Shirt
+}
+    hot
+{
+Tank Top
+}
+--
+        Lower Body Wear
+    freezing
+{
+Thermal Leggings
+Snow Pants
+}
+    chilly
+{
+Jeans
+Sweat Pants
+}
+    warm
+{
+Jeans
+Chinos
+}
+    hot
+{
+Cargo Shorts
+Denim Shorts
+}
+--
+        Overall Wear
+    freezing
+{
+
+}
+    chilly
+{
+
+}
+    warm
+{
+
+}
+    hot
+{
+
+}
+--
+        Footwear
+    freezing
+{
+Snow Boots
+Timberlands
+}
+    chilly
+{
+Boots
+}
+    warm
+{
+Sneakers
+}
+    hot
+{
+Flip Flops
+}
+--
+        Miscellaneous
+    freezing
+{
+Scarf
+Gloves
+Fuzzy Socks
+}
+    chilly
+{
+Beanie
+}
+    warm
+{
+
+}
+    hot
+{
+Sunglasses
+}
+--
