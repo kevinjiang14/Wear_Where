@@ -183,7 +183,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private CommentsDataSource datasource;
 
-    private Clothing clothes = new Clothing();
+    private Clothing clothes = new Clothing("herClothes.txt", "hisClothes.txt");
     public final static String MESSAGE = "com.example.kevin.wear_where.MESSAGE";
 
     private Button menuButton;
@@ -248,13 +248,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         headwear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> headwear = clothes.getHeadWear(currentForecast.getTemperature());
-                String[] headwearList = new String[headwear.size()];
-                for (int i = 0; i < headwear.size(); i++){
-                    headwearList[i] = headwear.get(i);
+                ArrayList<String> miscellaneous = clothes.getMisc(currentForecast.getTemperature(), "male");
+                String[] miscellaneousList = new String[miscellaneous.size()];
+                for (int i = 0; i < miscellaneous.size(); i++){
+                    miscellaneousList[i] = miscellaneous.get(i);
                 }
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
-                myIntent.putExtra(MESSAGE, headwearList);
+                myIntent.putExtra(MESSAGE, miscellaneousList);
                 startActivity(myIntent);
             }
         });
@@ -262,7 +262,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         upperbody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> upperbody = clothes.getUpperBody(currentForecast.getTemperature());
+                ArrayList<String> upperbody = clothes.getUpperBody(currentForecast.getTemperature(), "male");
                 String[] upperbodyList = new String[upperbody.size()];
                 for (int i = 0; i < upperbody.size(); i++){
                     upperbodyList[i] = upperbody.get(i);
@@ -276,7 +276,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         lowerbody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> lowerbody = clothes.getLowerBody(currentForecast.getTemperature());
+                ArrayList<String> lowerbody = clothes.getLowerBody(currentForecast.getTemperature(), "male");
                 String[] lowerbodyList = new String[lowerbody.size()];
                 for (int i = 0; i < lowerbody.size(); i++){
                     lowerbodyList[i] = lowerbody.get(i);
@@ -290,7 +290,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         shoes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> shoes = clothes.getShoes(currentForecast.getTemperature());
+                ArrayList<String> shoes = clothes.getShoes(currentForecast.getTemperature(), "male");
                 String[] shoesList = new String[shoes.size()];
                 for (int i = 0; i < shoes.size(); i++){
                     shoesList[i] = shoes.get(i);

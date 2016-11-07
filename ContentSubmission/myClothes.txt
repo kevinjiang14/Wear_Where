@@ -16,6 +16,7 @@
 {
 
 }
+--
         Lower Body Wear
     freezing
 {
@@ -33,6 +34,25 @@
 {
 
 }
+--
+        Overall Wear
+    freezing
+{
+
+}
+    chilly
+{
+
+}
+    warm
+{
+
+}
+    hot
+{
+
+}
+--
         Footwear
     freezing
 {
@@ -50,6 +70,7 @@
 {
 
 }
+--
         Miscellaneous
     freezing
 {
