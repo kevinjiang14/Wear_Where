@@ -5,11 +5,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.app.DatePickerDialog;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.renderscript.ScriptGroup;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -65,6 +67,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Calendar;
@@ -182,8 +186,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String state;
 
     private CommentsDataSource datasource;
-
-    private Clothing clothes = new Clothing("herClothes.txt", "hisClothes.txt");
+    //"C:\Users\Calvin\AndroidStudioProjects\Wear_Where\app\build\intermediates\assets"
+    private Clothing clothes;
     public final static String MESSAGE = "com.example.kevin.wear_where.MESSAGE";
 
     private Button menuButton;
@@ -239,13 +243,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         datasource.open();
 
         //Initialize buttons on tab2
-        Button headwear = (Button)findViewById(R.id.headwear);
+        Button miscellaneous = (Button)findViewById(R.id.headwear);
         Button upperbody = (Button)findViewById(R.id.upperbody);
         Button lowerbody = (Button)findViewById(R.id.lowerbody);
         Button shoes = (Button)findViewById(R.id.shoes);
 
+        //Instantiate clothing from main/assets/ folder
+        AssetManager assetManager = this.getResources().getAssets();
+        try {
+            InputStream firstFile = assetManager.open("herClothes.txt");
+            InputStream secondFile = assetManager.open("hisClothes.txt");
+            clothes = new Clothing(firstFile, secondFile);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+
+
         //Start onclick functions of buttons
-        headwear.setOnClickListener(new View.OnClickListener() {
+        miscellaneous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ArrayList<String> miscellaneous = clothes.getMisc(currentForecast.getTemperature(), "male");

@@ -1,9 +1,15 @@
 package com.example.kevin.wear_where.wear;
 
+import android.content.res.AssetManager;
+
+import com.example.kevin.wear_where.MainActivity;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,15 +49,15 @@ public class Clothing {
     float upperWarm = Float.POSITIVE_INFINITY;
     float thetaHot = Float.POSITIVE_INFINITY;
 
-    public Clothing(String firstFile, String secondFile){
+    public Clothing(InputStream firstFile, InputStream secondFile){
 
-        ArrayList<String> files = new ArrayList<>();
+        ArrayList<InputStream> files = new ArrayList<>();
         files.add(firstFile);
         files.add(secondFile);
         for (int i = 0; i < files.size(); i++){
             Clothes = new ArrayList<>();
             try {
-                FileReader file = new FileReader(files.get(i));
+                InputStreamReader file = new InputStreamReader(files.get(i));
                 BufferedReader br = new BufferedReader(file);
                 String myLine = br.readLine();
                 if (myLine.contains("Female") || myLine.contains("female")){
