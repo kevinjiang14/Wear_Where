@@ -18,11 +18,21 @@ import java.util.ArrayList;
 
 public class VacationDataActivity extends AppCompatActivity {
 
+    public final static String HEADWEAR = "com.example.kevin.wear_where.HeadWear";
+    public final static String UPPERBODY = "com.example.kevin.wear_where.UpperBody";
+    public final static String LOWERBODY = "com.example.kevin.wear_where.LowerBody";
+    public final static String SHOES = "com.example.kevin.wear_where.Shoes";
+
     // Variables containing information passed from MainActivity
     private String city, state, leaveTime, returnTime;
 
     // Linear Layout we are adding timeframe layout to
     private LinearLayout tfList;
+
+    // Bundles to be passed to clothing suggestion
+    private Bundle headwear, upperbody, lowerbody, shoes;
+
+    //private TextView destinationTV, dateTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +87,6 @@ public class VacationDataActivity extends AppCompatActivity {
 //        } else if (returnTime == null) {
 //            Toast.makeText(this, "No return date found", Toast.LENGTH_LONG).show();
 //        }
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
     }
 
     // Calculates the duration of stay roughly estimating all months to be 30days
@@ -146,7 +146,7 @@ public class VacationDataActivity extends AppCompatActivity {
 
     // Calculates an appropriate timeframe for a given duration
     public int CalculateTimeFrame(int duration) {
-        if (duration >= 36 && duration <= 150) {
+        if (duration >= 36) {
             // Return 30days timeframe if duration is from 1-5months
             return 30;
         } else if (duration >= 8 && duration <= 35) {
@@ -196,8 +196,21 @@ public class VacationDataActivity extends AppCompatActivity {
                 }
             }
 
-            if(tempStartMonth == tempEndMonth && tempStartYear == tempStartYear && tempStartDay > tempEndDay){
+            // Same month and year but day exceeds the return day
+            if(tempStartMonth == tempEndMonth && tempStartYear == tempEndYear && tempStartDay > tempEndDay){
                 tempStartDay = tempEndDay;
+            }
+            // Day extends into a new year when return day is still in previous year
+            else if(tempStartYear > tempEndYear){
+                tempStartMonth = tempEndMonth;
+                tempStartDay = tempEndDay;
+                tempStartYear = tempEndYear;
+            }
+            // Day extends to a new month in the same year when return day is still in previous month
+            else if(tempStartYear == tempEndYear && tempStartMonth > tempEndMonth){
+                tempStartMonth = tempEndMonth;
+                tempStartDay = tempEndDay;
+                tempStartYear = tempEndYear;
             }
 
             // Add timeframe to index and increment index
@@ -213,7 +226,7 @@ public class VacationDataActivity extends AppCompatActivity {
         int temp;
 
         if(duration % frameLength != 0){
-            temp = duration / frameLength + 1;
+            temp = (duration / frameLength) + 1;
         }
         else temp = duration / frameLength;
 
@@ -258,41 +271,161 @@ public class VacationDataActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Clothing clothesObject = new Clothing();
                 Intent clothingActivity = new Intent(VacationDataActivity.this, ClothingActivity.class);
-                // Headwear list
-                if(plannerObject.getBelowFreezingChance() >= 30) {
-                    // Get Hearwear for temperature under 32 if the chance of it occuring is above 30%
-                    ArrayList<String> headwear = clothesObject.getHeadWear("31");
-                    String[] headwearList = new String[headwear.size()];
-                    for (int i = 0; i < headwear.size(); i++) {
-                        headwearList[i] = headwear.get(i);
-                    }
-                    clothingActivity.putExtra("Headwear", headwearList);
+                // Add Hot clothing to Bundle
+                if(plannerObject.getTempOverNinetyChance() >= 30) {
+                    AddHot(clothesObject, clothingActivity);
                 }
-                // Upperbody list
-                ArrayList<String> upperbody = clothesObject.getUpperBody("55");
-                String[] upperbodyList = new String[upperbody.size()];
-                for (int i = 0; i < upperbody.size(); i++){
-                    upperbodyList[i] = upperbody.get(i);
-                }
-                clothingActivity.putExtra("Upperbody", upperbodyList);
-                // Lowerbody list
-                ArrayList<String> lowerbody = clothesObject.getLowerBody("55");
-                String[] lowerbodyList = new String[lowerbody.size()];
-                for (int i = 0; i < lowerbody.size(); i++){
-                    lowerbodyList[i] = lowerbody.get(i);
-                }
-                clothingActivity.putExtra("Lowerbody", lowerbodyList);
-                // Shoes list
-                ArrayList<String> shoes = clothesObject.getShoes("55");
-                String[] shoesList = new String[shoes.size()];
-                for (int i = 0; i < shoes.size(); i++){
-                    shoesList[i] = shoes.get(i);
-                }
-                clothingActivity.putExtra("Shoes", shoesList);
 
+                // Add Warm clothing to Bundle
+                if(plannerObject.getTempOverSixtyChance() >= 30) {
+                    AddWarm(clothesObject, clothingActivity);
+                }
+
+                // Add Chilly clothing to Bundle
+                if(plannerObject.getFreezingChance() >= 30) {
+                    AddChilly(clothesObject, clothingActivity);
+                }
+
+                // Add Freezing clothing to Bundle
+                if(plannerObject.getBelowFreezingChance() >= 30) {
+                    AddFreezing(clothesObject, clothingActivity);
+                }
+
+                clothingActivity.putExtra(HEADWEAR + ".Bundle", headwear);
+                clothingActivity.putExtra(UPPERBODY + ".Bundle", upperbody);
+                clothingActivity.putExtra(LOWERBODY + ".Bundle", lowerbody);
+                clothingActivity.putExtra(SHOES + ".Bundle", shoes);
                 startActivity(clothingActivity);
             }
         });
+    }
+
+    // Adds the Hot clothing suggestion to Bundle to be passed to next activity
+    public void AddHot(Clothing clothesObject, Intent clothingActivity){
+        // Get Hearwear for temperature under 32 if the chance of it occuring is above 30%
+        ArrayList<String> headwear = clothesObject.getHeadWear("80");
+        String[] headwearList = new String[headwear.size()];
+        for (int i = 0; i < headwear.size(); i++) {
+            headwearList[i] = headwear.get(i);
+        }
+        this.headwear.putStringArray(HEADWEAR + ".Hot", headwearList);
+        // Upperbody list
+        ArrayList<String> upperbody = clothesObject.getUpperBody("80");
+        String[] upperbodyList = new String[upperbody.size()];
+        for (int i = 0; i < upperbody.size(); i++){
+            upperbodyList[i] = upperbody.get(i);
+        }
+        this.upperbody.putStringArray(UPPERBODY + ".Hot", upperbodyList);
+        // Lowerbody list
+        ArrayList<String> lowerbody = clothesObject.getLowerBody("80");
+        String[] lowerbodyList = new String[lowerbody.size()];
+        for (int i = 0; i < lowerbody.size(); i++){
+            lowerbodyList[i] = lowerbody.get(i);
+        }
+        this.lowerbody.putStringArray(LOWERBODY + ".Hot", lowerbodyList);
+        // Shoes list
+        ArrayList<String> shoes = clothesObject.getShoes("80");
+        String[] shoesList = new String[shoes.size()];
+        for (int i = 0; i < shoes.size(); i++){
+            shoesList[i] = shoes.get(i);
+        }
+        this.shoes.putStringArray(SHOES + ".Hot", shoesList);
+    }
+
+    // Adds the Warm clothing suggestion to Bundle to be passed to next activity
+    public void AddWarm(Clothing clothesObject, Intent clothingActivity){
+        // Get Hearwear for temperature under 32 if the chance of it occuring is above 30%
+        ArrayList<String> headwear = clothesObject.getHeadWear("55");
+        String[] headwearList = new String[headwear.size()];
+        for (int i = 0; i < headwear.size(); i++) {
+            headwearList[i] = headwear.get(i);
+        }
+        this.headwear.putStringArray(HEADWEAR + ".Warm", headwearList);
+        // Upperbody list
+        ArrayList<String> upperbody = clothesObject.getUpperBody("55");
+        String[] upperbodyList = new String[upperbody.size()];
+        for (int i = 0; i < upperbody.size(); i++){
+            upperbodyList[i] = upperbody.get(i);
+        }
+        this.upperbody.putStringArray(UPPERBODY + ".Warm", upperbodyList);
+        // Lowerbody list
+        ArrayList<String> lowerbody = clothesObject.getLowerBody("55");
+        String[] lowerbodyList = new String[lowerbody.size()];
+        for (int i = 0; i < lowerbody.size(); i++){
+            lowerbodyList[i] = lowerbody.get(i);
+        }
+        this.lowerbody.putStringArray(LOWERBODY + ".Warm", lowerbodyList);
+        // Shoes list
+        ArrayList<String> shoes = clothesObject.getShoes("5");
+        String[] shoesList = new String[shoes.size()];
+        for (int i = 0; i < shoes.size(); i++){
+            shoesList[i] = shoes.get(i);
+        }
+        this.shoes.putStringArray(SHOES + ".Warm", shoesList);
+    }
+
+    // Adds the Chilly clothing suggestion to Bundle to be passed to next activity
+    public void AddChilly(Clothing clothesObject, Intent clothingActivity){
+        // Get Hearwear for temperature under 32 if the chance of it occuring is above 30%
+        ArrayList<String> headwear = clothesObject.getHeadWear("32");
+        String[] headwearList = new String[headwear.size()];
+        for (int i = 0; i < headwear.size(); i++) {
+            headwearList[i] = headwear.get(i);
+        }
+        this.headwear.putStringArray(HEADWEAR + ".Chilly", headwearList);
+        // Upperbody list
+        ArrayList<String> upperbody = clothesObject.getUpperBody("32");
+        String[] upperbodyList = new String[upperbody.size()];
+        for (int i = 0; i < upperbody.size(); i++){
+            upperbodyList[i] = upperbody.get(i);
+        }
+        this.upperbody.putStringArray(UPPERBODY + ".Chilly", upperbodyList);
+        // Lowerbody list
+        ArrayList<String> lowerbody = clothesObject.getLowerBody("32");
+        String[] lowerbodyList = new String[lowerbody.size()];
+        for (int i = 0; i < lowerbody.size(); i++){
+            lowerbodyList[i] = lowerbody.get(i);
+        }
+        this.lowerbody.putStringArray(LOWERBODY + ".Chilly", lowerbodyList);
+        // Shoes list
+        ArrayList<String> shoes = clothesObject.getShoes("32");
+        String[] shoesList = new String[shoes.size()];
+        for (int i = 0; i < shoes.size(); i++){
+            shoesList[i] = shoes.get(i);
+        }
+        this.shoes.putStringArray(SHOES + ".Chilly", shoesList);
+    }
+
+    // Adds the Freezing clothing suggestion to Bundle to be passed to next activity
+    public void AddFreezing(Clothing clothesObject, Intent clothingActivity){
+        // Get Hearwear for temperature under 32 if the chance of it occuring is above 30%
+        ArrayList<String> headwear = clothesObject.getHeadWear("31");
+        String[] headwearList = new String[headwear.size()];
+        for (int i = 0; i < headwear.size(); i++) {
+            headwearList[i] = headwear.get(i);
+        }
+        this.headwear.putStringArray(HEADWEAR + ".Freezing", headwearList);
+        // Upperbody list
+        ArrayList<String> upperbody = clothesObject.getUpperBody("31");
+        String[] upperbodyList = new String[upperbody.size()];
+        for (int i = 0; i < upperbody.size(); i++){
+            upperbodyList[i] = upperbody.get(i);
+        }
+        this.upperbody.putStringArray(UPPERBODY + ".Freezing", upperbodyList);
+        // Lowerbody list
+        ArrayList<String> lowerbody = clothesObject.getLowerBody("31");
+        String[] lowerbodyList = new String[lowerbody.size()];
+        for (int i = 0; i < lowerbody.size(); i++){
+            lowerbodyList[i] = lowerbody.get(i);
+        }
+        this.lowerbody.putStringArray(LOWERBODY + ".Freezing", lowerbodyList);
+        // Shoes list
+        ArrayList<String> shoes = clothesObject.getShoes("31");
+        String[] shoesList = new String[shoes.size()];
+        for (int i = 0; i < shoes.size(); i++){
+            shoesList[i] = shoes.get(i);
+        }
+        this.shoes.putStringArray(SHOES + ".Freezing", shoesList);
     }
 
     // Displays the data of the given timeframe
@@ -319,6 +452,12 @@ public class VacationDataActivity extends AppCompatActivity {
     }
 
     public void GetData(){
+        // Initialize Bundles to be used for clothing suggestion
+        headwear = new Bundle();
+        upperbody = new Bundle();
+        lowerbody = new Bundle();
+        shoes = new Bundle();
+
         // Assign the Linear Layout to variable
         tfList = (LinearLayout) findViewById(R.id.TimeFrameList);
         // Get the length of the vacation
@@ -329,6 +468,9 @@ public class VacationDataActivity extends AppCompatActivity {
         int numofTimeFrames = CalculateNumberofTimeFrames(vacationDuration, vacationTimeFrameLength);
         // Get an array of the timeframes being looked up
         final String timeFrames[] = CreateTimeFrames(vacationTimeFrameLength, leaveTime, returnTime, numofTimeFrames);
+
+//        destinationTV.setText("" + vacationDuration + " days");
+//        dateTV.setText("" + vacationTimeFrameLength + " day time frame length, " + numofTimeFrames + " time frames");
 
         for(int i = 1; i < timeFrames.length; i++){
             // Layout Inflater
