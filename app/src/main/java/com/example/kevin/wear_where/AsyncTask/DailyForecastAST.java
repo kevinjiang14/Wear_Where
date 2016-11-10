@@ -34,6 +34,7 @@ public class DailyForecastAST extends AsyncTask<Void, DailyObject, DailyObject>{
 
         try {
             request = new URL(daily_link);
+            System.out.println(daily_link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link

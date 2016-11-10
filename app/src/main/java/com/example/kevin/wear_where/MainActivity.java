@@ -20,12 +20,16 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -234,6 +238,34 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Get a reference to the google maps fragment in tab4
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+
+        final ScrollView scroll = (ScrollView) findViewById(R.id.layout4);
+        ImageView transparent = (ImageView)findViewById(R.id.imagetrans);
+        transparent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        scroll.requestDisallowInterceptTouchEvent(true);
+                        // Disable touch on transparent view
+                        return false;
+
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        scroll.requestDisallowInterceptTouchEvent(false);
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        scroll.requestDisallowInterceptTouchEvent(true);
+                        return false;
+
+                    default:
+                        return true;
+                }
+            }
+        });
 
         datasource = new CommentsDataSource(this);
         datasource.open();
