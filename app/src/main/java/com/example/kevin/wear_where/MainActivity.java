@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.PopupMenu;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -962,7 +963,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.favtemp:
+                    case R.id.warm:
                         // get prompts.xml view
                         LayoutInflater li = LayoutInflater.from(context);
                         View promptsView = li.inflate(R.layout.prompt, null);
@@ -972,7 +973,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         // set prompts.xml to alertdialog builder
                         alertDialogBuilder.setView(promptsView);
 
-                        final EditText userInput = (EditText) promptsView.findViewById(R.id.editText);
+                        final NumberPicker pickmin = (NumberPicker) promptsView.findViewById(R.id.min);
+                        pickmin.setMinValue(0);
 
                         Comment tempComment = datasource.getFirstComment();
                         if(tempComment != null){
