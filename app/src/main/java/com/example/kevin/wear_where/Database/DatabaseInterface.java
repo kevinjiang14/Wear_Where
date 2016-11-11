@@ -29,7 +29,6 @@ public class DatabaseInterface {
         values.put("max", max);
         long insertId = database.insert("ranges", null, values);
         Cursor cursor = database.query("ranges", allColumns, "_id" + " = " + insertId, null, null, null, null);
-        cursor.moveToFirst();
         TempRange range = cursorToRange(cursor);
         cursor.close();
         return range;

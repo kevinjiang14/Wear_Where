@@ -43,8 +43,8 @@ import com.example.kevin.wear_where.AsyncTask.CurrentConditionAST;
 import com.example.kevin.wear_where.AsyncTask.HourlyForecastAST;
 import com.example.kevin.wear_where.AsyncTask.ImageLoaderAST;
 import com.example.kevin.wear_where.WundergroundData.CurrentCondition.ConditionsObject;
-import com.example.kevin.wear_where.Database.Comment;
-import com.example.kevin.wear_where.Database.CommentsDataSource;
+import com.example.kevin.wear_where.Database.TempRange;
+import com.example.kevin.wear_where.Database.DatabaseInterface;
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -182,7 +182,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String city;
     private String state;
 
-    private CommentsDataSource datasource;
+    private DatabaseInterface datasource;
 
     private Clothing clothes = new Clothing();
     public final static String MESSAGE = "com.example.kevin.wear_where.MESSAGE";
@@ -236,7 +236,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         //Get a reference to the google maps fragment in tab4
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
 
-        datasource = new CommentsDataSource(this);
+        datasource = new DatabaseInterface(this);
         datasource.open();
 
         //Initialize buttons on tab2
@@ -974,7 +974,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         alertDialogBuilder.setView(promptsView);
 
                         // Chilly 32 to 54
-                        // Warm 55 79
                         final NumberPicker pickmin = (NumberPicker) promptsView.findViewById(R.id.min);
                         pickmin.setMinValue(0);
                         pickmin.setMaxValue(100);
@@ -985,9 +984,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         pickmax.setMaxValue(100);
                         pickmax.setValue(79);
 
-                        Comment tempComment = datasource.getFirstComment();
-                        if(tempComment != null){
-                            userInput.setText(tempComment.getComment());
+                        TempRange range = datasource.getWarmRange();
+                        if(range != null){
+                            pickmin.setValue(range.getMin());
+                            pickmax.setValue(range.getMax());
                         }
 
                         // set dialog message
@@ -996,13 +996,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                 .setPositiveButton("OK",
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog,int id) {
-                                                Comment tempComment = datasource.getFirstComment();
-                                                if(tempComment == null){
-                                                    datasource.createComment(userInput.getText().toString());
+                                                TempRange range = datasource.getWarmRange();
+                                                if(range == null){
+                                                    datasource.createRange(pickmin.getValue(), pickmax.getValue());
                                                 }
                                                 else{
-                                                    datasource.deleteComment(tempComment);
-                                                    datasource.createComment(userInput.getText().toString());
+                                                    datasource.updateRange(range, pickmin.getValue(), pickmax.getValue());
                                                 }
                                             }
                                         })
