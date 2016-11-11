@@ -973,8 +973,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         // set prompts.xml to alertdialog builder
                         alertDialogBuilder.setView(promptsView);
 
+                        // Chilly 32 to 54
+                        // Warm 55 79
                         final NumberPicker pickmin = (NumberPicker) promptsView.findViewById(R.id.min);
                         pickmin.setMinValue(0);
+                        pickmin.setMaxValue(100);
+                        pickmin.setValue(55);
+
+                        final NumberPicker pickmax = (NumberPicker) promptsView.findViewById(R.id.max);
+                        pickmax.setMinValue(0);
+                        pickmax.setMaxValue(100);
+                        pickmax.setValue(79);
 
                         Comment tempComment = datasource.getFirstComment();
                         if(tempComment != null){
