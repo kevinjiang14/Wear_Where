@@ -29,6 +29,7 @@ public class DatabaseInterface {
         values.put("max", max);
         long insertId = database.insert("ranges", null, values);
         Cursor cursor = database.query("ranges", allColumns, "_id" + " = " + insertId, null, null, null, null);
+        cursor.moveToFirst();   // Why do I need this?
         TempRange range = cursorToRange(cursor);
         cursor.close();
         return range;
@@ -39,7 +40,7 @@ public class DatabaseInterface {
         ContentValues dataToInsert = new ContentValues();
         dataToInsert.put("min", min);
         dataToInsert.put("max", max);
-        database.update("counts", dataToInsert, "_id" + " = " + id, null);
+        database.update("ranges", dataToInsert, "_id" + " = " + id, null);
     }
 
     public void deleteRange(TempRange range) {

@@ -1,9 +1,5 @@
 package com.example.kevin.wear_where.Database;
 
-/**
- * Created by chris on 11/10/16.
- */
-
 public class TempRange {
     private long id;
     private int min;

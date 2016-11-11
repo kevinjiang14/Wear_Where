@@ -973,7 +973,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         // set prompts.xml to alertdialog builder
                         alertDialogBuilder.setView(promptsView);
 
-                        // Chilly 32 to 54
                         final NumberPicker pickmin = (NumberPicker) promptsView.findViewById(R.id.min);
                         pickmin.setMinValue(0);
                         pickmin.setMaxValue(100);
@@ -1017,6 +1016,60 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                         // show it
                         alertDialog.show();
+                        return true;
+                    case R.id.chilly:
+                        // get prompts.xml view
+                        LayoutInflater li3 = LayoutInflater.from(context);
+                        View promptsView3 = li3.inflate(R.layout.prompt, null);
+
+                        AlertDialog.Builder alertDialogBuilder3 = new AlertDialog.Builder(context);
+
+                        // set prompts.xml to alertdialog builder
+                        alertDialogBuilder3.setView(promptsView3);
+
+                        final NumberPicker pickmin2 = (NumberPicker) promptsView3.findViewById(R.id.min);
+                        pickmin2.setMinValue(0);
+                        pickmin2.setMaxValue(100);
+                        pickmin2.setValue(32);
+
+                        final NumberPicker pickmax2 = (NumberPicker) promptsView3.findViewById(R.id.max);
+                        pickmax2.setMinValue(0);
+                        pickmax2.setMaxValue(100);
+                        pickmax2.setValue(54);
+
+                        TempRange range2 = datasource.getChillyRange();
+                        if(range2 != null){
+                            pickmin2.setValue(range2.getMin());
+                            pickmax2.setValue(range2.getMax());
+                        }
+
+                        // set dialog message
+                        alertDialogBuilder3
+                                .setCancelable(false)
+                                .setPositiveButton("OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,int id) {
+                                                TempRange range2 = datasource.getChillyRange();
+                                                if(range2 == null){
+                                                    datasource.createRange(pickmin2.getValue(), pickmax2.getValue());
+                                                }
+                                                else{
+                                                    datasource.updateRange(range2, pickmin2.getValue(), pickmax2.getValue());
+                                                }
+                                            }
+                                        })
+                                .setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+
+                        // create alert dialog
+                        AlertDialog alertDialog3 = alertDialogBuilder3.create();
+
+                        // show it
+                        alertDialog3.show();
                         return true;
                     case R.id.search:
                         // get search_input.xml view
