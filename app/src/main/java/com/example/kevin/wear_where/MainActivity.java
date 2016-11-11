@@ -977,11 +977,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         pickmin.setMinValue(0);
                         pickmin.setMaxValue(100);
                         pickmin.setValue(55);
+                        pickmin.setWrapSelectorWheel(false);
 
                         final NumberPicker pickmax = (NumberPicker) promptsView.findViewById(R.id.max);
                         pickmax.setMinValue(0);
                         pickmax.setMaxValue(100);
                         pickmax.setValue(79);
+                        pickmin.setWrapSelectorWheel(false);
 
                         TempRange range = datasource.getWarmRange();
                         if(range != null){
