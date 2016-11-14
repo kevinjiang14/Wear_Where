@@ -1119,6 +1119,7 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
                             android:id="@+id/mapLayout">
 
                             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -1141,10 +1142,19 @@
                                 android:alpha="0.0"/>
                         </RelativeLayout>
 
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/intervalInformationLayout"
+                            android:layout_below="@+id/mapLayout">
+
+                        </LinearLayout>
+
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_below="@+id/mapLayout"
+                            android:layout_below="@+id/intervalInformationLayout"
                             android:id="@+id/mapInfoLayout">
 
                             <TextView

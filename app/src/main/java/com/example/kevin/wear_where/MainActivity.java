@@ -23,10 +23,12 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -1229,7 +1231,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // If the returned list is not null, then add the markers to the map
                 if (markers != null) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.intervalInformationLayout);
+                    IntervalAdapter adapter = new IntervalAdapter(context, markers);
                     for (int i = 0; i < markers.size(); ++i) {
+                        linearLayout.addView(adapter.getView(i, null, null));
                         maps.addMarker(markers.get(i));
                     }
                 }
