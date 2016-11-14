@@ -996,24 +996,26 @@
                         android:id="@+id/shoes" />
 
                     <Button
-                        android:text="Headwear"
+                        android:text="Miscellaneous"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="121dp"
+                        android:layout_marginTop="100dp"
                         android:id="@+id/miscellaneous"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true" />
 
                     <TextView
-                        android:text="Apparel"
+                        android:text="Choose what you're looking for"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="22dp"
+                        android:layout_marginTop="28dp"
                         android:id="@+id/apparel"
-                        android:textSize="30sp"
+                        android:textSize="22sp"
+                        android:textColor="@color/colorPrimaryDark"
                         android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true" />
+                        android:layout_centerHorizontal="true"
+                        android:fontFamily="casual" />
 
                     <Button
                         android:text="Upperbody"
@@ -1034,6 +1036,16 @@
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_marginTop="22dp" />
+
+                    <Button
+                        android:text="Overalls"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="22dp"
+                        android:id="@+id/overalls"
+                        android:layout_below="@+id/shoes"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
 
                 </RelativeLayout>
 

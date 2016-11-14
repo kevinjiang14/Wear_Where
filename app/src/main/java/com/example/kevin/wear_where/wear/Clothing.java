@@ -39,15 +39,15 @@ public class Clothing {
     private ArrayList<String> warm;
     private ArrayList<String> hot;
 
-    private String gender;
+    public String gender;
 
     //users preferences of temperature, default set as infinity
-    float thetaFreezing = Float.POSITIVE_INFINITY;
-    float lowerChilly = Float.POSITIVE_INFINITY;
-    float upperChilly = Float.POSITIVE_INFINITY;
-    float lowerWarm = Float.POSITIVE_INFINITY;
-    float upperWarm = Float.POSITIVE_INFINITY;
-    float thetaHot = Float.POSITIVE_INFINITY;
+    //float thetaFreezing = Float.POSITIVE_INFINITY;
+    public float lowerChilly = Float.POSITIVE_INFINITY;
+    public float upperChilly = Float.POSITIVE_INFINITY;
+    public float lowerWarm = Float.POSITIVE_INFINITY;
+    public float upperWarm = Float.POSITIVE_INFINITY;
+    //float thetaHot = Float.POSITIVE_INFINITY;
 
     public Clothing(InputStream firstFile, InputStream secondFile){
 
@@ -290,88 +290,172 @@ public class Clothing {
      *  4- Hot
      */
 
-    public ArrayList<String> getUpperBody(String temperature, String gender){
+    public ArrayList<String> getUpperBody(String temperature){
         float temp = Float.parseFloat(temperature);
+        if (lowerChilly != Float.POSITIVE_INFINITY &&
+                upperChilly != Float.POSITIVE_INFINITY &&
+                lowerWarm != Float.POSITIVE_INFINITY &&
+                upperWarm != Float.POSITIVE_INFINITY){
 
-        if (temp < 32){
-            return Factory.get(gender).get(0).get(1);
+            if (temp < lowerChilly){
+                return Factory.get(gender).get(0).get(1);
+            }
+            else if (temp >= lowerChilly && temp < upperChilly){
+                return Factory.get(gender).get(0).get(2);
+            }
+            else if (temp >= lowerWarm && temp < upperWarm){
+                return Factory.get(gender).get(0).get(3);
+            }
+            else if (temp > upperWarm){
+                return Factory.get(gender).get(0).get(4);
+            }
         }
-        else if (temp >= 32 && temp < 55){
-            return Factory.get(gender).get(0).get(2);
-        }
-        else if (temp >= 55 && temp < 80){
-            return Factory.get(gender).get(0).get(3);
-        }
-        else if (temp >= 80){
-            return Factory.get(gender).get(0).get(4);
+        else {
+            if (temp < 40) {
+                return Factory.get(gender).get(0).get(1);
+            } else if (temp >= 40 && temp < 60) {
+                return Factory.get(gender).get(0).get(2);
+            } else if (temp >= 60 && temp < 80) {
+                return Factory.get(gender).get(0).get(3);
+            } else if (temp >= 80) {
+                return Factory.get(gender).get(0).get(4);
+            }
         }
         return new ArrayList<>();
     }
 
-    public ArrayList<String> getLowerBody(String temperature, String gender){
+    public ArrayList<String> getLowerBody(String temperature){
         float temp = Float.parseFloat(temperature);
-        if (temp < 32){
-            return Factory.get(gender).get(1).get(1);
+        if (lowerChilly != Float.POSITIVE_INFINITY &&
+                upperChilly != Float.POSITIVE_INFINITY &&
+                lowerWarm != Float.POSITIVE_INFINITY &&
+                upperWarm != Float.POSITIVE_INFINITY){
+
+            if (temp < lowerChilly){
+                return Factory.get(gender).get(1).get(1);
+            }
+            else if (temp >= lowerChilly && temp < upperChilly){
+                return Factory.get(gender).get(1).get(2);
+            }
+            else if (temp >= lowerWarm && temp < upperWarm){
+                return Factory.get(gender).get(1).get(3);
+            }
+            else if (temp > upperWarm){
+                return Factory.get(gender).get(1).get(4);
+            }
         }
-        else if (temp >= 32 && temp < 55){
-            return Factory.get(gender).get(1).get(2);
-        }
-        else if (temp >= 55 && temp < 80){
-            return Factory.get(gender).get(1).get(3);
-        }
-        else if (temp >= 80){
-            return Factory.get(gender).get(1).get(4);
+        else {
+            if (temp < 40) {
+                return Factory.get(gender).get(1).get(1);
+            } else if (temp >= 40 && temp < 60) {
+                return Factory.get(gender).get(1).get(2);
+            } else if (temp >= 60 && temp < 80) {
+                return Factory.get(gender).get(1).get(3);
+            } else if (temp >= 80) {
+                return Factory.get(gender).get(1).get(4);
+            }
         }
         return new ArrayList<>();
     }
 
-    public ArrayList<String> getOveralls(String temperature, String gender){
+    public ArrayList<String> getOveralls(String temperature){
         float temp = Float.parseFloat(temperature);
-        if (temp < 32){
-            return Factory.get(gender).get(2).get(1);
+        if (lowerChilly != Float.POSITIVE_INFINITY &&
+                upperChilly != Float.POSITIVE_INFINITY &&
+                lowerWarm != Float.POSITIVE_INFINITY &&
+                upperWarm != Float.POSITIVE_INFINITY){
+
+            if (temp < lowerChilly){
+                return Factory.get(gender).get(2).get(1);
+            }
+            else if (temp >= lowerChilly && temp < upperChilly){
+                return Factory.get(gender).get(2).get(2);
+            }
+            else if (temp >= lowerWarm && temp < upperWarm){
+                return Factory.get(gender).get(2).get(3);
+            }
+            else if (temp > upperWarm){
+                return Factory.get(gender).get(2).get(4);
+            }
         }
-        else if (temp >= 32 && temp < 55){
-            return Factory.get(gender).get(2).get(2);
-        }
-        else if (temp >= 55 && temp < 80){
-            return Factory.get(gender).get(2).get(3);
-        }
-        else if (temp >= 80){
-            return Factory.get(gender).get(2).get(4);
+        else {
+            if (temp < 40) {
+                return Factory.get(gender).get(2).get(1);
+            } else if (temp >= 40 && temp < 60) {
+                return Factory.get(gender).get(2).get(2);
+            } else if (temp >= 60 && temp < 80) {
+                return Factory.get(gender).get(2).get(3);
+            } else if (temp >= 80) {
+                return Factory.get(gender).get(2).get(4);
+            }
         }
         return new ArrayList<>();
     }
 
-    public ArrayList<String> getShoes(String temperature, String gender){
+    public ArrayList<String> getShoes(String temperature){
         float temp = Float.parseFloat(temperature);
-        if (temp < 32){
-            return Factory.get(gender).get(3).get(1);
+        if (lowerChilly != Float.POSITIVE_INFINITY &&
+                upperChilly != Float.POSITIVE_INFINITY &&
+                lowerWarm != Float.POSITIVE_INFINITY &&
+                upperWarm != Float.POSITIVE_INFINITY){
+
+            if (temp < lowerChilly){
+                return Factory.get(gender).get(3).get(1);
+            }
+            else if (temp >= lowerChilly && temp < upperChilly){
+                return Factory.get(gender).get(3).get(2);
+            }
+            else if (temp >= lowerWarm && temp < upperWarm){
+                return Factory.get(gender).get(3).get(3);
+            }
+            else if (temp > upperWarm){
+                return Factory.get(gender).get(3).get(4);
+            }
         }
-        else if (temp >= 32 && temp < 55){
-            return Factory.get(gender).get(3).get(2);
-        }
-        else if (temp >= 55 && temp < 80){
-            return Factory.get(gender).get(3).get(3);
-        }
-        else if (temp >= 80){
-            return Factory.get(gender).get(3).get(4);
+        else {
+            if (temp < 40) {
+                return Factory.get(gender).get(3).get(1);
+            } else if (temp >= 40 && temp < 60) {
+                return Factory.get(gender).get(3).get(2);
+            } else if (temp >= 60 && temp < 80) {
+                return Factory.get(gender).get(3).get(3);
+            } else if (temp >= 80) {
+                return Factory.get(gender).get(3).get(4);
+            }
         }
         return new ArrayList<>();
     }
 
-    public ArrayList<String> getMisc(String temperature, String gender){
+    public ArrayList<String> getMisc(String temperature){
         float temp = Float.parseFloat(temperature);
-        if (temp < 32){
-            return Factory.get(gender).get(4).get(1);
+        if (lowerChilly != Float.POSITIVE_INFINITY &&
+                upperChilly != Float.POSITIVE_INFINITY &&
+                lowerWarm != Float.POSITIVE_INFINITY &&
+                upperWarm != Float.POSITIVE_INFINITY){
+
+            if (temp < lowerChilly){
+                return Factory.get(gender).get(4).get(1);
+            }
+            else if (temp >= lowerChilly && temp < upperChilly){
+                return Factory.get(gender).get(4).get(2);
+            }
+            else if (temp >= lowerWarm && temp < upperWarm){
+                return Factory.get(gender).get(4).get(3);
+            }
+            else if (temp > upperWarm){
+                return Factory.get(gender).get(4).get(4);
+            }
         }
-        else if (temp >= 32 && temp < 55){
-            return Factory.get(gender).get(4).get(2);
-        }
-        else if (temp >= 55 && temp < 80){
-            return Factory.get(gender).get(4).get(3);
-        }
-        else if (temp >= 80){
-            return Factory.get(gender).get(4).get(4);
+        else {
+            if (temp < 40) {
+                return Factory.get(gender).get(4).get(1);
+            } else if (temp >= 40 && temp < 60) {
+                return Factory.get(gender).get(4).get(2);
+            } else if (temp >= 60 && temp < 80) {
+                return Factory.get(gender).get(4).get(3);
+            } else if (temp >= 80) {
+                return Factory.get(gender).get(4).get(4);
+            }
         }
         return new ArrayList<>();
     }

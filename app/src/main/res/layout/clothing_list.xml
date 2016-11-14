@@ -7,13 +7,13 @@
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="250dp"
         android:layout_marginTop="13dp"
         android:layout_below="@+id/currentClothes"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:id="@+id/currentList"
-        android:background="@color/colorAccent" />
+        android:background="@color/colorAccent"
+        android:layout_height="225dp" />
 
     <TextView
         android:text="What to wear later"
@@ -27,18 +27,19 @@
         android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
-        android:textColor="@color/colorPrimaryDark" />
+        android:textColor="@color/colorPrimaryDark"
+        android:fontFamily="sans-serif-smallcaps" />
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
         android:layout_below="@+id/laterClothes"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="12dp"
         android:layout_alignParentBottom="true"
         android:id="@+id/laterList"
-        android:background="@color/colorAccent" />
+        android:background="@color/colorAccent"
+        android:layout_height="225dp" />
 
     <TextView
         android:text="What to wear right now"
@@ -50,5 +51,6 @@
         android:textColor="@color/colorPrimaryDark"
         android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/laterClothes"
-        android:layout_alignStart="@+id/laterClothes" />
+        android:layout_alignStart="@+id/laterClothes"
+        android:fontFamily="sans-serif-smallcaps" />
 </RelativeLayout>

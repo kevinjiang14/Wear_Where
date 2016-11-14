@@ -184,9 +184,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String state;
 
     private CommentsDataSource datasource;
-    //"C:\Users\Calvin\AndroidStudioProjects\Wear_Where\app\build\intermediates\assets"
+
     private Clothing clothes;
-    public final static String MESSAGE = "com.example.kevin.wear_where.MESSAGE";
+    public final static String FIRSTMESSAGE = "com.example.kevin.wear_where.MESSAGE_ONE";
+    public final static String SECONDMESSAGE = "com.example.kevin.wear_wear.MESSAGE_TWO";
 
     private Button menuButton;
     final Context context = this;
@@ -245,6 +246,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         Button upperbody = (Button)findViewById(R.id.upperbody);
         Button lowerbody = (Button)findViewById(R.id.lowerbody);
         Button shoes = (Button)findViewById(R.id.shoes);
+        Button overalls = (Button)findViewById(R.id.overalls);
 
         //Instantiate clothing from main/assets/ folder
         AssetManager assetManager = this.getResources().getAssets();
@@ -262,13 +264,36 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         miscellaneous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> miscellaneous = clothes.getMisc(currentForecast.getTemperature(), "male");
+                ArrayList<String> miscellaneous = clothes.getMisc(currentForecast.getTemperature());
                 String[] miscellaneousList = new String[miscellaneous.size()];
                 for (int i = 0; i < miscellaneous.size(); i++){
                     miscellaneousList[i] = miscellaneous.get(i);
                 }
+
+                ArrayList<String> list2 = new ArrayList<>();
+                list2.add("There's nothing to be shown");
+                int hour = 25;
+                String ampm = "25";
+                for (int i = 0; i < 16; i++) {
+                    String temp = hourlyForecast.getTemperatureF(i) + "";
+                    ArrayList<String> arr = clothes.getMisc(currentForecast.getTemperature());
+                    list2 = clothes.getMisc(temp);
+                    if (list2 != arr) {
+                        hour = i;
+                        ampm = hourlyForecast.getAMPM(i);
+                        break;
+                    }
+                }
+                String[] stringList2 = new String[list2.size()];
+                for (int i = 0; i < list2.size(); i++){
+                    stringList2[i] = list2.get(i);
+                }
+
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
-                myIntent.putExtra(MESSAGE, miscellaneousList);
+                myIntent.putExtra(FIRSTMESSAGE, miscellaneousList);
+                myIntent.putExtra(SECONDMESSAGE, stringList2);
+                myIntent.putExtra("TIME", hour);
+                myIntent.putExtra("AMPM", ampm);
                 startActivity(myIntent);
             }
         });
@@ -276,13 +301,36 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         upperbody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> upperbody = clothes.getUpperBody(currentForecast.getTemperature(), "male");
+                ArrayList<String> upperbody = clothes.getUpperBody(currentForecast.getTemperature());
                 String[] upperbodyList = new String[upperbody.size()];
                 for (int i = 0; i < upperbody.size(); i++){
                     upperbodyList[i] = upperbody.get(i);
                 }
+
+                ArrayList<String> list2 = new ArrayList<>();
+                list2.add("There's nothing to be shown");
+                int hour = 25;
+                String ampm = "25";
+                for (int i = 0; i < 16; i++) {
+                    String temp = hourlyForecast.getTemperatureF(i) + "";
+                    ArrayList<String> arr = clothes.getUpperBody(currentForecast.getTemperature());
+                    list2 = clothes.getUpperBody(temp);
+                    if (list2 != arr) {
+                        hour = i;
+                        ampm = hourlyForecast.getAMPM(i);
+                        break;
+                    }
+                }
+                String[] stringList2 = new String[list2.size()];
+                for (int i = 0; i < list2.size(); i++){
+                    stringList2[i] = list2.get(i);
+                }
+
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
-                myIntent.putExtra(MESSAGE, upperbodyList);
+                myIntent.putExtra(FIRSTMESSAGE, upperbodyList);
+                myIntent.putExtra(SECONDMESSAGE, stringList2);
+                myIntent.putExtra("TIME", hour);
+                myIntent.putExtra("AMPM", ampm);
                 startActivity(myIntent);
             }
         });
@@ -290,13 +338,36 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         lowerbody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> lowerbody = clothes.getLowerBody(currentForecast.getTemperature(), "male");
+                ArrayList<String> lowerbody = clothes.getLowerBody(currentForecast.getTemperature());
                 String[] lowerbodyList = new String[lowerbody.size()];
                 for (int i = 0; i < lowerbody.size(); i++){
                     lowerbodyList[i] = lowerbody.get(i);
                 }
+
+                ArrayList<String> list2 = new ArrayList<>();
+                list2.add("There's nothing to be shown");
+                int hour = 25;
+                String ampm = "25";
+                for (int i = 0; i < 16; i++) {
+                    String temp = hourlyForecast.getTemperatureF(i) + "";
+                    ArrayList<String> arr = clothes.getLowerBody(currentForecast.getTemperature());
+                    list2 = clothes.getLowerBody(temp);
+                    if (list2 != arr) {
+                        hour = i;
+                        ampm = hourlyForecast.getAMPM(i);
+                        break;
+                    }
+                }
+                String[] stringList2 = new String[list2.size()];
+                for (int i = 0; i < list2.size(); i++){
+                    stringList2[i] = list2.get(i);
+                }
+
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
-                myIntent.putExtra(MESSAGE, lowerbodyList);
+                myIntent.putExtra(FIRSTMESSAGE, lowerbodyList);
+                myIntent.putExtra(SECONDMESSAGE, stringList2);
+                myIntent.putExtra("TIME", hour);
+                myIntent.putExtra("AMPM", ampm);
                 startActivity(myIntent);
             }
         });
@@ -304,16 +375,82 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         shoes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> shoes = clothes.getShoes(currentForecast.getTemperature(), "male");
+                ArrayList<String> shoes = clothes.getShoes(currentForecast.getTemperature());
                 String[] shoesList = new String[shoes.size()];
                 for (int i = 0; i < shoes.size(); i++){
                     shoesList[i] = shoes.get(i);
                 }
+
+                ArrayList<String> list2 = new ArrayList<>();
+                list2.add("There's nothing to be shown");
+                int hour = 25;
+                String ampm = "25";
+                for (int i = 0; i < 16; i++) {
+                    String temp = hourlyForecast.getTemperatureF(i) + "";
+                    ArrayList<String> arr = clothes.getShoes(currentForecast.getTemperature());
+                    list2 = clothes.getShoes(temp);
+                    if (list2 != arr) {
+                        hour = i;
+                        ampm = hourlyForecast.getAMPM(i);
+                        break;
+                    }
+                }
+                String[] stringList2 = new String[list2.size()];
+                for (int i = 0; i < list2.size(); i++){
+                    stringList2[i] = list2.get(i);
+                }
+
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
-                myIntent.putExtra(MESSAGE, shoesList);
+                myIntent.putExtra(FIRSTMESSAGE, shoesList);
+                myIntent.putExtra(SECONDMESSAGE, stringList2);
+                myIntent.putExtra("TIME", hour);
+                myIntent.putExtra("AMPM", ampm);
                 startActivity(myIntent);
             }
         });
+
+        if (clothes.gender.equals("male")){
+            overalls.setVisibility(View.GONE);
+        }
+        else {
+            overalls.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ArrayList<String> overalls = clothes.getOveralls(currentForecast.getTemperature());
+                    String[] overallsList = new String[overalls.size()];
+                    for (int i = 0; i < overalls.size(); i++){
+                        overallsList[i] = overalls.get(i);
+                    }
+
+                    ArrayList<String> list2 = new ArrayList<>();
+                    list2.add("There's nothing to be shown");
+                    int hour = 25;
+                    String ampm = "25";
+                    for (int i = 0; i < 16; i++) {
+                        String temp = hourlyForecast.getTemperatureF(i) + "";
+                        ArrayList<String> arr = clothes.getOveralls(currentForecast.getTemperature());
+                        list2 = clothes.getOveralls(temp);
+                        if (list2 != arr) {
+                            hour = i;
+                            ampm = hourlyForecast.getAMPM(i);
+                            break;
+                        }
+                    }
+                    String[] stringList2 = new String[list2.size()];
+                    for (int i = 0; i < list2.size(); i++){
+                        stringList2[i] = list2.get(i);
+                    }
+
+                    Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
+                    myIntent.putExtra(FIRSTMESSAGE, overallsList);
+                    myIntent.putExtra(SECONDMESSAGE, stringList2);
+                    myIntent.putExtra("TIME", hour);
+                    myIntent.putExtra("AMPM", ampm);
+                    startActivity(myIntent);
+                }
+            });
+        }
+
     }
 
     //Called when the activity becomes visible to the user. Also called when coming back to the application from another application (assuming this application wasn't killed).
