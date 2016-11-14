@@ -292,6 +292,7 @@ public class Clothing {
 
     public ArrayList<String> getUpperBody(String temperature, String gender){
         float temp = Float.parseFloat(temperature);
+
         if (temp < 32){
             return Factory.get(gender).get(0).get(1);
         }

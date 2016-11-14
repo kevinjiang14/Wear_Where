@@ -11,7 +11,6 @@ import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.renderscript.ScriptGroup;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -67,7 +66,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -243,7 +241,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         datasource.open();
 
         //Initialize buttons on tab2
-        Button miscellaneous = (Button)findViewById(R.id.headwear);
+        Button miscellaneous = (Button)findViewById(R.id.miscellaneous);
         Button upperbody = (Button)findViewById(R.id.upperbody);
         Button lowerbody = (Button)findViewById(R.id.lowerbody);
         Button shoes = (Button)findViewById(R.id.shoes);

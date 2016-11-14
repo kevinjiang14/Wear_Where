@@ -1000,7 +1000,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="121dp"
-                        android:id="@+id/headwear"
+                        android:id="@+id/miscellaneous"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true" />
@@ -1021,7 +1021,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="22dp"
                         android:id="@+id/upperbody"
-                        android:layout_below="@+id/headwear"
+                        android:layout_below="@+id/miscellaneous"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true" />
 
