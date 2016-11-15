@@ -1,0 +1,17 @@
+date: November 3, 2016
+meeting_type: group + ta
+attendance: [<calvinzh>, <thomas69>, <hermesko>, <kevinjia>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: None},
+  {ubit: calvinzh, progress: finish text file parsing, still need to test},
+  {ubit: hermesko, progress: None},
+  {ubit: kevinjia, progress: None}
+  ]
+issues: []
+Notes: |
+    -Expect to represent clothing suggestions by male or female
+    -Have to implement clothing suggestions into vacation and roadtrip tabs
+    -Have to implement a way for users to enter their own temperature ranges
+    -Have to extract feels-like temperature from the API if there exists one
