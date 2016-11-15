@@ -2,6 +2,7 @@ package com.example.kevin.wear_where.AsyncTask;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
 
@@ -32,8 +33,23 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
 
         String hourly_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
+        hourlyObject = this.loop(hourly_link);
+
+        int counter = 0;
+
+        // If the connection failed, try again.
+        if (hourlyObject == null && counter < 3) {
+            hourlyObject = this.loop(hourly_link);
+            counter++;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private HourlyObject loop (String link) {
         try {
-            request = new URL(hourly_link);
+            request = new URL(link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link
@@ -50,14 +66,11 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
                 result.append(line);
             }
 
-            hourlyObject = new HourlyObject(result);
-
-            return hourlyObject;
+            return new HourlyObject(result);
 
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 }

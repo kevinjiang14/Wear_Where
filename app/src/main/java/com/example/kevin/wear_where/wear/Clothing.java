@@ -1,6 +1,5 @@
 package com.example.kevin.wear_where.wear;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
