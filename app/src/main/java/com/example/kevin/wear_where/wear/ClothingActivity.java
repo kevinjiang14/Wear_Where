@@ -32,7 +32,12 @@ public class ClothingActivity extends Activity {
         String[] laterClothingList = intent.getStringArrayExtra(SECONDMESSAGE);
         int hour = intent.getIntExtra("TIME", 25);
         String ampm = intent.getStringExtra("AMPM");
+        String currentCondition = intent.getStringExtra("CONDITION");
 
+        currentText.setText("Clothes for current condition: "+ currentCondition);
+        if (hour != 25) {
+            laterText.setText("Weather change at " + hour + ":00" + ampm + ". Consider bringing these");
+        }
         currentList.setAdapter(new ArrayAdapter<String>(this, R.layout.mylist, R.id.itemname, currentClothingList));
         laterList.setAdapter(new ArrayAdapter<String>(this, R.layout.mylist, R.id.itemname, laterClothingList));
     }

@@ -18,6 +18,6 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:paddingTop="5dp"
-        android:fontFamily="sans-serif" />
+        android:fontFamily="sans-serif-smallcaps" />
 
 </LinearLayout>

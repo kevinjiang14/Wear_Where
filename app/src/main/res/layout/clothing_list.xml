@@ -28,7 +28,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="16dp"
         android:textColor="@color/colorPrimaryDark"
-        android:fontFamily="sans-serif-smallcaps" />
+        android:fontFamily="sans-serif-condensed" />
 
     <ListView
         android:layout_width="match_parent"
@@ -52,5 +52,5 @@
         android:layout_alignParentTop="true"
         android:layout_alignLeft="@+id/laterClothes"
         android:layout_alignStart="@+id/laterClothes"
-        android:fontFamily="sans-serif-smallcaps" />
+        android:fontFamily="sans-serif-condensed" />
 </RelativeLayout>

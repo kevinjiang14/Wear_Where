@@ -271,7 +271,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 ArrayList<String> list2 = new ArrayList<>();
-                list2.add("There's nothing to be shown");
                 int hour = 25;
                 String ampm = "25";
                 for (int i = 0; i < 16; i++) {
@@ -282,6 +281,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         hour = i;
                         ampm = hourlyForecast.getAMPM(i);
                         break;
+                    }
+                    else if (i == 15){
+                        list2 = new ArrayList<String>();
+                        list2.add("There's nothing to be shown");
                     }
                 }
                 String[] stringList2 = new String[list2.size()];
@@ -294,6 +297,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 myIntent.putExtra(SECONDMESSAGE, stringList2);
                 myIntent.putExtra("TIME", hour);
                 myIntent.putExtra("AMPM", ampm);
+                myIntent.putExtra("CONDITION",currentForecast.getCondition());
                 startActivity(myIntent);
             }
         });
@@ -308,7 +312,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 ArrayList<String> list2 = new ArrayList<>();
-                list2.add("There's nothing to be shown");
                 int hour = 25;
                 String ampm = "25";
                 for (int i = 0; i < 16; i++) {
@@ -320,6 +323,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         ampm = hourlyForecast.getAMPM(i);
                         break;
                     }
+                    else if (i == 15){
+                        list2 = new ArrayList<String>();
+                        list2.add("There's nothing to be shown");
+                    }
                 }
                 String[] stringList2 = new String[list2.size()];
                 for (int i = 0; i < list2.size(); i++){
@@ -329,6 +336,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
                 myIntent.putExtra(FIRSTMESSAGE, upperbodyList);
                 myIntent.putExtra(SECONDMESSAGE, stringList2);
+                myIntent.putExtra("CONDITION",currentForecast.getCondition());
                 myIntent.putExtra("TIME", hour);
                 myIntent.putExtra("AMPM", ampm);
                 startActivity(myIntent);
@@ -345,7 +353,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 ArrayList<String> list2 = new ArrayList<>();
-                list2.add("There's nothing to be shown");
                 int hour = 25;
                 String ampm = "25";
                 for (int i = 0; i < 16; i++) {
@@ -357,6 +364,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         ampm = hourlyForecast.getAMPM(i);
                         break;
                     }
+                    else if (i == 15){
+                        list2 = new ArrayList<String>();
+                        list2.add("There's nothing to be shown");
+                    }
                 }
                 String[] stringList2 = new String[list2.size()];
                 for (int i = 0; i < list2.size(); i++){
@@ -366,6 +377,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
                 myIntent.putExtra(FIRSTMESSAGE, lowerbodyList);
                 myIntent.putExtra(SECONDMESSAGE, stringList2);
+                myIntent.putExtra("CONDITION",currentForecast.getCondition());
                 myIntent.putExtra("TIME", hour);
                 myIntent.putExtra("AMPM", ampm);
                 startActivity(myIntent);
@@ -382,7 +394,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 ArrayList<String> list2 = new ArrayList<>();
-                list2.add("There's nothing to be shown");
                 int hour = 25;
                 String ampm = "25";
                 for (int i = 0; i < 16; i++) {
@@ -394,6 +405,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         ampm = hourlyForecast.getAMPM(i);
                         break;
                     }
+                    else if (i == 15){
+                        list2 = new ArrayList<String>();
+                        list2.add("There's nothing to be shown");
+                    }
                 }
                 String[] stringList2 = new String[list2.size()];
                 for (int i = 0; i < list2.size(); i++){
@@ -403,6 +418,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
                 myIntent.putExtra(FIRSTMESSAGE, shoesList);
                 myIntent.putExtra(SECONDMESSAGE, stringList2);
+                myIntent.putExtra("CONDITION",currentForecast.getCondition());
                 myIntent.putExtra("TIME", hour);
                 myIntent.putExtra("AMPM", ampm);
                 startActivity(myIntent);
@@ -423,7 +439,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     }
 
                     ArrayList<String> list2 = new ArrayList<>();
-                    list2.add("There's nothing to be shown");
                     int hour = 25;
                     String ampm = "25";
                     for (int i = 0; i < 16; i++) {
@@ -435,6 +450,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             ampm = hourlyForecast.getAMPM(i);
                             break;
                         }
+                        else if (i == 15){
+                            list2 = new ArrayList<String>();
+                            list2.add("There's nothing to be shown");
+                        }
                     }
                     String[] stringList2 = new String[list2.size()];
                     for (int i = 0; i < list2.size(); i++){
@@ -444,6 +463,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
                     myIntent.putExtra(FIRSTMESSAGE, overallsList);
                     myIntent.putExtra(SECONDMESSAGE, stringList2);
+                    myIntent.putExtra("CONDITION",currentForecast.getCondition());
                     myIntent.putExtra("TIME", hour);
                     myIntent.putExtra("AMPM", ampm);
                     startActivity(myIntent);
