@@ -1,9 +1,8 @@
 package com.example.kevin.wear_where.AsyncTask;
 
-import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
-import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.example.kevin.wear_where.WundergroundData.Geolookup.GeoLookupObject;
 
 import java.io.BufferedReader;
@@ -32,8 +31,23 @@ public class GeolookupAST extends AsyncTask<Void, GeoLookupObject, GeoLookupObje
 
         String geolookupLink = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/geolookup/q/%s,%s.json", Double.toString(latitude), Double.toString(longitude));
 
+        geoLookupObject = this.loop(geolookupLink);
+
+        int counter = 0;
+
+        // If the connection failed, try again.
+        if (geoLookupObject == null && counter < 3) {
+            geoLookupObject = this.loop(geolookupLink);
+            counter++;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private GeoLookupObject loop (String link) {
         try {
-            request = new URL(geolookupLink);
+            request = new URL(link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link
@@ -50,14 +64,11 @@ public class GeolookupAST extends AsyncTask<Void, GeoLookupObject, GeoLookupObje
                 result.append(line);
             }
 
-            geoLookupObject = new GeoLookupObject(result);
-
-            return geoLookupObject;
+            return new GeoLookupObject(result);
 
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 }

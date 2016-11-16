@@ -2,8 +2,8 @@ package com.example.kevin.wear_where.AsyncTask;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
-import com.example.kevin.wear_where.WundergroundData.CurrentCondition.ConditionsObject;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 
 import java.io.BufferedReader;
@@ -32,8 +32,23 @@ public class DailyForecastAST extends AsyncTask<Void, DailyObject, DailyObject>{
 
         String daily_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/forecast10day/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
+        dailyObject = this.loop(daily_link);
+
+        int counter = 0;
+
+        // If the connection failed, try again.
+        if (dailyObject == null && counter < 3) {
+            dailyObject = this.loop(daily_link);
+            counter++;
+        }
+
+        return null;
+    }
+
+    @Nullable
+    private DailyObject loop (String link) {
         try {
-            request = new URL(daily_link);
+            request = new URL(link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link
@@ -50,15 +65,12 @@ public class DailyForecastAST extends AsyncTask<Void, DailyObject, DailyObject>{
                 result.append(line);
             }
 
-            dailyObject = new DailyObject(result);
-
-            return dailyObject;
+            return new DailyObject(result);
 
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 }
 

@@ -1,107 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/Date"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Date"
-        android:text="Chance of Below Freezing: "
-        android:id="@+id/BelowFreezingText"/>
+        <TextView
+            android:id="@+id/Date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/BelowFreezingText"
-        android:layout_below="@id/Date"
-        android:id="@+id/BelowFreezingPercent" />
+        <TextView
+            android:id="@+id/AboveNinetyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Date"
+            android:text="Chance of Hot temperature:" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/BelowFreezingText"
-        android:text="Chance of Cloudy: "
-        android:id="@+id/CloudyText"/>
+        <TextView
+            android:id="@+id/AboveNinetyPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Date"
+            android:layout_toRightOf="@+id/AboveNinetyText" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/CloudyText"
-        android:layout_below="@id/BelowFreezingText"
-        android:id="@+id/CloudyPercent" />
+        <TextView
+            android:id="@+id/AboveSixtyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/AboveNinetyText"
+            android:text="Chance of Warm temperature:" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/CloudyText"
-        android:text="Chance of Fog: "
-        android:id="@+id/FogText"/>
+        <TextView
+            android:id="@+id/AboveSixtyPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/AboveNinetyText"
+            android:layout_toRightOf="@+id/AboveSixtyText" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/FogText"
-        android:layout_below="@id/CloudyText"
-        android:id="@+id/FogPercent" />
+        <TextView
+            android:id="@+id/AboveFreezingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/AboveSixtyText"
+            android:text="Chance of Cool temperature:" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/FogText"
-        android:text="Chance of Snow: "
-        android:id="@+id/SnowText"/>
+        <TextView
+            android:id="@+id/AboveFreezingPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/AboveSixtyText"
+            android:layout_toRightOf="@+id/AboveFreezingText" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/SnowText"
-        android:layout_below="@id/FogText"
-        android:id="@+id/SnowPercent" />
+        <TextView
+            android:id="@+id/BelowFreezingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/AboveFreezingText"
+            android:text="Chance of Freezing temperature:" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/SnowText"
-        android:text="Chance of Rain: "
-        android:id="@+id/RainText"/>
+        <TextView
+            android:id="@+id/BelowFreezingPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/AboveFreezingText"
+            android:layout_toRightOf="@+id/BelowFreezingText" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/RainText"
-        android:layout_below="@id/SnowText"
-        android:id="@+id/RainPercent" />
+        <TextView
+            android:id="@+id/RainText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/BelowFreezingText"
+            android:text="Chance of Rain: " />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/RainText"
-        android:text="Chance of Windy: "
-        android:id="@+id/WindyText"/>
+        <TextView
+            android:id="@+id/RainPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/BelowFreezingText"
+            android:layout_toRightOf="@+id/RainText" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/WindyText"
-        android:layout_below="@id/RainText"
-        android:id="@+id/WindyPercent" />
+        <TextView
+            android:id="@+id/WindyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/RainText"
+            android:text="Chance of Windy: " />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/WindyText"
-        android:text="Chance of Humid: "
-        android:id="@+id/HumidText"/>
+        <TextView
+            android:id="@+id/WindyPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/RainText"
+            android:layout_toRightOf="@+id/WindyText" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_toRightOf="@+id/HumidText"
-        android:layout_below="@id/WindyText"
-        android:id="@+id/HumidPercent" />
+        <TextView
+            android:id="@+id/HumidText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/WindyText"
+            android:text="Chance of Humid: " />
+
+        <TextView
+            android:id="@+id/HumidPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/WindyText"
+            android:layout_toRightOf="@+id/HumidText" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="0dp"
+            android:text="Suggestion"
+            android:id="@+id/Suggestion" />
+    </RelativeLayout>
 </RelativeLayout>
