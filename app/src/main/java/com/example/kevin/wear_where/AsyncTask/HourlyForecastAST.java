@@ -38,7 +38,7 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
         int counter = 0;
 
         // If the connection failed, try again.
-        if (hourlyObject == null && counter < 3) {
+        while (hourlyObject == null && counter < 3) {
             hourlyObject = this.loop(hourly_link);
             counter++;
         }

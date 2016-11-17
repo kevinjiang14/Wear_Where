@@ -41,7 +41,7 @@ public class PlannerAST extends AsyncTask<Void, PlannerObject, PlannerObject> {
         int counter = 0;
 
         // If the connection failed, try again.
-        if (plannerObject == null && counter < 3) {
+        while (plannerObject == null && counter < 3) {
             plannerObject = this.loop(planner_link);
             counter++;
         }

@@ -37,7 +37,7 @@ public class DailyForecastAST extends AsyncTask<Void, DailyObject, DailyObject>{
         int counter = 0;
 
         // If the connection failed, try again.
-        if (dailyObject == null && counter < 3) {
+        while (dailyObject == null && counter < 3) {
             dailyObject = this.loop(daily_link);
             counter++;
         }
