@@ -46,7 +46,7 @@ public class PlannerAST extends AsyncTask<Void, PlannerObject, PlannerObject> {
             counter++;
         }
 
-        return null;
+        return plannerObject;
     }
 
     @Nullable

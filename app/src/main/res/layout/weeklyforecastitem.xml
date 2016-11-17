@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="100dp"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/day1icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="25dp"
+            android:maxWidth="25dp" />
+
+        <TextView
+            android:id="@+id/day1weekday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/day1icon" />
+
+        <TextView
+            android:id="@+id/day1condition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/day1weekday" />
+
+        <TextView
+            android:id="@+id/day1high"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/day1condition" />
+
+        <TextView
+            android:id="@+id/day1low"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/day1high" />
+
+    </RelativeLayout>
+</RelativeLayout>

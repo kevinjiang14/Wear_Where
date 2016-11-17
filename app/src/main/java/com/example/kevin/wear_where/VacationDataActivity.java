@@ -1,6 +1,7 @@
 package com.example.kevin.wear_where;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import com.example.kevin.wear_where.WundergroundData.Planner.PlannerObject;
 import com.example.kevin.wear_where.wear.Clothing;
 import com.example.kevin.wear_where.wear.ClothingActivity;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class VacationDataActivity extends AppCompatActivity {
@@ -32,7 +35,8 @@ public class VacationDataActivity extends AppCompatActivity {
     // Bundles to be passed to clothing suggestion
     private Bundle headwear, upperbody, lowerbody, shoes;
 
-    //private TextView destinationTV, dateTV;
+    InputStream firstFile;
+    InputStream secondFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,17 @@ public class VacationDataActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        //Instantiate clothing from main/assets/ folder
+        AssetManager assetManager = this.getResources().getAssets();
+
+        try {
+            firstFile = assetManager.open("herClothes.txt");
+            secondFile = assetManager.open("hisClothes.txt");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // TODO: Do validation in MainActivity that'll determine if this activity getes loaded
 //        if (city == null || state == null) {
@@ -269,7 +284,7 @@ public class VacationDataActivity extends AppCompatActivity {
         suggestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Clothing clothesObject = new Clothing();
+                Clothing clothesObject = new Clothing(firstFile, secondFile);
                 Intent clothingActivity = new Intent(VacationDataActivity.this, ClothingActivity.class);
                 // Add Hot clothing to Bundle
                 if(plannerObject.getTempOverNinetyChance() >= 30) {
@@ -302,14 +317,6 @@ public class VacationDataActivity extends AppCompatActivity {
 
     // Adds the Hot clothing suggestion to Bundle to be passed to next activity
     public void AddHot(Clothing clothesObject, Intent clothingActivity){
-        // Get Hearwear for temperature under 32 if the chance of it occuring is above 30%
-        ArrayList<String> headwear = clothesObject.getHeadWear("80");
-        String[] headwearList = new String[headwear.size()];
-        for (int i = 0; i < headwear.size(); i++) {
-            headwearList[i] = headwear.get(i);
-        }
-        this.headwear.putStringArray(HEADWEAR + ".Hot", headwearList);
-        // Upperbody list
         ArrayList<String> upperbody = clothesObject.getUpperBody("80");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
@@ -334,14 +341,6 @@ public class VacationDataActivity extends AppCompatActivity {
 
     // Adds the Warm clothing suggestion to Bundle to be passed to next activity
     public void AddWarm(Clothing clothesObject, Intent clothingActivity){
-        // Get Hearwear for temperature under 32 if the chance of it occuring is above 30%
-        ArrayList<String> headwear = clothesObject.getHeadWear("55");
-        String[] headwearList = new String[headwear.size()];
-        for (int i = 0; i < headwear.size(); i++) {
-            headwearList[i] = headwear.get(i);
-        }
-        this.headwear.putStringArray(HEADWEAR + ".Warm", headwearList);
-        // Upperbody list
         ArrayList<String> upperbody = clothesObject.getUpperBody("55");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
@@ -366,14 +365,6 @@ public class VacationDataActivity extends AppCompatActivity {
 
     // Adds the Chilly clothing suggestion to Bundle to be passed to next activity
     public void AddChilly(Clothing clothesObject, Intent clothingActivity){
-        // Get Hearwear for temperature under 32 if the chance of it occuring is above 30%
-        ArrayList<String> headwear = clothesObject.getHeadWear("32");
-        String[] headwearList = new String[headwear.size()];
-        for (int i = 0; i < headwear.size(); i++) {
-            headwearList[i] = headwear.get(i);
-        }
-        this.headwear.putStringArray(HEADWEAR + ".Chilly", headwearList);
-        // Upperbody list
         ArrayList<String> upperbody = clothesObject.getUpperBody("32");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
@@ -398,14 +389,6 @@ public class VacationDataActivity extends AppCompatActivity {
 
     // Adds the Freezing clothing suggestion to Bundle to be passed to next activity
     public void AddFreezing(Clothing clothesObject, Intent clothingActivity){
-        // Get Hearwear for temperature under 32 if the chance of it occuring is above 30%
-        ArrayList<String> headwear = clothesObject.getHeadWear("31");
-        String[] headwearList = new String[headwear.size()];
-        for (int i = 0; i < headwear.size(); i++) {
-            headwearList[i] = headwear.get(i);
-        }
-        this.headwear.putStringArray(HEADWEAR + ".Freezing", headwearList);
-        // Upperbody list
         ArrayList<String> upperbody = clothesObject.getUpperBody("31");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
@@ -468,9 +451,6 @@ public class VacationDataActivity extends AppCompatActivity {
         int numofTimeFrames = CalculateNumberofTimeFrames(vacationDuration, vacationTimeFrameLength);
         // Get an array of the timeframes being looked up
         final String timeFrames[] = CreateTimeFrames(vacationTimeFrameLength, leaveTime, returnTime, numofTimeFrames);
-
-//        destinationTV.setText("" + vacationDuration + " days");
-//        dateTV.setText("" + vacationTimeFrameLength + " day time frame length, " + numofTimeFrames + " time frames");
 
         for(int i = 1; i < timeFrames.length; i++){
             // Layout Inflater
