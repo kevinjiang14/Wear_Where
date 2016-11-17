@@ -42,7 +42,7 @@ public class CurrentConditionAST extends AsyncTask<Void, ConditionsObject, Condi
             counter++;
         }
 
-        return null;
+        return conditionsObject;
     }
 
     @Nullable

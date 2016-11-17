@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spannable;
 import android.text.Spanned;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -15,9 +14,7 @@ import static com.example.kevin.wear_where.MainActivity.FIRSTMESSAGE;
 import static com.example.kevin.wear_where.MainActivity.SECONDMESSAGE;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import static com.example.kevin.wear_where.MainActivity.MESSAGE;
 import static com.example.kevin.wear_where.VacationDataActivity.HEADWEAR;
 import static com.example.kevin.wear_where.VacationDataActivity.LOWERBODY;
 import static com.example.kevin.wear_where.VacationDataActivity.SHOES;
@@ -39,10 +36,7 @@ public class ClothingActivity extends Activity {
         TextView currentText = (TextView)findViewById(R.id.currentClothes);
         TextView laterText = (TextView)findViewById(R.id.laterClothes);
         Intent intent = getIntent();
-        if(intent.getStringArrayExtra(MESSAGE) != null) {
-            String[] clothingList = intent.getStringArrayExtra(MESSAGE);
-            list.setAdapter(new ArrayAdapter<>(this, R.layout.mylist, R.id.itemname, clothingList));
-
+        if(intent.getStringArrayExtra(FIRSTMESSAGE) != null && intent.getStringArrayExtra(SECONDMESSAGE) != null) {
             String[] currentClothingList = intent.getStringArrayExtra(FIRSTMESSAGE);
             String[] laterClothingList = intent.getStringArrayExtra(SECONDMESSAGE);
             int hour = intent.getIntExtra("TIME", 25);
@@ -58,7 +52,7 @@ public class ClothingActivity extends Activity {
         }
         else {
             Spanned[] clothingList = CreateVacationSuggestionList();
-            list.setAdapter(new ArrayAdapter<>(this, R.layout.mylist, R.id.itemname, clothingList));
+            currentList.setAdapter(new ArrayAdapter<>(this, R.layout.mylist, R.id.itemname, clothingList));
         }
     }
 
@@ -68,36 +62,36 @@ public class ClothingActivity extends Activity {
         String[] list;
 
         // Add Headwear items to arraylist
-        tempList.add(Html.fromHtml("<b>HEADWEAR</b>"));
-        bundle = getIntent().getBundleExtra(HEADWEAR + ".Bundle");
-        if(bundle.get(HEADWEAR + ".Hot") != null){
-            tempList.add(Html.fromHtml("<b>Hot</b>"));
-            list = bundle.getStringArray(HEADWEAR + ".Hot");
-            for (int i = 0; i < list.length; i++) {
-                tempList.add(Html.fromHtml(list[i]));
-            }
-        }
-        if(bundle.get(HEADWEAR + ".Warm") != null){
-            tempList.add(Html.fromHtml("<b>Warm</b>"));
-            list = bundle.getStringArray(HEADWEAR + ".Warm");
-            for (int i = 0; i < list.length; i++) {
-                tempList.add(Html.fromHtml(list[i]));
-            }
-        }
-        if(bundle.get(HEADWEAR + ".Chilly") != null){
-            tempList.add(Html.fromHtml("<b>Chilly</b>"));
-            list = bundle.getStringArray(HEADWEAR + ".Chilly");
-            for (int i = 0; i < list.length; i++) {
-                tempList.add(Html.fromHtml(list[i]));
-            }
-        }
-        if(bundle.getStringArray(HEADWEAR + ".Freezing") != null) {
-            tempList.add(Html.fromHtml("<b>Freezing</b>"));
-            list = bundle.getStringArray(HEADWEAR + ".Freezing");
-            for (int i = 0; i < list.length; i++) {
-                tempList.add(Html.fromHtml(list[i]));
-            }
-        }
+//        tempList.add(Html.fromHtml("<b>HEADWEAR</b>"));
+//        bundle = getIntent().getBundleExtra(HEADWEAR + ".Bundle");
+//        if(bundle.get(HEADWEAR + ".Hot") != null){
+//            tempList.add(Html.fromHtml("<b>Hot</b>"));
+//            list = bundle.getStringArray(HEADWEAR + ".Hot");
+//            for (int i = 0; i < list.length; i++) {
+//                tempList.add(Html.fromHtml(list[i]));
+//            }
+//        }
+//        if(bundle.get(HEADWEAR + ".Warm") != null){
+//            tempList.add(Html.fromHtml("<b>Warm</b>"));
+//            list = bundle.getStringArray(HEADWEAR + ".Warm");
+//            for (int i = 0; i < list.length; i++) {
+//                tempList.add(Html.fromHtml(list[i]));
+//            }
+//        }
+//        if(bundle.get(HEADWEAR + ".Chilly") != null){
+//            tempList.add(Html.fromHtml("<b>Chilly</b>"));
+//            list = bundle.getStringArray(HEADWEAR + ".Chilly");
+//            for (int i = 0; i < list.length; i++) {
+//                tempList.add(Html.fromHtml(list[i]));
+//            }
+//        }
+//        if(bundle.getStringArray(HEADWEAR + ".Freezing") != null) {
+//            tempList.add(Html.fromHtml("<b>Freezing</b>"));
+//            list = bundle.getStringArray(HEADWEAR + ".Freezing");
+//            for (int i = 0; i < list.length; i++) {
+//                tempList.add(Html.fromHtml(list[i]));
+//            }
+//        }
 
         // Add Upperbody items to arraylist
         tempList.add(Html.fromHtml("<b>UPPERBODY</b>"));

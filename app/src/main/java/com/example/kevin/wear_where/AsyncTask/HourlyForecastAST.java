@@ -43,7 +43,7 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
             counter++;
         }
 
-        return null;
+        return hourlyObject;
     }
 
     @Nullable

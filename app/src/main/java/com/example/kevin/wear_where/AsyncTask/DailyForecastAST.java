@@ -42,7 +42,7 @@ public class DailyForecastAST extends AsyncTask<Void, DailyObject, DailyObject>{
             counter++;
         }
 
-        return null;
+        return dailyObject;
     }
 
     @Nullable

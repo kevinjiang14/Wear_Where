@@ -41,7 +41,7 @@ public class GeolookupAST extends AsyncTask<Void, GeoLookupObject, GeoLookupObje
             counter++;
         }
 
-        return null;
+        return geoLookupObject;
     }
 
     @Nullable
