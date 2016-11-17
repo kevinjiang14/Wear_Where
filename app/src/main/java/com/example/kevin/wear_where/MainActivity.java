@@ -185,6 +185,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String state;
 
     private DatabaseInterface datasource;
+    private TempRange warmRange;
+    private TempRange chillyRange;
 
     private Clothing clothes;
     public final static String FIRSTMESSAGE = "com.example.kevin.wear_where.MESSAGE_ONE";
@@ -241,6 +243,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         datasource = new DatabaseInterface(this);
         datasource.open();
+
+        warmRange = datasource.getWarmRange();
+        if(warmRange == null){
+            datasource.createRange(40, 59);
+        }
+
+        chillyRange = datasource.getChillyRange();
+        if(chillyRange == null){
+            datasource.createRange(60, 79);
+        }
 
         //Initialize buttons on tab2
         Button miscellaneous = (Button)findViewById(R.id.miscellaneous);
