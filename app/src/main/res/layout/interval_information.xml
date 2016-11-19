@@ -12,7 +12,7 @@
         android:textAlignment="center"
         android:textColor="#000000"
         android:textStyle="bold"
-        android:textSize="15sp"
+        android:textSize="16sp"
         tools:text="Title"
         />
 
@@ -28,10 +28,22 @@
         />
 
     <TextView
+        android:id="@+id/interval_clothing_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/interval_subtitle"
+        android:text="Clothing Suggestions"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textColor="#888888"
+        android:textSize="15sp"
+        tools:text="Clothes_Title"/>
+
+    <TextView
         android:id="@+id/interval_clothing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/interval_title"
+        android:layout_below="@+id/interval_clothing_title"
         android:textAlignment="center"
         android:textColor="#888888"
         android:textSize="14sp"

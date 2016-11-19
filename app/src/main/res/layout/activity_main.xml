@@ -1139,6 +1139,7 @@
                                 android:id="@+id/map"
                                 android:layout_width="match_parent"
                                 android:layout_height="360dp"
+                                android:paddingBottom="14sp"
                                 />
 
                             <ImageView
@@ -1152,6 +1153,38 @@
                                 android:layout_alignLeft="@+id/map"
                                 android:layout_alignStart="@+id/map"
                                 android:alpha="0.0"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/overallSuggestionTitleTextView"
+                                android:layout_below="@+id/map"
+                                android:layout_centerHorizontal="true"
+                                android:textAlignment="center"
+                                android:textStyle="bold"
+                                android:textColor="#000000"
+                                android:textSize="0sp"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/overallSuggestionTextView"
+                                android:textAlignment="center"
+                                android:layout_below="@+id/overallSuggestionTitleTextView"
+                                android:layout_centerHorizontal="true"
+                                android:textColor="#888888"
+                                android:textSize="0sp"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/intervalDetailsTitle"
+                                android:textAlignment="center"
+                                android:layout_below="@+id/overallSuggestionTextView"
+                                android:layout_centerHorizontal="true"
+                                android:textStyle="bold"
+                                android:textColor="#000000"
+                                android:textSize="0sp"/>
                         </RelativeLayout>
 
                         <LinearLayout
@@ -1174,11 +1207,10 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
-                                android:paddingTop="14sp"
                                 android:text="Enter a Starting Location..."
                                 android:textColor="#000000"
                                 android:textStyle="bold"
-                                android:textSize="15sp" />
+                                android:textSize="16sp" />
 
                             <fragment
                                 android:id="@+id/starting_location_autocomplete_fragment"
@@ -1197,7 +1229,7 @@
                                 android:textColor="#000000"
                                 android:textStyle="bold"
                                 android:text="Enter an Ending Location..."
-                                android:textSize="15sp" />
+                                android:textSize="16sp" />
 
                             <fragment
                                 android:id="@+id/ending_location_autocomplete_fragment"

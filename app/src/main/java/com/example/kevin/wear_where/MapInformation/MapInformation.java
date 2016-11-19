@@ -12,10 +12,12 @@ public class MapInformation {
     public final ArrayList<MarkerOptions> intervalInformation;
     public final ArrayList<String> intervalTitles;
     public final ArrayList<String> intervalDetails;
+    public final ArrayList<String> intervalTemperatures;
 
-    public MapInformation(ArrayList<MarkerOptions> intervalInformation, ArrayList<String> intervalTitles, ArrayList<String> intervalDetails) {
+    public MapInformation(ArrayList<MarkerOptions> intervalInformation, ArrayList<String> intervalTitles, ArrayList<String> intervalDetails, ArrayList<String> intervalTemperatures) {
         this.intervalInformation = intervalInformation;
         this.intervalTitles = intervalTitles;
         this.intervalDetails = intervalDetails;
+        this.intervalTemperatures = intervalTemperatures;
     }
 }
