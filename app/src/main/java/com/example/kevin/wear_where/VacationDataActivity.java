@@ -33,6 +33,7 @@ public class VacationDataActivity extends AppCompatActivity {
 
     // Bundles to be passed to clothing suggestion
     private Bundle upperbody, lowerbody, shoes;
+    private Bundle upperbodyConsider, lowerbodyConsider, shoesConsider;
 
     InputStream firstFile;
     InputStream secondFile;
@@ -287,11 +288,23 @@ public class VacationDataActivity extends AppCompatActivity {
                 upperbody = new Bundle();
                 lowerbody = new Bundle();
                 shoes = new Bundle();
+                upperbodyConsider = new Bundle();
+                lowerbodyConsider = new Bundle();
+                shoesConsider = new Bundle();
                 Clothing clothesObject = new Clothing(firstFile, secondFile);
                 Intent clothingActivity = new Intent(VacationDataActivity.this, ClothingActivity.class);
                 // Add Hot clothing to Bundle
                 if(plannerObject.getTempOverNinetyChance() >= plannerObject.getTempOverSixtyChance() && plannerObject.getTempOverNinetyChance() >= plannerObject.getFreezingChance() && plannerObject.getTempOverNinetyChance() >= plannerObject.getBelowFreezingChance()) {
                     AddHot(clothesObject);
+//                    if(plannerObject.getTempOverSixtyChance() >= 30){
+//
+//                    }
+//                    if(plannerObject.getFreezingChance() >= 30){
+//
+//                    }
+//                    if(plannerObject.getBelowFreezingChance() >= 30){
+//
+//                    }
                 }
                 // Add Warm clothing to Bundle
                 else if(plannerObject.getTempOverSixtyChance() >= plannerObject.getTempOverNinetyChance() && plannerObject.getTempOverSixtyChance() >= plannerObject.getFreezingChance() && plannerObject.getTempOverSixtyChance() >= plannerObject.getBelowFreezingChance()) {
@@ -307,7 +320,6 @@ public class VacationDataActivity extends AppCompatActivity {
                 else if(plannerObject.getBelowFreezingChance() >= plannerObject.getTempOverNinetyChance() && plannerObject.getBelowFreezingChance() >= plannerObject.getTempOverSixtyChance() && plannerObject.getBelowFreezingChance() >= plannerObject.getFreezingChance()) {
                     AddFreezing(clothesObject);
                 }
-
 
                 clothingActivity.putExtra(UPPERBODY + ".Bundle", upperbody);
                 clothingActivity.putExtra(LOWERBODY + ".Bundle", lowerbody);

@@ -12,6 +12,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.R;
+
+import org.w3c.dom.Text;
+
 import static com.example.kevin.wear_where.MainActivity.FIRSTMESSAGE;
 import static com.example.kevin.wear_where.MainActivity.SECONDMESSAGE;
 
@@ -52,7 +55,11 @@ public class ClothingActivity extends Activity {
             laterList.setAdapter(new ArrayAdapter<String>(this, R.layout.mylist, R.id.itemname, laterClothingList));
         }
         else {
+            currentText.setText("What to bring");
+            laterText.setText("Consider also bringing");
             Spanned[] clothingList = CreateVacationSuggestionList();
+            currentList.setAdapter(new ArrayAdapter<>(this, R.layout.mylist, R.id.itemname, clothingList));
+            clothingList = CreateVacationSuggestionList();
             currentList.setAdapter(new ArrayAdapter<>(this, R.layout.mylist, R.id.itemname, clothingList));
         }
         Button returnButton = (Button) findViewById(R.id.returnButton);
