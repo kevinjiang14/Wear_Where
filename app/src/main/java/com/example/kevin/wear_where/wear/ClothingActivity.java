@@ -5,17 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.kevin.wear_where.R;
+
+import org.w3c.dom.Text;
+
 import static com.example.kevin.wear_where.MainActivity.FIRSTMESSAGE;
 import static com.example.kevin.wear_where.MainActivity.SECONDMESSAGE;
 
 import java.util.ArrayList;
 
-import static com.example.kevin.wear_where.VacationDataActivity.HEADWEAR;
 import static com.example.kevin.wear_where.VacationDataActivity.LOWERBODY;
 import static com.example.kevin.wear_where.VacationDataActivity.SHOES;
 import static com.example.kevin.wear_where.VacationDataActivity.UPPERBODY;
@@ -51,48 +55,26 @@ public class ClothingActivity extends Activity {
             laterList.setAdapter(new ArrayAdapter<String>(this, R.layout.mylist, R.id.itemname, laterClothingList));
         }
         else {
+            currentText.setText("What to bring");
+            laterText.setText("Consider also bringing");
             Spanned[] clothingList = CreateVacationSuggestionList();
             currentList.setAdapter(new ArrayAdapter<>(this, R.layout.mylist, R.id.itemname, clothingList));
+            clothingList = CreateVacationSuggestionList();
+            currentList.setAdapter(new ArrayAdapter<>(this, R.layout.mylist, R.id.itemname, clothingList));
         }
+        Button returnButton = (Button) findViewById(R.id.returnButton);
+        returnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     public Spanned[] CreateVacationSuggestionList(){
         ArrayList<Spanned> tempList = new ArrayList<>();
         Bundle bundle;
         String[] list;
-
-        // Add Headwear items to arraylist
-//        tempList.add(Html.fromHtml("<b>HEADWEAR</b>"));
-//        bundle = getIntent().getBundleExtra(HEADWEAR + ".Bundle");
-//        if(bundle.get(HEADWEAR + ".Hot") != null){
-//            tempList.add(Html.fromHtml("<b>Hot</b>"));
-//            list = bundle.getStringArray(HEADWEAR + ".Hot");
-//            for (int i = 0; i < list.length; i++) {
-//                tempList.add(Html.fromHtml(list[i]));
-//            }
-//        }
-//        if(bundle.get(HEADWEAR + ".Warm") != null){
-//            tempList.add(Html.fromHtml("<b>Warm</b>"));
-//            list = bundle.getStringArray(HEADWEAR + ".Warm");
-//            for (int i = 0; i < list.length; i++) {
-//                tempList.add(Html.fromHtml(list[i]));
-//            }
-//        }
-//        if(bundle.get(HEADWEAR + ".Chilly") != null){
-//            tempList.add(Html.fromHtml("<b>Chilly</b>"));
-//            list = bundle.getStringArray(HEADWEAR + ".Chilly");
-//            for (int i = 0; i < list.length; i++) {
-//                tempList.add(Html.fromHtml(list[i]));
-//            }
-//        }
-//        if(bundle.getStringArray(HEADWEAR + ".Freezing") != null) {
-//            tempList.add(Html.fromHtml("<b>Freezing</b>"));
-//            list = bundle.getStringArray(HEADWEAR + ".Freezing");
-//            for (int i = 0; i < list.length; i++) {
-//                tempList.add(Html.fromHtml(list[i]));
-//            }
-//        }
-
         // Add Upperbody items to arraylist
         tempList.add(Html.fromHtml("<b>UPPERBODY</b>"));
         bundle = getIntent().getBundleExtra(UPPERBODY + ".Bundle");

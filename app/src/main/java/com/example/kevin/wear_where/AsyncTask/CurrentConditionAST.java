@@ -36,8 +36,8 @@ public class CurrentConditionAST extends AsyncTask<Void, ConditionsObject, Condi
 
         int counter = 0;
 
-        // If the connection failed, try again.
-        if (conditionsObject == null && counter < 3) {
+        while (conditionsObject == null && counter < 3) {
+            // If the connection failed, try again.
             conditionsObject = this.loop(current_link);
             counter++;
         }

@@ -36,7 +36,7 @@ public class GeolookupAST extends AsyncTask<Void, GeoLookupObject, GeoLookupObje
         int counter = 0;
 
         // If the connection failed, try again.
-        if (geoLookupObject == null && counter < 3) {
+        while (geoLookupObject == null && counter < 3) {
             geoLookupObject = this.loop(geolookupLink);
             counter++;
         }

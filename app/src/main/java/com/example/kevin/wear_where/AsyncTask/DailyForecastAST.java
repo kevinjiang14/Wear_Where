@@ -30,14 +30,14 @@ public class DailyForecastAST extends AsyncTask<Void, DailyObject, DailyObject>{
     protected DailyObject doInBackground(Void... params) {
         DailyObject dailyObject;
 
-        String daily_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/forecast10day/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
+        String daily_link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/forecast10day/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
         dailyObject = this.loop(daily_link);
 
         int counter = 0;
 
         // If the connection failed, try again.
-        if (dailyObject == null && counter < 3) {
+        while (dailyObject == null && counter < 3) {
             dailyObject = this.loop(daily_link);
             counter++;
         }

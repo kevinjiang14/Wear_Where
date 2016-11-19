@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 public class VacationDataActivity extends AppCompatActivity {
 
-    public final static String HEADWEAR = "com.example.kevin.wear_where.HeadWear";
     public final static String UPPERBODY = "com.example.kevin.wear_where.UpperBody";
     public final static String LOWERBODY = "com.example.kevin.wear_where.LowerBody";
     public final static String SHOES = "com.example.kevin.wear_where.Shoes";
@@ -33,7 +32,8 @@ public class VacationDataActivity extends AppCompatActivity {
     private LinearLayout tfList;
 
     // Bundles to be passed to clothing suggestion
-    private Bundle headwear, upperbody, lowerbody, shoes;
+    private Bundle upperbody, lowerbody, shoes;
+    private Bundle upperbodyConsider, lowerbodyConsider, shoesConsider;
 
     InputStream firstFile;
     InputStream secondFile;
@@ -54,15 +54,6 @@ public class VacationDataActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-            }
-        });
-
-        // Button to save vacation
-        Button saveButton = (Button) findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO: Set what clicking this button does
             }
         });
 
@@ -284,29 +275,43 @@ public class VacationDataActivity extends AppCompatActivity {
         suggestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Initialize Bundles to be used for clothing suggestion
+                upperbody = new Bundle();
+                lowerbody = new Bundle();
+                shoes = new Bundle();
+                upperbodyConsider = new Bundle();
+                lowerbodyConsider = new Bundle();
+                shoesConsider = new Bundle();
                 Clothing clothesObject = new Clothing(firstFile, secondFile);
                 Intent clothingActivity = new Intent(VacationDataActivity.this, ClothingActivity.class);
                 // Add Hot clothing to Bundle
-                if(plannerObject.getTempOverNinetyChance() >= 30) {
-                    AddHot(clothesObject, clothingActivity);
+                if(plannerObject.getTempOverNinetyChance() >= plannerObject.getTempOverSixtyChance() && plannerObject.getTempOverNinetyChance() >= plannerObject.getFreezingChance() && plannerObject.getTempOverNinetyChance() >= plannerObject.getBelowFreezingChance()) {
+                    AddHot(clothesObject);
+//                    if(plannerObject.getTempOverSixtyChance() >= 30){
+//
+//                    }
+//                    if(plannerObject.getFreezingChance() >= 30){
+//
+//                    }
+//                    if(plannerObject.getBelowFreezingChance() >= 30){
+//
+//                    }
                 }
-
                 // Add Warm clothing to Bundle
-                if(plannerObject.getTempOverSixtyChance() >= 30) {
-                    AddWarm(clothesObject, clothingActivity);
+                else if(plannerObject.getTempOverSixtyChance() >= plannerObject.getTempOverNinetyChance() && plannerObject.getTempOverSixtyChance() >= plannerObject.getFreezingChance() && plannerObject.getTempOverSixtyChance() >= plannerObject.getBelowFreezingChance()) {
+                    AddWarm(clothesObject);
                 }
 
                 // Add Chilly clothing to Bundle
-                if(plannerObject.getFreezingChance() >= 30) {
-                    AddChilly(clothesObject, clothingActivity);
+                else if(plannerObject.getFreezingChance() >= plannerObject.getTempOverNinetyChance() && plannerObject.getFreezingChance() >= plannerObject.getTempOverSixtyChance() && plannerObject.getFreezingChance() >= plannerObject.getBelowFreezingChance()) {
+                    AddChilly(clothesObject);
                 }
 
                 // Add Freezing clothing to Bundle
-                if(plannerObject.getBelowFreezingChance() >= 30) {
-                    AddFreezing(clothesObject, clothingActivity);
+                else if(plannerObject.getBelowFreezingChance() >= plannerObject.getTempOverNinetyChance() && plannerObject.getBelowFreezingChance() >= plannerObject.getTempOverSixtyChance() && plannerObject.getBelowFreezingChance() >= plannerObject.getFreezingChance()) {
+                    AddFreezing(clothesObject);
                 }
 
-                clothingActivity.putExtra(HEADWEAR + ".Bundle", headwear);
                 clothingActivity.putExtra(UPPERBODY + ".Bundle", upperbody);
                 clothingActivity.putExtra(LOWERBODY + ".Bundle", lowerbody);
                 clothingActivity.putExtra(SHOES + ".Bundle", shoes);
@@ -316,7 +321,7 @@ public class VacationDataActivity extends AppCompatActivity {
     }
 
     // Adds the Hot clothing suggestion to Bundle to be passed to next activity
-    public void AddHot(Clothing clothesObject, Intent clothingActivity){
+    public void AddHot(Clothing clothesObject){
         ArrayList<String> upperbody = clothesObject.getUpperBody("80");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
@@ -340,22 +345,22 @@ public class VacationDataActivity extends AppCompatActivity {
     }
 
     // Adds the Warm clothing suggestion to Bundle to be passed to next activity
-    public void AddWarm(Clothing clothesObject, Intent clothingActivity){
-        ArrayList<String> upperbody = clothesObject.getUpperBody("55");
+    public void AddWarm(Clothing clothesObject){
+        ArrayList<String> upperbody = clothesObject.getUpperBody("60");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
             upperbodyList[i] = upperbody.get(i);
         }
         this.upperbody.putStringArray(UPPERBODY + ".Warm", upperbodyList);
         // Lowerbody list
-        ArrayList<String> lowerbody = clothesObject.getLowerBody("55");
+        ArrayList<String> lowerbody = clothesObject.getLowerBody("60");
         String[] lowerbodyList = new String[lowerbody.size()];
         for (int i = 0; i < lowerbody.size(); i++){
             lowerbodyList[i] = lowerbody.get(i);
         }
         this.lowerbody.putStringArray(LOWERBODY + ".Warm", lowerbodyList);
         // Shoes list
-        ArrayList<String> shoes = clothesObject.getShoes("5");
+        ArrayList<String> shoes = clothesObject.getShoes("60");
         String[] shoesList = new String[shoes.size()];
         for (int i = 0; i < shoes.size(); i++){
             shoesList[i] = shoes.get(i);
@@ -364,22 +369,22 @@ public class VacationDataActivity extends AppCompatActivity {
     }
 
     // Adds the Chilly clothing suggestion to Bundle to be passed to next activity
-    public void AddChilly(Clothing clothesObject, Intent clothingActivity){
-        ArrayList<String> upperbody = clothesObject.getUpperBody("32");
+    public void AddChilly(Clothing clothesObject){
+        ArrayList<String> upperbody = clothesObject.getUpperBody("40");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
             upperbodyList[i] = upperbody.get(i);
         }
         this.upperbody.putStringArray(UPPERBODY + ".Chilly", upperbodyList);
         // Lowerbody list
-        ArrayList<String> lowerbody = clothesObject.getLowerBody("32");
+        ArrayList<String> lowerbody = clothesObject.getLowerBody("40");
         String[] lowerbodyList = new String[lowerbody.size()];
         for (int i = 0; i < lowerbody.size(); i++){
             lowerbodyList[i] = lowerbody.get(i);
         }
         this.lowerbody.putStringArray(LOWERBODY + ".Chilly", lowerbodyList);
         // Shoes list
-        ArrayList<String> shoes = clothesObject.getShoes("32");
+        ArrayList<String> shoes = clothesObject.getShoes("40");
         String[] shoesList = new String[shoes.size()];
         for (int i = 0; i < shoes.size(); i++){
             shoesList[i] = shoes.get(i);
@@ -388,22 +393,22 @@ public class VacationDataActivity extends AppCompatActivity {
     }
 
     // Adds the Freezing clothing suggestion to Bundle to be passed to next activity
-    public void AddFreezing(Clothing clothesObject, Intent clothingActivity){
-        ArrayList<String> upperbody = clothesObject.getUpperBody("31");
+    public void AddFreezing(Clothing clothesObject){
+        ArrayList<String> upperbody = clothesObject.getUpperBody("0");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
             upperbodyList[i] = upperbody.get(i);
         }
         this.upperbody.putStringArray(UPPERBODY + ".Freezing", upperbodyList);
         // Lowerbody list
-        ArrayList<String> lowerbody = clothesObject.getLowerBody("31");
+        ArrayList<String> lowerbody = clothesObject.getLowerBody("0");
         String[] lowerbodyList = new String[lowerbody.size()];
         for (int i = 0; i < lowerbody.size(); i++){
             lowerbodyList[i] = lowerbody.get(i);
         }
         this.lowerbody.putStringArray(LOWERBODY + ".Freezing", lowerbodyList);
         // Shoes list
-        ArrayList<String> shoes = clothesObject.getShoes("31");
+        ArrayList<String> shoes = clothesObject.getShoes("0");
         String[] shoesList = new String[shoes.size()];
         for (int i = 0; i < shoes.size(); i++){
             shoesList[i] = shoes.get(i);
@@ -435,12 +440,6 @@ public class VacationDataActivity extends AppCompatActivity {
     }
 
     public void GetData(){
-        // Initialize Bundles to be used for clothing suggestion
-        headwear = new Bundle();
-        upperbody = new Bundle();
-        lowerbody = new Bundle();
-        shoes = new Bundle();
-
         // Assign the Linear Layout to variable
         tfList = (LinearLayout) findViewById(R.id.TimeFrameList);
         // Get the length of the vacation

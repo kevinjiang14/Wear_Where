@@ -31,14 +31,14 @@ public class HourlyForecastAST extends AsyncTask<Void, Void, HourlyObject> {
     protected HourlyObject doInBackground(Void... params) {
         HourlyObject hourlyObject;
 
-        String hourly_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
+        String hourly_link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/hourly/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
         hourlyObject = this.loop(hourly_link);
 
         int counter = 0;
 
         // If the connection failed, try again.
-        if (hourlyObject == null && counter < 3) {
+        while (hourlyObject == null && counter < 3) {
             hourlyObject = this.loop(hourly_link);
             counter++;
         }
