@@ -30,6 +30,13 @@ public class IntervalAdapter extends BaseAdapter {
         this._clothes = clothes;
     }
 
+    private ArrayList<ArrayList<String>> overallSuggestions() {
+        for (int i = 0; i < getCount(); ++i) {
+
+        }
+        return null;
+    }
+
     @Override
     public int getCount() {
         return _mapInformation.intervalTitles.size();
@@ -51,6 +58,7 @@ public class IntervalAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.interval_information, null);
         }
+
         TextView intervalNameTextView = (TextView) convertView.findViewById(R.id.interval_title);
         TextView intervalDetailTextView = (TextView) convertView.findViewById(R.id.interval_subtitle);
         TextView intervalClothingTitle = (TextView) convertView.findViewById(R.id.interval_clothing_title);
@@ -59,8 +67,10 @@ public class IntervalAdapter extends BaseAdapter {
         IntervalInformation intervalInformation = (IntervalInformation) getItem(position);
 
         intervalNameTextView.setText(intervalInformation.intervalTitle);
+        intervalNameTextView.setPaintFlags(intervalClothingTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         intervalDetailTextView.setText(intervalInformation.intervalDetail);
         intervalClothingTitle.setPaintFlags(intervalClothingTitle.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
         String misc = _clothes.getMisc(intervalInformation.intervalTemperature).toString();
         if (misc.length() == 2) {
             misc = "[N/A]";

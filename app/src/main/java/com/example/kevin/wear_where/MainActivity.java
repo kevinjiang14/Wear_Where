@@ -1503,21 +1503,121 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             @Override
             protected void onPostExecute(MapInformation mapInformation) {
-
                 markers = mapInformation.intervalInformation;
+
+                // ArrayLists holding overallSuggestions
+                ArrayList<String> overallMisc = new ArrayList<>();
+                ArrayList<String> overallUpperbody = new ArrayList<>();
+                ArrayList<String> overallLowerbody = new ArrayList<>();
+                ArrayList<String> overallShoes = new ArrayList<>();
+
+                // Get the overall suggestions
+                for (int i = 0; i < mapInformation.intervalTemperatures.size(); ++i) {
+                    ArrayList<String> misc = clothes.getMisc(mapInformation.intervalTemperatures.get(i));
+                    for (int j = 0; j < misc.size(); ++j) {
+                        if (misc.size() == 0) {
+                            break;
+                        }
+                        if (!overallMisc.contains(misc.get(j))) {
+                            overallMisc.add(misc.get(j));
+                        }
+                    }
+
+                    ArrayList<String> upperbody = clothes.getUpperBody(mapInformation.intervalTemperatures.get(i));
+                    for (int j = 0; j < upperbody.size(); ++j) {
+                        if (upperbody.size() == 0) {
+                            break;
+                        }
+                        if (!overallUpperbody.contains(upperbody.get(j))) {
+                            overallUpperbody.add(upperbody.get(j));
+                        }
+                    }
+
+                    ArrayList<String> lowerbody = clothes.getLowerBody(mapInformation.intervalTemperatures.get(i));
+                    for (int j = 0; j < lowerbody.size(); ++j) {
+                        if (lowerbody.size() == 0) {
+                            break;
+                        }
+                        if (!overallLowerbody.contains(lowerbody.get(j))) {
+                            overallLowerbody.add(lowerbody.get(j));
+                        }
+                    }
+
+                    ArrayList<String> shoes = clothes.getShoes(mapInformation.intervalTemperatures.get(i));
+                    for (int j = 0; j < shoes.size(); ++j) {
+                        if (shoes.size() == 0) {
+                            break;
+                        }
+                        if (!overallShoes.contains(shoes.get(j))) {
+                            overallShoes.add(shoes.get(j));
+                        }
+                    }
+                }
 
                 // If the returned list is not null, then add the markers to the map
                 if (markers != null) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.intervalInformationLayout);
+                    linearLayout.removeAllViews();
+
+                    // Display the overallSuggestions
+                    TextView intervalDetailsTitle = (TextView) findViewById(R.id.intervalDetailsTitle);
+                    intervalDetailsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                    intervalDetailsTitle.setText("Interval Details");
+
                     IntervalAdapter adapter = new IntervalAdapter(context, mapInformation, clothes);
                     for (int i = 0; i < markers.size(); ++i) {
                         linearLayout.addView(adapter.getView(i, null, null));
                         maps.addMarker(markers.get(i));
                     }
+
+                    // Display the overallSuggestions
+                    TextView overallSuggestionsTitle = (TextView) findViewById(R.id.overallSuggestionTitleTextView);
+                    overallSuggestionsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                    overallSuggestionsTitle.setText("Bring these on your trip!");
+
+                    TextView overallSuggestions = (TextView) findViewById(R.id.overallSuggestionTextView);
+                    overallSuggestions.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+
+                    String misc = overallMisc.toString();
+                    if (misc.length() == 2) {
+                        misc = "[N/A]";
+                    }
+                    String upperbody = overallUpperbody.toString();
+                    if (upperbody.length() == 2) {
+                        upperbody = "[N/A]";
+                    }
+                    String lowerbody = overallLowerbody.toString();
+                    if (lowerbody.length() == 2) {
+                        lowerbody = "[N/A]";
+                    }
+                    String shoes = overallShoes.toString();
+                    if (shoes.length() == 2) {
+                        shoes = "[N/A]";
+                    }
+
+                    overallSuggestions.setText("Miscellaneous:" + '\n' + misc.substring(1, misc.length() - 1) + "\n\n" +
+                            "Upperbody:" + '\n' +  upperbody.substring(1, upperbody.length() - 1) + "\n\n" +
+                            "Lowerbody:" + '\n' + lowerbody.substring(1, lowerbody.length() - 1) + "\n\n" +
+                            "Shoes:" + '\n' + shoes.substring(1, shoes.length() - 1) + '\n');
                 }
 
                 // Else, notify the user that the attempt to get information has failed.
                 else {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.intervalInformationLayout);
+                    linearLayout.removeAllViews();
+
+                    TextView overallSuggestionsTitle = (TextView) findViewById(R.id.overallSuggestionTextView);
+                    overallSuggestionsTitle.setText(null);
+                    overallSuggestionsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 0);
+
+                    TextView intervalDetailsTitle = (TextView) findViewById(R.id.intervalDetailsTitle);
+                    intervalDetailsTitle.setText(null);
+                    intervalDetailsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 0);
+
+                    TextView overallSuggestions = (TextView) findViewById(R.id.overallSuggestionTextView);
+                    overallSuggestions.setText(null);
+                    overallSuggestions.setTextSize(TypedValue.COMPLEX_UNIT_SP, 0);
+
                     Toast toast = Toast.makeText(getApplicationContext(), "An error has occured while trying to fetch the queried route." + '\n' + "Please try again!", Toast.LENGTH_SHORT);
                     toast.show();
                     maps.clear();
