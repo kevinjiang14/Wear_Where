@@ -3,22 +3,39 @@
     freezing
 {
 Canada Goose Coat
+Pea Coat
+Duffle Coat
+Parka Coat
+North Face Jacket
+Overcoat
 }
     chilly
 {
 North Face Jacket
+Roll Neck Jumper
+Crew Neck Jumper
+V Neck Sweater
+Thermal Long Sleeve
+Cardigan
+Vest Coat
 Hoodie
 Sweater
-Long Sleeve
+Flannel Shirt
 }
     warm
 {
 T-Shirt
 Flannel Shirt
-Button Down Shirt
+Button Down Linen Shirt
+Baseball Tee
+Graphic Tee
+Plain Tee
 }
     hot
 {
+Graphic Tee
+Plain Tee
+Graphic Tank
 Tank Top
 }
 --
@@ -27,21 +44,34 @@ Tank Top
 {
 Thermal Leggings
 Snow Pants
+Wool Trousers
+Fleece Trousers
+Jeans
 }
     chilly
 {
 Jeans
 Sweat Pants
+Adidas Track Pants
+Khakis
+Trousers
+Chinos
 }
     warm
 {
 Jeans
 Chinos
+Joggers
+Denim Shorts
+Cargo Shorts
+Basketball Shorts
 }
     hot
 {
 Cargo Shorts
+Basketball Shorts
 Denim Shorts
+Joggers
 }
 --
         Overall Wear
@@ -66,38 +96,54 @@ Denim Shorts
     freezing
 {
 Snow Boots
-Timberlands
+Timberland Boots
+Winter Work Boots
 }
     chilly
 {
-Boots
+Nike High Tops
+Jordan High Tops
+Clark Boots
+Nike Free Runs
+Nike Roshes
 }
     warm
 {
-Sneakers
+Nike Free Runs
+Nike Roshes
+Converses
+Vans
+Loafers
+Boat Shoes
 }
     hot
 {
+Loafers
+Sandals
 Flip Flops
 }
 --
         Miscellaneous
     freezing
 {
-Scarf
-Gloves
+Woolen Beanie
+Woolen Scarf
+Woolen Gloves
 Fuzzy Socks
 }
     chilly
 {
-Beanie
+Woolen Beanie
+Woolen Scarf
 }
     warm
 {
-
+Sun Glasses
+Hat
 }
     hot
 {
+Hat
 Sunglasses
 }
 --

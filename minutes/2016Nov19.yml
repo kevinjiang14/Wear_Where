@@ -1,0 +1,17 @@
+date: November 19, 2016
+meeting_type: group
+attendance: [<calvinzh>, <thomas69>, <kevinjia>, <hermesko>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: finishing up clothing range and gender database},
+  {ubit: calvinzh, progress: adding all the content creation received},
+  {ubit: hermesko, progress: finishing up tab 4},
+  {ubit: kevinjia, progress: finishing up tab 3}
+  ]
+issues: []
+Notes: |
+    - Merged everything into develop.
+    - resolved merged conflicts
+    - planning pre-release notes
+    

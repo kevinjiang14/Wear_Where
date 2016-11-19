@@ -79,6 +79,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -282,12 +283,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         warmRange = datasource.getWarmRange();
         if(warmRange == null){
-            datasource.createRange(40, 59);
+            datasource.createRange(60, 79);
         }
 
         chillyRange = datasource.getChillyRange();
         if(chillyRange == null){
-            datasource.createRange(60, 79);
+            datasource.createRange(40, 59);
         }
 
         //Initialize buttons on tab2
@@ -296,6 +297,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         Button lowerbody = (Button)findViewById(R.id.lowerbody);
         Button shoes = (Button)findViewById(R.id.shoes);
         Button overalls = (Button)findViewById(R.id.overalls);
+
 
         //Instantiate clothing from main/assets/ folder
         AssetManager assetManager = this.getResources().getAssets();
@@ -319,10 +321,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+                HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> miscellaneous = clothes.getMisc(currentForecast.getTemperature());
                 String[] miscellaneousList = new String[miscellaneous.size()];
-                for (int i = 0; i < miscellaneous.size(); i++){
-                    miscellaneousList[i] = miscellaneous.get(i);
+                if (currentForecast.getCondition().contains("Rain") ||
+                        currentForecast.getCondition().contains("Shower") ||
+                        currentForecast.getCondition().contains("Storm")) {
+                    miscellaneousList = new String[miscellaneous.size()+1];
+                    miscellaneousList[0] = "Umbrella";
+                    for (int i = 1; i < miscellaneous.size()+1; i++) {
+                        miscellaneousList[i] = miscellaneous.get(i-1);
+                        currentSet.add(miscellaneous.get(i-1));
+                    }
+                }
+                else{
+                    for (int i = 0; i < miscellaneous.size(); i++){
+                        miscellaneousList[i] = miscellaneous.get(i);
+                        currentSet.add(miscellaneous.get(i));
+                    }
                 }
 
                 ArrayList<String> list2 = new ArrayList<>();
@@ -332,7 +348,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     String temp = hourlyForecast.getTemperatureF(i) + "";
                     ArrayList<String> arr = clothes.getMisc(currentForecast.getTemperature());
                     list2 = clothes.getMisc(temp);
-                    if (list2 != arr) {
+                    if (!list2.equals(arr)) {
                         hour = i;
                         ampm = hourlyForecast.getAMPM(i);
                         break;
@@ -342,10 +358,29 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         list2.add("There's nothing to be shown");
                     }
                 }
-                String[] stringList2 = new String[list2.size()];
+
                 for (int i = 0; i < list2.size(); i++){
-                    stringList2[i] = list2.get(i);
+                    if (currentSet.contains(list2.get(i))){
+                        list2.remove(i);
+                    }
                 }
+
+                String[] stringList2 = new String[list2.size()];
+                if (hourlyForecast.getCondition(hour).contains("Rain") ||
+                        hourlyForecast.getCondition(hour).contains("Shower") ||
+                        hourlyForecast.getCondition(hour).contains("Storm")){
+                    stringList2 = new String[list2.size()+1];
+                    stringList2[0] = "Umbrella";
+                    for (int i = 1; i < list2.size()+1; i++){
+                        stringList2[i] = list2.get(i-1);
+                    }
+                }
+                else{
+                    for (int i = 0; i < list2.size(); i++){
+                        stringList2[i] = list2.get(i);
+                    }
+                }
+
 
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
                 myIntent.putExtra(FIRSTMESSAGE, miscellaneousList);
@@ -353,6 +388,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 myIntent.putExtra("TIME", hour);
                 myIntent.putExtra("AMPM", ampm);
                 myIntent.putExtra("CONDITION",currentForecast.getCondition());
+                myIntent.putExtra("THISTEMP",currentForecast.getTemperature() + "");
+                myIntent.putExtra("LATERCONDITION", hourlyForecast.getCondition(hour));
+                myIntent.putExtra("TEMP",hourlyForecast.getTemperatureF(hour) + "");
                 startActivity(myIntent);
             }
         });
@@ -366,10 +404,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+                HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> upperbody = clothes.getUpperBody(currentForecast.getTemperature());
                 String[] upperbodyList = new String[upperbody.size()];
-                for (int i = 0; i < upperbody.size(); i++){
-                    upperbodyList[i] = upperbody.get(i);
+                if (currentForecast.getCondition().contains("Rain") ||
+                        currentForecast.getCondition().contains("Shower") ||
+                        currentForecast.getCondition().contains("Storm")) {
+                    upperbodyList = new String[upperbody.size()+1];
+                    upperbodyList[0] = "Rain Coat";
+                    for (int i = 1; i < upperbody.size()+1; i++) {
+                        upperbodyList[i] = upperbody.get(i-1);
+                        currentSet.add(upperbody.get(i-1));
+                    }
+                }
+                else{
+                    for (int i = 0; i < upperbody.size(); i++){
+                        upperbodyList[i] = upperbody.get(i);
+                        currentSet.add(upperbody.get(i));
+                    }
                 }
 
                 ArrayList<String> list2 = new ArrayList<>();
@@ -389,17 +441,38 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         list2.add("There's nothing to be shown");
                     }
                 }
-                String[] stringList2 = new String[list2.size()];
+
                 for (int i = 0; i < list2.size(); i++){
-                    stringList2[i] = list2.get(i);
+                    if (currentSet.contains(list2.get(i))){
+                        list2.remove(i);
+                    }
+                }
+
+                String[] stringList2 = new String[list2.size()];
+                if (hourlyForecast.getCondition(hour).contains("Rain") ||
+                        hourlyForecast.getCondition(hour).contains("Shower") ||
+                        hourlyForecast.getCondition(hour).contains("Storm")){
+                    stringList2 = new String[list2.size()+1];
+                    stringList2[0] = "Rain Coat";
+                    for (int i = 1; i < list2.size()+1; i++){
+                        stringList2[i] = list2.get(i-1);
+                    }
+                }
+                else{
+                    for (int i = 0; i < list2.size(); i++){
+                        stringList2[i] = list2.get(i);
+                    }
                 }
 
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
                 myIntent.putExtra(FIRSTMESSAGE, upperbodyList);
                 myIntent.putExtra(SECONDMESSAGE, stringList2);
                 myIntent.putExtra("CONDITION",currentForecast.getCondition());
+                myIntent.putExtra("LATERCONDITION", hourlyForecast.getCondition(hour));
                 myIntent.putExtra("TIME", hour);
                 myIntent.putExtra("AMPM", ampm);
+                myIntent.putExtra("TEMP",hourlyForecast.getTemperatureF(hour) + "");
+                myIntent.putExtra("THISTEMP",currentForecast.getTemperature() + "");
                 startActivity(myIntent);
             }
         });
@@ -413,10 +486,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+                HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> lowerbody = clothes.getLowerBody(currentForecast.getTemperature());
                 String[] lowerbodyList = new String[lowerbody.size()];
-                for (int i = 0; i < lowerbody.size(); i++){
-                    lowerbodyList[i] = lowerbody.get(i);
+                if (currentForecast.getCondition().contains("Rain") ||
+                        currentForecast.getCondition().contains("Shower") ||
+                        currentForecast.getCondition().contains("Storm")) {
+                    lowerbodyList = new String[lowerbody.size()+1];
+                    lowerbodyList[0] = "Rain-Proof Pants";
+                    for (int i = 1; i < lowerbody.size()+1; i++) {
+                        lowerbodyList[i] = lowerbody.get(i-1);
+                        currentSet.add(lowerbody.get(i-1));
+                    }
+                }
+                else{
+                    for (int i = 0; i < lowerbody.size(); i++){
+                        lowerbodyList[i] = lowerbody.get(i);
+                        currentSet.add(lowerbody.get(i));
+                    }
                 }
 
                 ArrayList<String> list2 = new ArrayList<>();
@@ -436,17 +523,38 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         list2.add("There's nothing to be shown");
                     }
                 }
-                String[] stringList2 = new String[list2.size()];
+
                 for (int i = 0; i < list2.size(); i++){
-                    stringList2[i] = list2.get(i);
+                    if (currentSet.contains(list2.get(i))){
+                        list2.remove(i);
+                    }
+                }
+
+                String[] stringList2 = new String[list2.size()];
+                if (hourlyForecast.getCondition(hour).contains("Rain") ||
+                        hourlyForecast.getCondition(hour).contains("Shower") ||
+                        hourlyForecast.getCondition(hour).contains("Storm")){
+                    stringList2 = new String[list2.size()+1];
+                    stringList2[0] = "Rain-Proof Pants";
+                    for (int i = 1; i < list2.size()+1; i++){
+                        stringList2[i] = list2.get(i-1);
+                    }
+                }
+                else{
+                    for (int i = 0; i < list2.size(); i++){
+                        stringList2[i] = list2.get(i);
+                    }
                 }
 
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
                 myIntent.putExtra(FIRSTMESSAGE, lowerbodyList);
                 myIntent.putExtra(SECONDMESSAGE, stringList2);
                 myIntent.putExtra("CONDITION",currentForecast.getCondition());
+                myIntent.putExtra("LATERCONDITION", hourlyForecast.getCondition(hour));
                 myIntent.putExtra("TIME", hour);
                 myIntent.putExtra("AMPM", ampm);
+                myIntent.putExtra("TEMP",hourlyForecast.getTemperatureF(hour) + "");
+                myIntent.putExtra("THISTEMP",currentForecast.getTemperature() + "");
                 startActivity(myIntent);
             }
         });
@@ -460,10 +568,24 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+                HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> shoes = clothes.getShoes(currentForecast.getTemperature());
                 String[] shoesList = new String[shoes.size()];
-                for (int i = 0; i < shoes.size(); i++){
-                    shoesList[i] = shoes.get(i);
+                if (currentForecast.getCondition().contains("Rain") ||
+                        currentForecast.getCondition().contains("Shower") ||
+                        currentForecast.getCondition().contains("Storm")) {
+                    shoesList = new String[shoes.size()+1];
+                    shoesList[0] = "Rain Boots";
+                    for (int i = 1; i < shoes.size()+1; i++) {
+                        shoesList[i] = shoes.get(i-1);
+                        currentSet.add(shoes.get(i-1));
+                    }
+                }
+                else{
+                    for (int i = 0; i < shoes.size(); i++){
+                        shoesList[i] = shoes.get(i);
+                        currentSet.add(shoes.get(i));
+                    }
                 }
 
                 ArrayList<String> list2 = new ArrayList<>();
@@ -483,32 +605,65 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         list2.add("There's nothing to be shown");
                     }
                 }
-                String[] stringList2 = new String[list2.size()];
+
                 for (int i = 0; i < list2.size(); i++){
-                    stringList2[i] = list2.get(i);
+                    if (currentSet.contains(list2.get(i))){
+                        list2.remove(i);
+                    }
+                    if (list2.size() == 0){
+                        list2.add("There's nothing to be shown");
+                    }
+                }
+
+                String[] stringList2 = new String[list2.size()];
+                if (hourlyForecast.getCondition(hour).contains("Rain") ||
+                        hourlyForecast.getCondition(hour).contains("Shower") ||
+                        hourlyForecast.getCondition(hour).contains("Storm")){
+                    stringList2 = new String[list2.size()+1];
+                    stringList2[0] = "Rain Boots";
+                    for (int i = 1; i < list2.size()+1; i++){
+                        stringList2[i] = list2.get(i-1);
+                    }
+                }
+                else{
+                    for (int i = 0; i < list2.size(); i++){
+                        stringList2[i] = list2.get(i);
+                    }
                 }
 
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
                 myIntent.putExtra(FIRSTMESSAGE, shoesList);
                 myIntent.putExtra(SECONDMESSAGE, stringList2);
                 myIntent.putExtra("CONDITION",currentForecast.getCondition());
+                myIntent.putExtra("LATERCONDITION", hourlyForecast.getCondition(hour));
                 myIntent.putExtra("TIME", hour);
                 myIntent.putExtra("AMPM", ampm);
+                myIntent.putExtra("TEMP",hourlyForecast.getTemperatureF(hour) + "");
+                myIntent.putExtra("THISTEMP",currentForecast.getTemperature() + "");
                 startActivity(myIntent);
             }
         });
 
-        if (clothes.gender.equals("male")){
+        overalls.setVisibility(View.GONE);
+        /*if (clothes.gender.equals("male")){
             overalls.setVisibility(View.GONE);
         }
         else {
             overalls.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    warmRange = datasource.getWarmRange();
+                    chillyRange = datasource.getChillyRange();
+                    clothes.lowerWarm = (float) warmRange.getMin();
+                    clothes.upperWarm = (float) warmRange.getMax();
+                    clothes.lowerChilly = (float) chillyRange.getMin();
+                    clothes.upperChilly = (float) chillyRange.getMax();
+                    HashSet<String> currentSet = new HashSet<String>();
                     ArrayList<String> overalls = clothes.getOveralls(currentForecast.getTemperature());
                     String[] overallsList = new String[overalls.size()];
                     for (int i = 0; i < overalls.size(); i++){
                         overallsList[i] = overalls.get(i);
+                        currentSet.add(overalls.get(i));
                     }
 
                     ArrayList<String> list2 = new ArrayList<>();
@@ -528,9 +683,27 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             list2.add("There's nothing to be shown");
                         }
                     }
-                    String[] stringList2 = new String[list2.size()];
+
                     for (int i = 0; i < list2.size(); i++){
-                        stringList2[i] = list2.get(i);
+                        if (currentSet.contains(list2.get(i))){
+                            list2.remove(i);
+                        }
+                    }
+
+                    String[] stringList2 = new String[list2.size()];
+                    if (currentForecast.getCondition().contains("Rain") ||
+                            currentForecast.getCondition().contains("Shower") ||
+                            currentForecast.getCondition().contains("Storm")){
+                        stringList2 = new String[list2.size()+1];
+                        stringList2[0] = "Umbrella";
+                        for (int i = 1; i < list2.size()+1; i++){
+                            stringList2[i] = list2.get(i-1);
+                        }
+                    }
+                    else{
+                        for (int i = 0; i < list2.size(); i++){
+                            stringList2[i] = list2.get(i);
+                        }
                     }
 
                     Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
@@ -539,10 +712,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     myIntent.putExtra("CONDITION",currentForecast.getCondition());
                     myIntent.putExtra("TIME", hour);
                     myIntent.putExtra("AMPM", ampm);
+                    myIntent.putExtra("TEMP",hourlyForecast.getTemperatureF(hour) + "");
+                    myIntent.putExtra("THISTEMP",currentForecast.getTemperature() + "");
                     startActivity(myIntent);
                 }
             });
-        }
+        }*/
 
     }
 
@@ -992,6 +1167,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         time16.setText("" + hourlyForecast.getHour(15) + ":00" + hourlyForecast.getAMPM(15));
         description16.setText("" + hourlyForecast.getCondition(15));
 
+        TextView warningText = (TextView)findViewById(R.id.warningText);
+        for (int i = 0; i < 16; i++){
+            if (hourlyForecast.getCondition(i).contains("Rain") ||
+                    hourlyForecast.getCondition(i).contains("Shower") ||
+                    hourlyForecast.getCondition(i).contains("Storm")){
+                warningText.setText("WARNING: There's rain today!!! Bring an umbrella!");
+            }
+            if (hourlyForecast.getCondition(i).contains("Snow")){
+                warningText.setText("WARNING: There's snow today!!! Bundle up!");
+            }
+        }
     }
 
     public void displayDailyResults(){

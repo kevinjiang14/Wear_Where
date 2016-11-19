@@ -109,6 +109,9 @@ You can add as many outfits as you'd like.
  IT VERY DIFFICULT TO PARSE YOUR FILE SO PLEASE ONLY FILL IN CLOTHES IN BETWEEN THE
  BRACKETS !!! ***
 
+ Once you're done with filling out the file, email it to "calvinzh@buffalo.edu".
+ Rename your text file as your ubit name + "_Clothes".
+ For example it should be submitted as: "calvinzh_Clothes.txt"
 
  Your content is very important to us and helps us improve our application.
  Thank you for your help!!!

@@ -986,6 +986,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="100dp"
+                        android:id="@+id/warningText"
+                        android:textSize="14sp"
+                        android:fontFamily="monospace"
+                        android:layout_below="@+id/shoes"
+                        android:layout_centerHorizontal="true" />
+
                     <Button
                         android:text="Shoes"
                         android:layout_width="match_parent"

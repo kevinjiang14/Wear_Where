@@ -35,24 +35,6 @@
 
 }
 --
-        Overall Wear
-    freezing
-{
-
-}
-    chilly
-{
-
-}
-    warm
-{
-
-}
-    hot
-{
-
-}
---
         Footwear
     freezing
 {
