@@ -57,15 +57,6 @@ public class VacationDataActivity extends AppCompatActivity {
             }
         });
 
-        // Button to save vacation
-        Button saveButton = (Button) findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO: Set what clicking this button does
-            }
-        });
-
         // Get extra variables passed from MainActivity
         city = getIntent().getExtras().getString("city");
         state = getIntent().getExtras().getString("state");
