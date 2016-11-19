@@ -366,19 +366,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 String[] stringList2 = new String[list2.size()];
-                if (hourlyForecast.getCondition(hour).contains("Rain") ||
-                        hourlyForecast.getCondition(hour).contains("Shower") ||
-                        hourlyForecast.getCondition(hour).contains("Storm")){
-                    stringList2 = new String[list2.size()+1];
-                    stringList2[0] = "Umbrella";
-                    for (int i = 1; i < list2.size()+1; i++){
-                        stringList2[i] = list2.get(i-1);
+                if (list2.size() > 1) {
+                    if (hourlyForecast.getCondition(hour).contains("Rain") ||
+                            hourlyForecast.getCondition(hour).contains("Shower") ||
+                            hourlyForecast.getCondition(hour).contains("Storm")) {
+                        stringList2 = new String[list2.size() + 1];
+                        stringList2[0] = "Umbrella";
+                        for (int i = 1; i < list2.size() + 1; i++) {
+                            stringList2[i] = list2.get(i - 1);
+                        }
+                    } else {
+                        for (int i = 0; i < list2.size(); i++) {
+                            stringList2[i] = list2.get(i);
+                        }
                     }
                 }
-                else{
-                    for (int i = 0; i < list2.size(); i++){
-                        stringList2[i] = list2.get(i);
-                    }
+                else if (list2.size() == 1){
+                    stringList2[0] = list2.get(0);
                 }
 
 
@@ -449,19 +453,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 String[] stringList2 = new String[list2.size()];
-                if (hourlyForecast.getCondition(hour).contains("Rain") ||
-                        hourlyForecast.getCondition(hour).contains("Shower") ||
-                        hourlyForecast.getCondition(hour).contains("Storm")){
-                    stringList2 = new String[list2.size()+1];
-                    stringList2[0] = "Rain Coat";
-                    for (int i = 1; i < list2.size()+1; i++){
-                        stringList2[i] = list2.get(i-1);
+                if (list2.size() > 1) {
+                    if (hourlyForecast.getCondition(hour).contains("Rain") ||
+                            hourlyForecast.getCondition(hour).contains("Shower") ||
+                            hourlyForecast.getCondition(hour).contains("Storm")) {
+                        stringList2 = new String[list2.size() + 1];
+                        stringList2[0] = "Umbrella";
+                        for (int i = 1; i < list2.size() + 1; i++) {
+                            stringList2[i] = list2.get(i - 1);
+                        }
+                    } else {
+                        for (int i = 0; i < list2.size(); i++) {
+                            stringList2[i] = list2.get(i);
+                        }
                     }
                 }
-                else{
-                    for (int i = 0; i < list2.size(); i++){
-                        stringList2[i] = list2.get(i);
-                    }
+                else if (list2.size() == 1){
+                    stringList2[0] = list2.get(0);
                 }
 
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
@@ -531,19 +539,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 String[] stringList2 = new String[list2.size()];
-                if (hourlyForecast.getCondition(hour).contains("Rain") ||
-                        hourlyForecast.getCondition(hour).contains("Shower") ||
-                        hourlyForecast.getCondition(hour).contains("Storm")){
-                    stringList2 = new String[list2.size()+1];
-                    stringList2[0] = "Rain-Proof Pants";
-                    for (int i = 1; i < list2.size()+1; i++){
-                        stringList2[i] = list2.get(i-1);
+                if (list2.size() > 1) {
+                    if (hourlyForecast.getCondition(hour).contains("Rain") ||
+                            hourlyForecast.getCondition(hour).contains("Shower") ||
+                            hourlyForecast.getCondition(hour).contains("Storm")) {
+                        stringList2 = new String[list2.size() + 1];
+                        stringList2[0] = "Umbrella";
+                        for (int i = 1; i < list2.size() + 1; i++) {
+                            stringList2[i] = list2.get(i - 1);
+                        }
+                    } else {
+                        for (int i = 0; i < list2.size(); i++) {
+                            stringList2[i] = list2.get(i);
+                        }
                     }
                 }
-                else{
-                    for (int i = 0; i < list2.size(); i++){
-                        stringList2[i] = list2.get(i);
-                    }
+                else if (list2.size() == 1){
+                    stringList2[0] = list2.get(0);
                 }
 
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
@@ -616,19 +628,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 String[] stringList2 = new String[list2.size()];
-                if (hourlyForecast.getCondition(hour).contains("Rain") ||
-                        hourlyForecast.getCondition(hour).contains("Shower") ||
-                        hourlyForecast.getCondition(hour).contains("Storm")){
-                    stringList2 = new String[list2.size()+1];
-                    stringList2[0] = "Rain Boots";
-                    for (int i = 1; i < list2.size()+1; i++){
-                        stringList2[i] = list2.get(i-1);
+                if (list2.size() > 1) {
+                    if (hourlyForecast.getCondition(hour).contains("Rain") ||
+                            hourlyForecast.getCondition(hour).contains("Shower") ||
+                            hourlyForecast.getCondition(hour).contains("Storm")) {
+                        stringList2 = new String[list2.size() + 1];
+                        stringList2[0] = "Umbrella";
+                        for (int i = 1; i < list2.size() + 1; i++) {
+                            stringList2[i] = list2.get(i - 1);
+                        }
+                    } else {
+                        for (int i = 0; i < list2.size(); i++) {
+                            stringList2[i] = list2.get(i);
+                        }
                     }
                 }
-                else{
-                    for (int i = 0; i < list2.size(); i++){
-                        stringList2[i] = list2.get(i);
-                    }
+                else if (list2.size() == 1){
+                    stringList2[0] = list2.get(0);
                 }
 
                 Intent myIntent = new Intent(MainActivity.this, ClothingActivity.class);
@@ -1168,15 +1184,28 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         description16.setText("" + hourlyForecast.getCondition(15));
 
         TextView warningText = (TextView)findViewById(R.id.warningText);
+        Boolean rain = false;
+        Boolean snow = false;
         for (int i = 0; i < 16; i++){
             if (hourlyForecast.getCondition(i).contains("Rain") ||
                     hourlyForecast.getCondition(i).contains("Shower") ||
                     hourlyForecast.getCondition(i).contains("Storm")){
-                warningText.setText("WARNING: There's rain today!!! Bring an umbrella!");
+                rain = true;
             }
-            if (hourlyForecast.getCondition(i).contains("Snow")){
-                warningText.setText("WARNING: There's snow today!!! Bundle up!");
+            if (hourlyForecast.getCondition(i).contains("Snow Showers") ||
+                    hourlyForecast.getCondition(i).contains("Snow")){
+                snow = true;
             }
+        }
+
+        if (rain == true && snow == true){
+            warningText.setText("WARNING: There's rain and snow today!!! Bring an umbrella and bundle up!");
+        }
+        else if (rain == true){
+            warningText.setText("WARNING: There's rain today!!! Bring an umbrella!");
+        }
+        else if (snow == true){
+            warningText.setText("WARNING: There's snow today!!! Bundle up!");
         }
     }
 

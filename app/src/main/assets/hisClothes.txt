@@ -7,7 +7,7 @@ Pea Coat
 Duffle Coat
 Parka Coat
 North Face Jacket
-Overcoat
+Wool Coat
 }
     chilly
 {
@@ -16,9 +16,8 @@ Roll Neck Jumper
 Crew Neck Jumper
 V Neck Sweater
 Thermal Long Sleeve
-Cardigan
-Vest Coat
 Hoodie
+Cotton Hoodie
 Sweater
 Flannel Shirt
 }
@@ -52,7 +51,6 @@ Jeans
 {
 Jeans
 Sweat Pants
-Adidas Track Pants
 Khakis
 Trousers
 Chinos
@@ -104,13 +102,11 @@ Winter Work Boots
 Nike High Tops
 Jordan High Tops
 Clark Boots
-Nike Free Runs
-Nike Roshes
 }
     warm
 {
-Nike Free Runs
-Nike Roshes
+Nike Runs
+Nike Free
 Converses
 Vans
 Loafers
@@ -127,6 +123,7 @@ Flip Flops
     freezing
 {
 Woolen Beanie
+Cotton Scarf
 Woolen Scarf
 Woolen Gloves
 Fuzzy Socks
@@ -135,6 +132,7 @@ Fuzzy Socks
 {
 Woolen Beanie
 Woolen Scarf
+Cotton Scarf
 }
     warm
 {
