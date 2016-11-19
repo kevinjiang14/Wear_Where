@@ -18,16 +18,23 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.InputType;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +44,7 @@ import com.example.kevin.wear_where.AsyncTask.GoogleDirectionsAST;
 import com.example.kevin.wear_where.AsyncTask.IntervalInformationAST;
 import com.example.kevin.wear_where.Google.Directions.DirectionsObject;
 import com.example.kevin.wear_where.Listeners.DateListener;
+import com.example.kevin.wear_where.MapInformation.MapInformation;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.example.kevin.wear_where.wear.Clothing;
 import com.example.kevin.wear_where.wear.ClothingActivity;
@@ -240,6 +248,34 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         //Get a reference to the google maps fragment in tab4
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+
+        final ScrollView scroll = (ScrollView) findViewById(R.id.layout4);
+        ImageView transparent = (ImageView)findViewById(R.id.imagetrans);
+        transparent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        scroll.requestDisallowInterceptTouchEvent(true);
+                        // Disable touch on transparent view
+                        return false;
+
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        scroll.requestDisallowInterceptTouchEvent(false);
+                        return true;
+
+                    case MotionEvent.ACTION_MOVE:
+                        scroll.requestDisallowInterceptTouchEvent(true);
+                        return false;
+
+                    default:
+                        return true;
+                }
+            }
+        });
 
         datasource = new DatabaseInterface(this);
         datasource.open();
@@ -1089,12 +1125,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 title.setTextColor(Color.BLACK);
                 title.setGravity(Gravity.CENTER);
                 title.setTypeface(null, Typeface.BOLD);
+                title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 title.setText(marker.getTitle());
 
                 // TextView used to tell the user the information pertaining to the corresponding interval
                 TextView snippet = new TextView(context);
                 snippet.setGravity(Gravity.CENTER);
                 snippet.setTextColor(Color.GRAY);
+                snippet.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 snippet.setText(marker.getSnippet());
 
                 // Add the textViews to the LinearLayout
@@ -1464,12 +1502,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         new IntervalInformationAST(intervals) {
 
             @Override
-            protected void onPostExecute(ArrayList<MarkerOptions> intervalInformation) {
-                markers = intervalInformation;
+            protected void onPostExecute(MapInformation mapInformation) {
+
+                markers = mapInformation.intervalInformation;
 
                 // If the returned list is not null, then add the markers to the map
                 if (markers != null) {
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.intervalInformationLayout);
+                    IntervalAdapter adapter = new IntervalAdapter(context, mapInformation);
                     for (int i = 0; i < markers.size(); ++i) {
+                        linearLayout.addView(adapter.getView(i, null, null));
                         maps.addMarker(markers.get(i));
                     }
                 }

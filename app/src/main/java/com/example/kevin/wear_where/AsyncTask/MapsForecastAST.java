@@ -14,7 +14,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 /**
- * Created by Hermes on 10/23/2016.
+ * Created by Christopher Columbus on 10/09/1492.
  */
 
 public class MapsForecastAST extends AsyncTask<Void, Void, HourlyItem> {

@@ -1118,38 +1118,67 @@
                         android:text="Submit" />
                 </RelativeLayout>
 
-                <RelativeLayout
+                <ScrollView
                     android:id="@+id/layout4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                        class="com.google.android.gms.maps.MapFragment"
-                        android:id="@+id/map"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="360dp"
-                        />
-
-                    <ScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_below="@+id/map">
+                        android:layout_height="wrap_content">
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:paddingBottom="@dimen/activity_vertical_margin"
-                            android:paddingTop="@dimen/activity_vertical_margin">
+                            android:layout_height="match_parent"
+                            android:layout_alignParentTop="true"
+                            android:id="@+id/mapLayout">
+
+                            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                                class="com.google.android.gms.maps.MapFragment"
+                                android:id="@+id/map"
+                                android:layout_width="match_parent"
+                                android:layout_height="360dp"
+                                />
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="360dp"
+                                android:id="@+id/imagetrans"
+                                android:layout_alignTop="@+id/map"
+                                android:layout_alignBottom="@+id/map"
+                                android:layout_alignEnd="@+id/map"
+                                android:layout_alignRight="@+id/map"
+                                android:layout_alignLeft="@+id/map"
+                                android:layout_alignStart="@+id/map"
+                                android:alpha="0.0"/>
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:id="@+id/intervalInformationLayout"
+                            android:layout_below="@+id/mapLayout">
+
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@+id/intervalInformationLayout"
+                            android:id="@+id/mapInfoLayout">
 
                             <TextView
                                 android:id="@+id/startingLocationTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
-                                android:paddingTop="16dp"
+                                android:paddingTop="14sp"
                                 android:text="Enter a Starting Location..."
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                android:textColor="#000000"
+                                android:textStyle="bold"
+                                android:textSize="15sp" />
 
                             <fragment
                                 android:id="@+id/starting_location_autocomplete_fragment"
@@ -1165,9 +1194,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/starting_location_autocomplete_fragment"
                                 android:layout_centerHorizontal="true"
-                                android:paddingTop="16dp"
+                                android:textColor="#000000"
+                                android:textStyle="bold"
                                 android:text="Enter an Ending Location..."
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                android:textSize="15sp" />
 
                             <fragment
                                 android:id="@+id/ending_location_autocomplete_fragment"
@@ -1186,8 +1216,8 @@
                                 android:onClick="placeMarkers"
                                 android:text="Let's Go!" />
                         </RelativeLayout>
-                    </ScrollView>
-                </RelativeLayout>
+                    </RelativeLayout>
+                </ScrollView>
             </FrameLayout>
         </LinearLayout>
     </TabHost>
