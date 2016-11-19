@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.InputType;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.Gravity;
@@ -41,6 +42,7 @@ import com.example.kevin.wear_where.AsyncTask.GoogleDirectionsAST;
 import com.example.kevin.wear_where.AsyncTask.IntervalInformationAST;
 import com.example.kevin.wear_where.Google.Directions.DirectionsObject;
 import com.example.kevin.wear_where.Listeners.DateListener;
+import com.example.kevin.wear_where.MapInformation.MapInformation;
 import com.example.kevin.wear_where.WundergroundData.DailyForecast.DailyObject;
 import com.example.kevin.wear_where.wear.Clothing;
 import com.example.kevin.wear_where.wear.ClothingActivity;
@@ -915,12 +917,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 title.setTextColor(Color.BLACK);
                 title.setGravity(Gravity.CENTER);
                 title.setTypeface(null, Typeface.BOLD);
+                title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 title.setText(marker.getTitle());
 
                 // TextView used to tell the user the information pertaining to the corresponding interval
                 TextView snippet = new TextView(context);
                 snippet.setGravity(Gravity.CENTER);
                 snippet.setTextColor(Color.GRAY);
+                snippet.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 snippet.setText(marker.getSnippet());
 
                 // Add the textViews to the LinearLayout
@@ -1226,13 +1230,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         new IntervalInformationAST(intervals) {
 
             @Override
-            protected void onPostExecute(ArrayList<MarkerOptions> intervalInformation) {
-                markers = intervalInformation;
+            protected void onPostExecute(MapInformation mapInformation) {
+
+                markers = mapInformation.intervalInformation;
 
                 // If the returned list is not null, then add the markers to the map
                 if (markers != null) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.intervalInformationLayout);
-                    IntervalAdapter adapter = new IntervalAdapter(context, markers);
+                    IntervalAdapter adapter = new IntervalAdapter(context, mapInformation);
                     for (int i = 0; i < markers.size(); ++i) {
                         linearLayout.addView(adapter.getView(i, null, null));
                         maps.addMarker(markers.get(i));

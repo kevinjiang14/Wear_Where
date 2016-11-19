@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 
 import com.example.kevin.wear_where.Google.Distance.DistanceMatrixObject;
 import com.example.kevin.wear_where.Google.TimeZone.TimeZoneObject;
+import com.example.kevin.wear_where.MapInformation.MapInformation;
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyItem;
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -31,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  * Created by Hermes on 10/23/2016.
  */
 
-public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<MarkerOptions>> {
+public class IntervalInformationAST extends AsyncTask<Void, Void, MapInformation> {
 
     /* NOTE: For all arrays involving intervals, the order is as follows:
      * Index 0 = Starting Point
@@ -43,6 +44,9 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
 
     // ArrayList to keep track of the intervals to get set up markers for
     private ArrayList<LatLng> intervals;
+
+    // ArrayLists to keep information used for the ExpandableListView
+    private ArrayList<String> intervalTitles, intervalDetails;
 
     // ArrayList to keep track of the markers for each interval
     private ArrayList<MarkerOptions> intervalInformation;
@@ -68,6 +72,8 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
         intervalInformation = new ArrayList<>();
         intervalTimeZones = new ArrayList<>();
         mapsHourlyForecast = new ArrayList<>();
+        intervalTitles = new ArrayList<>();
+        intervalDetails = new ArrayList<>();
 
         // Begin GoogleDistanceAST
         try {
@@ -128,14 +134,15 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
     }
 
     @Override
-    protected ArrayList<MarkerOptions> doInBackground(Void... params) throws IllegalStateException {
+    protected MapInformation doInBackground(Void... params) throws IllegalStateException {
 
         // Don't proceed until we have all information for all intervals
         while (intervals.size() != mapsHourlyForecast.size() && intervals.size() != intervalTimeZones.size()) {
         }
 
         // Get the current UTC Epoch Time in milliseconds
-        Long currentTime = System.currentTimeMillis() - ((new GregorianCalendar().getTimeZone().getRawOffset()) + new GregorianCalendar().getTimeZone().getDSTSavings());
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        Long currentTime = gregorianCalendar.getTimeInMillis() - gregorianCalendar.getTimeZone().getRawOffset();
 
         // Create the list of MarkerOptions to add to the map
         for (int i = 0; i < intervals.size(); ++i) {
@@ -207,42 +214,66 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
 
             // If i == 0, we are creating the marker for the starting point
             if (i == 0) {
+                // Add the title string
+                intervalTitles.add(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(0));
+
+                // Add the details string
+                intervalDetails.add("Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
+                        "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
+                        "Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                        "Weather at beginning of trip: " + '\n' + precipitation + '\n' + temperatureF + '\n');
+
+                // Add the MarkerOption
+                String parts[] = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(0).split(", ", 2);
                 intervalInformation.add(new MarkerOptions().position(intervals.get(0))
-                        .title("Origin")
-                        .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(0) + '\n' +
-                                "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
-                                "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
-                                "Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                        .title(parts[0] + "," + '\n' + parts[1])
+                        .snippet("Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                                "Weather at beginning of trip: " + '\n' + precipitation + '\n' + temperatureF)
                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
             }
 
             // If i == interval.size() - 1, we are creating the marker for the ending point
             else if (i == intervals.size() - 1) {
+                // Add the title string
+                intervalTitles.add(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i));
+
+                // Add the details string
+                intervalDetails.add("Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
+                        "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
+                        "Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF);
+
+                // Add the MarkerOption
+                String parts[] = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i).split(", ", 2);
                 intervalInformation.add(new MarkerOptions().position(intervals.get(i))
-                        .title("Destination")
-                        .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i) + '\n' +
-                                "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
-                                "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
-                                "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                        .title(parts[0] + "," + '\n' + parts[1])
+                        .snippet("Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
                                 "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
             }
 
             // Else, we are creating a marker for an interval point
             else {
+                // Add the title string
+                intervalTitles.add(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i));
+
+                // Add the details string
+                intervalDetails.add("Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
+                        "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
+                        "Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF + '\n');
+
+                // Add the MarkerOption
+                String parts[] = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i).split(", ", 2);
                 intervalInformation.add(new MarkerOptions().position(intervals.get(i))
-                        .title("Interval")
-                        .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i) + '\n' +
-                                "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
-                                "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
-                                "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                        .title(parts[0] + "," + '\n' + parts[1])
+                        .snippet("Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
                                 "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
             }
         }
 
         // Return the ArrayList of MarkerOptions
-        return intervalInformation;
+        return new MapInformation(intervalInformation, intervalTitles, intervalDetails);
     }
 }
