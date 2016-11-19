@@ -1,0 +1,14 @@
+date: November 15, 2016
+meeting_type: group
+attendance: [<calvinzh>, <thomas69>, <kevinjia>, <hermesko>]
+absent: []
+excused_absences: []
+task_progress: [
+  {ubit: thomas69, progress: implemented ranges for user input},
+  {ubit: calvinzh, progress: clothing tab now shows current suggestion and later suggestions},
+  {ubit: hermesko, progress: interval info shows up outside of map},
+  {ubit: kevinjia, progress: fixing crashing files}
+  ]
+issues: []
+Notes: |
+    

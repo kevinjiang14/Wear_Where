@@ -42,10 +42,13 @@ public class ClothingActivity extends Activity {
             int hour = intent.getIntExtra("TIME", 25);
             String ampm = intent.getStringExtra("AMPM");
             String currentCondition = intent.getStringExtra("CONDITION");
+            String laterCondition = intent.getStringExtra("LATERCONDITION");
+            String changedTemp = intent.getStringExtra("TEMP");
+            String currentTemp = intent.getStringExtra("THISTEMP");
 
-            currentText.setText("Clothes for current condition: "+ currentCondition);
+            currentText.setText("Clothes for current weather: "+currentTemp+ (char) 0x00B0 + " F, " + currentCondition);
             if (hour != 25) {
-                laterText.setText("Weather change at " + hour + ":00" + ampm + ". Consider bringing these");
+                laterText.setText(hour+1 + " hour(s) later it's " + changedTemp + (char) 0x00B0 + " F, "+ laterCondition +". Consider bringing these");
             }
             currentList.setAdapter(new ArrayAdapter<String>(this, R.layout.mylist, R.id.itemname, currentClothingList));
             laterList.setAdapter(new ArrayAdapter<String>(this, R.layout.mylist, R.id.itemname, laterClothingList));
