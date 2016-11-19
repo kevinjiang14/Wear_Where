@@ -5,18 +5,8 @@
     android:background="@color/colorPrimary">
 
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_marginTop="13dp"
-        android:layout_below="@+id/currentClothes"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/currentList"
-        android:background="@color/colorAccent"
-        android:layout_height="225dp" />
-
     <TextView
-        android:text="What to wear later"
+        android:text="No weather changes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/laterClothes"
@@ -53,4 +43,13 @@
         android:layout_alignLeft="@+id/laterClothes"
         android:layout_alignStart="@+id/laterClothes"
         android:fontFamily="sans-serif-condensed" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:id="@+id/currentList"
+        android:background="@color/colorAccent"
+        android:layout_height="225dp"
+        android:layout_below="@+id/currentClothes"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

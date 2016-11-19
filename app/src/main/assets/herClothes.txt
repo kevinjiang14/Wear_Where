@@ -6,6 +6,7 @@ North Face Coat
 Express Coat
 Calvin Klein Coat
 Fat Goose Coat
+LLBeans Jacket
 }
     chilly
 {
@@ -23,6 +24,7 @@ Forever 21 Sweater Dress
 Baggy Sweater
 Cardigan
 Long Sleeve
+Fleece
 }
     warm
 {
@@ -35,6 +37,8 @@ H&M Maxi Dress
 Forever 21 Romper
 Plain Tee
 Blouses
+Long Sleeve
+Dress
 }
     hot
 {
@@ -45,6 +49,7 @@ Forever 21 Romper
 H&M Skater Dress
 Tank Top
 Sleeveless Top
+Short Sleeves
 }
 --
         Lower Body Wear
@@ -85,6 +90,8 @@ Forever 21 Skirt
 Capris
 Leggings
 Sports Leggings
+Skirts
+Shorts
 }
 --
         Overall Wear
@@ -115,6 +122,8 @@ Ugg Waterproof Boots
 Nike Jordan's
 Nike Air Maxes
 Full Length Leather Boots
+UGG Boots
+Long Boots
 }
     chilly
 {
@@ -125,6 +134,7 @@ Nike Jordan's
 Nike Air Maxes
 Half Length Leather Boots
 Furry Moccasins
+Boots
 }
     warm
 {
@@ -138,6 +148,8 @@ Nike Air Maxes
 Flats
 Sandals
 Boat Shoes
+Sneakers
+Vans
 }
     hot
 {
@@ -159,6 +171,7 @@ Forever 21 Beanie
 Woolen Gloves
 Woolen Beanie
 Woolen Scarf
+Tissues
 }
     chilly
 {
@@ -180,5 +193,7 @@ Hat
 {
 Earrings
 Sun Glasses
+Sun Screen
+Tissues
 }
 --
