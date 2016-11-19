@@ -1509,7 +1509,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // If the returned list is not null, then add the markers to the map
                 if (markers != null) {
                     LinearLayout linearLayout = (LinearLayout) findViewById(R.id.intervalInformationLayout);
-                    IntervalAdapter adapter = new IntervalAdapter(context, mapInformation);
+                    IntervalAdapter adapter = new IntervalAdapter(context, mapInformation, clothes);
                     for (int i = 0; i < markers.size(); ++i) {
                         linearLayout.addView(adapter.getView(i, null, null));
                         maps.addMarker(markers.get(i));

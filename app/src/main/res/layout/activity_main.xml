@@ -1174,11 +1174,10 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
-                                android:paddingTop="14sp"
                                 android:text="Enter a Starting Location..."
                                 android:textColor="#000000"
                                 android:textStyle="bold"
-                                android:textSize="15sp" />
+                                android:textSize="16sp" />
 
                             <fragment
                                 android:id="@+id/starting_location_autocomplete_fragment"
@@ -1197,7 +1196,7 @@
                                 android:textColor="#000000"
                                 android:textStyle="bold"
                                 android:text="Enter an Ending Location..."
-                                android:textSize="15sp" />
+                                android:textSize="16sp" />
 
                             <fragment
                                 android:id="@+id/ending_location_autocomplete_fragment"

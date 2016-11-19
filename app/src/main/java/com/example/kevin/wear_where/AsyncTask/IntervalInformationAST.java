@@ -13,6 +13,7 @@ import com.example.kevin.wear_where.Google.TimeZone.TimeZoneObject;
 import com.example.kevin.wear_where.MapInformation.MapInformation;
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyItem;
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
+import com.example.kevin.wear_where.wear.Clothing;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -48,6 +49,9 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, MapInformation
     // ArrayLists to keep information used for the ExpandableListView
     private ArrayList<String> intervalTitles, intervalDetails;
 
+    // ArrayList of ArrayList to keep clothing suggestions for each interval
+    private ArrayList<String> intervalTemperatures;
+
     // ArrayList to keep track of the markers for each interval
     private ArrayList<MarkerOptions> intervalInformation;
 
@@ -74,6 +78,7 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, MapInformation
         mapsHourlyForecast = new ArrayList<>();
         intervalTitles = new ArrayList<>();
         intervalDetails = new ArrayList<>();
+        intervalTemperatures = new ArrayList<>();
 
         // Begin GoogleDistanceAST
         try {
@@ -221,15 +226,18 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, MapInformation
                 intervalDetails.add("Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
                         "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
                         "Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                        "Weather at beginning of trip: " + '\n' + precipitation + '\n' + temperatureF + '\n');
+                        "Weather at beginning of trip: " + '\n' + precipitation + ", " + temperatureF + '\n');
 
                 // Add the MarkerOption
                 String parts[] = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(0).split(", ", 2);
                 intervalInformation.add(new MarkerOptions().position(intervals.get(0))
                         .title(parts[0] + "," + '\n' + parts[1])
                         .snippet("Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                "Weather at beginning of trip: " + '\n' + precipitation + '\n' + temperatureF)
+                                "Weather at beginning of trip: " + '\n' + precipitation + ", " + temperatureF)
                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+
+                // Add the temperature
+                intervalTemperatures.add(Integer.toString(mapsHourlyForecast.get(i).getTemperature().getTemperature()));
             }
 
             // If i == interval.size() - 1, we are creating the marker for the ending point
@@ -241,15 +249,18 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, MapInformation
                 intervalDetails.add("Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
                         "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
                         "Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF);
+                        "Weather at ETA: " + '\n' + precipitation + ", " + temperatureF + '\n');
 
                 // Add the MarkerOption
                 String parts[] = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i).split(", ", 2);
                 intervalInformation.add(new MarkerOptions().position(intervals.get(i))
                         .title(parts[0] + "," + '\n' + parts[1])
                         .snippet("Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                                "Weather at ETA: " + '\n' + precipitation + ", " + temperatureF)
                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+
+                // Add the temperature
+                intervalTemperatures.add(Integer.toString(mapsHourlyForecast.get(i).getTemperature().getTemperature()));
             }
 
             // Else, we are creating a marker for an interval point
@@ -261,19 +272,22 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, MapInformation
                 intervalDetails.add("Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
                         "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
                         "Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                        "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF + '\n');
+                        "Weather at ETA: " + '\n' + precipitation + ", " + temperatureF + '\n');
 
                 // Add the MarkerOption
                 String parts[] = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i).split(", ", 2);
                 intervalInformation.add(new MarkerOptions().position(intervals.get(i))
                         .title(parts[0] + "," + '\n' + parts[1])
                         .snippet("Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                                "Weather at ETA: " + '\n' + precipitation + ", " + temperatureF)
                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+
+                // Add the temperature
+                intervalTemperatures.add(Integer.toString(mapsHourlyForecast.get(i).getTemperature().getTemperature()));
             }
         }
 
         // Return the ArrayList of MarkerOptions
-        return new MapInformation(intervalInformation, intervalTitles, intervalDetails);
+        return new MapInformation(intervalInformation, intervalTitles, intervalDetails, intervalTemperatures);
     }
 }
