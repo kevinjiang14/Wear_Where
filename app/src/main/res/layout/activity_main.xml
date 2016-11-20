@@ -996,6 +996,20 @@
                         android:layout_below="@+id/shoes"
                         android:layout_centerHorizontal="true" />
 
+                    <Switch
+                        android:text="Gender Switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="18dp"
+                        android:layout_marginStart="18dp"
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/genderSwitch"
+                        android:textOn="female"
+                        android:textOff="male"
+                        android:layout_below="@+id/apparel"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
                     <Button
                         android:text="Shoes"
                         android:layout_width="match_parent"
@@ -1009,7 +1023,7 @@
                         android:text="Miscellaneous"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="100dp"
+                        android:layout_marginTop="120dp"
                         android:id="@+id/miscellaneous"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
