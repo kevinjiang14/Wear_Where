@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +36,7 @@ import android.widget.NumberPicker;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -291,12 +293,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             datasource.createRange(40, 59);
         }
 
-        //Initialize buttons on tab2
+        //Initialize clothing buttons and gender switch on tab2
         Button miscellaneous = (Button)findViewById(R.id.miscellaneous);
         Button upperbody = (Button)findViewById(R.id.upperbody);
         Button lowerbody = (Button)findViewById(R.id.lowerbody);
         Button shoes = (Button)findViewById(R.id.shoes);
         Button overalls = (Button)findViewById(R.id.overalls);
+        Switch genderSwitch = (Switch)findViewById(R.id.genderSwitch);
 
 
         //Instantiate clothing from main/assets/ folder
@@ -309,6 +312,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         catch (IOException e){
             e.printStackTrace();
         }
+
+        //start switch on/off functions
+        genderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    Toast.makeText(getApplicationContext(),"Gender set to female", Toast.LENGTH_LONG).show();
+                    clothes.gender = "female";
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"Gender set to male",Toast.LENGTH_LONG).show();
+                    clothes.gender = "male";
+                }
+            }
+        });
 
 
         //Start onclick functions of buttons
