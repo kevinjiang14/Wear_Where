@@ -286,134 +286,215 @@ public class VacationDataActivity extends AppCompatActivity {
                 Intent clothingActivity = new Intent(VacationDataActivity.this, ClothingActivity.class);
                 // Add Hot clothing to Bundle
                 if(plannerObject.getTempOverNinetyChance() >= plannerObject.getTempOverSixtyChance() && plannerObject.getTempOverNinetyChance() >= plannerObject.getFreezingChance() && plannerObject.getTempOverNinetyChance() >= plannerObject.getBelowFreezingChance()) {
-                    AddHot(clothesObject);
-//                    if(plannerObject.getTempOverSixtyChance() >= 30){
-//
-//                    }
-//                    if(plannerObject.getFreezingChance() >= 30){
-//
-//                    }
-//                    if(plannerObject.getBelowFreezingChance() >= 30){
-//
-//                    }
+                    AddHot(clothesObject, "Plan");
+                    if(plannerObject.getTempOverSixtyChance() >= 30){
+                        AddWarm(clothesObject, "Consider");
+                    }
+                    if(plannerObject.getFreezingChance() >= 30){
+                        AddChilly(clothesObject, "Consider");
+                    }
+                    if(plannerObject.getBelowFreezingChance() >= 30){
+                        AddFreezing(clothesObject, "Consider");
+                    }
                 }
                 // Add Warm clothing to Bundle
                 else if(plannerObject.getTempOverSixtyChance() >= plannerObject.getTempOverNinetyChance() && plannerObject.getTempOverSixtyChance() >= plannerObject.getFreezingChance() && plannerObject.getTempOverSixtyChance() >= plannerObject.getBelowFreezingChance()) {
-                    AddWarm(clothesObject);
+                    AddWarm(clothesObject, "Plan");
+                    if(plannerObject.getTempOverNinetyChance() >= 30){
+                        AddHot(clothesObject, "Consider");
+                    }
+                    if(plannerObject.getFreezingChance() >= 30){
+                        AddChilly(clothesObject, "Consider");
+                    }
+                    if(plannerObject.getBelowFreezingChance() >= 30){
+                        AddFreezing(clothesObject, "Consider");
+                    }
                 }
 
                 // Add Chilly clothing to Bundle
                 else if(plannerObject.getFreezingChance() >= plannerObject.getTempOverNinetyChance() && plannerObject.getFreezingChance() >= plannerObject.getTempOverSixtyChance() && plannerObject.getFreezingChance() >= plannerObject.getBelowFreezingChance()) {
-                    AddChilly(clothesObject);
+                    AddChilly(clothesObject, "Plan");
+                    if(plannerObject.getTempOverNinetyChance() >= 30){
+                        AddHot(clothesObject, "Consider");
+                    }
+                    if(plannerObject.getTempOverSixtyChance() >= 30){
+                        AddWarm(clothesObject, "Consider");
+                    }
+                    if(plannerObject.getBelowFreezingChance() >= 30){
+                        AddFreezing(clothesObject, "Consider");
+                    }
                 }
 
                 // Add Freezing clothing to Bundle
                 else if(plannerObject.getBelowFreezingChance() >= plannerObject.getTempOverNinetyChance() && plannerObject.getBelowFreezingChance() >= plannerObject.getTempOverSixtyChance() && plannerObject.getBelowFreezingChance() >= plannerObject.getFreezingChance()) {
-                    AddFreezing(clothesObject);
+                    AddFreezing(clothesObject, "Plan");
+                    if(plannerObject.getTempOverNinetyChance() >= 30){
+                        AddHot(clothesObject, "Consider");
+                    }
+                    if(plannerObject.getTempOverSixtyChance() >= 30){
+                        AddWarm(clothesObject, "Consider");
+                    }
+                    if(plannerObject.getFreezingChance() >= 30){
+                        AddChilly(clothesObject, "Consider");
+                    }
                 }
 
+                // Pass bundle to Clothing Intent
                 clothingActivity.putExtra(UPPERBODY + ".Bundle", upperbody);
                 clothingActivity.putExtra(LOWERBODY + ".Bundle", lowerbody);
                 clothingActivity.putExtra(SHOES + ".Bundle", shoes);
+                clothingActivity.putExtra(UPPERBODY + ".BundleConsider", upperbodyConsider);
+                clothingActivity.putExtra(LOWERBODY + ".BundleConsider", lowerbodyConsider);
+                clothingActivity.putExtra(SHOES + ".BundleConsider", shoesConsider);
                 startActivity(clothingActivity);
             }
         });
     }
 
     // Adds the Hot clothing suggestion to Bundle to be passed to next activity
-    public void AddHot(Clothing clothesObject){
+    public void AddHot(Clothing clothesObject, String bundleDest){
         ArrayList<String> upperbody = clothesObject.getUpperBody("80");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
             upperbodyList[i] = upperbody.get(i);
         }
-        this.upperbody.putStringArray(UPPERBODY + ".Hot", upperbodyList);
+        // Place upperbody clothing into bundle
+        if(bundleDest == "Plan") {
+            this.upperbody.putStringArray(UPPERBODY + ".Hot", upperbodyList);
+        }else if(bundleDest == "Consider"){
+            this.upperbodyConsider.putStringArray(UPPERBODY + ".Hot", upperbodyList);
+        }
         // Lowerbody list
         ArrayList<String> lowerbody = clothesObject.getLowerBody("80");
         String[] lowerbodyList = new String[lowerbody.size()];
         for (int i = 0; i < lowerbody.size(); i++){
             lowerbodyList[i] = lowerbody.get(i);
         }
-        this.lowerbody.putStringArray(LOWERBODY + ".Hot", lowerbodyList);
+        if(bundleDest == "Plan") {
+            this.lowerbody.putStringArray(LOWERBODY + ".Hot", lowerbodyList);
+        }else if(bundleDest == "Consider"){
+            this.lowerbodyConsider.putStringArray(LOWERBODY + ".Hot", upperbodyList);
+        }
         // Shoes list
         ArrayList<String> shoes = clothesObject.getShoes("80");
         String[] shoesList = new String[shoes.size()];
         for (int i = 0; i < shoes.size(); i++){
             shoesList[i] = shoes.get(i);
         }
-        this.shoes.putStringArray(SHOES + ".Hot", shoesList);
+        if(bundleDest == "Plan") {
+            this.shoes.putStringArray(SHOES + ".Hot", shoesList);
+        }else if(bundleDest == "Consider"){
+            this.shoesConsider.putStringArray(SHOES + ".Hot", upperbodyList);
+        }
     }
 
     // Adds the Warm clothing suggestion to Bundle to be passed to next activity
-    public void AddWarm(Clothing clothesObject){
+    public void AddWarm(Clothing clothesObject, String bundleDest) {
         ArrayList<String> upperbody = clothesObject.getUpperBody("60");
         String[] upperbodyList = new String[upperbody.size()];
-        for (int i = 0; i < upperbody.size(); i++){
+        for (int i = 0; i < upperbody.size(); i++) {
             upperbodyList[i] = upperbody.get(i);
         }
-        this.upperbody.putStringArray(UPPERBODY + ".Warm", upperbodyList);
+        if (bundleDest == "Plan") {
+            this.upperbody.putStringArray(UPPERBODY + ".Warm", upperbodyList);
+        } else if (bundleDest == "Consider") {
+            this.upperbodyConsider.putStringArray(UPPERBODY + ".Warm", upperbodyList);
+        }
         // Lowerbody list
         ArrayList<String> lowerbody = clothesObject.getLowerBody("60");
         String[] lowerbodyList = new String[lowerbody.size()];
-        for (int i = 0; i < lowerbody.size(); i++){
+        for (int i = 0; i < lowerbody.size(); i++) {
             lowerbodyList[i] = lowerbody.get(i);
         }
-        this.lowerbody.putStringArray(LOWERBODY + ".Warm", lowerbodyList);
+        if (bundleDest == "Plan") {
+            this.lowerbody.putStringArray(LOWERBODY + ".Warm", lowerbodyList);
+        } else if (bundleDest == "Consider") {
+            this.lowerbodyConsider.putStringArray(LOWERBODY + ".Warm", upperbodyList);
+        }
         // Shoes list
         ArrayList<String> shoes = clothesObject.getShoes("60");
         String[] shoesList = new String[shoes.size()];
-        for (int i = 0; i < shoes.size(); i++){
+        for (int i = 0; i < shoes.size(); i++) {
             shoesList[i] = shoes.get(i);
         }
-        this.shoes.putStringArray(SHOES + ".Warm", shoesList);
+        if (bundleDest == "Plan") {
+            this.shoes.putStringArray(SHOES + ".Warm", shoesList);
+        } else if (bundleDest == "Consider") {
+            this.shoesConsider.putStringArray(SHOES + ".Warm", shoesList);
+        }
     }
 
     // Adds the Chilly clothing suggestion to Bundle to be passed to next activity
-    public void AddChilly(Clothing clothesObject){
+    public void AddChilly(Clothing clothesObject, String bundleDest){
         ArrayList<String> upperbody = clothesObject.getUpperBody("40");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
             upperbodyList[i] = upperbody.get(i);
         }
-        this.upperbody.putStringArray(UPPERBODY + ".Chilly", upperbodyList);
+        if (bundleDest == "Plan") {
+            this.upperbody.putStringArray(UPPERBODY + ".Chilly", upperbodyList);
+        }else if (bundleDest == "Consider") {
+            this.upperbodyConsider.putStringArray(UPPERBODY + ".Chilly", upperbodyList);
+        }
         // Lowerbody list
         ArrayList<String> lowerbody = clothesObject.getLowerBody("40");
         String[] lowerbodyList = new String[lowerbody.size()];
         for (int i = 0; i < lowerbody.size(); i++){
             lowerbodyList[i] = lowerbody.get(i);
         }
-        this.lowerbody.putStringArray(LOWERBODY + ".Chilly", lowerbodyList);
+        if (bundleDest == "Plan") {
+            this.lowerbody.putStringArray(LOWERBODY + ".Chilly", lowerbodyList);
+        }else if (bundleDest == "Consider") {
+            this.lowerbodyConsider.putStringArray(LOWERBODY + ".Chilly", lowerbodyList);
+        }
         // Shoes list
         ArrayList<String> shoes = clothesObject.getShoes("40");
         String[] shoesList = new String[shoes.size()];
         for (int i = 0; i < shoes.size(); i++){
             shoesList[i] = shoes.get(i);
         }
-        this.shoes.putStringArray(SHOES + ".Chilly", shoesList);
+        if (bundleDest == "Plan") {
+            this.shoes.putStringArray(SHOES + ".Chilly", shoesList);
+        }else if (bundleDest == "Consider") {
+            this.shoesConsider.putStringArray(SHOES + ".Chilly", shoesList);
+
+        }
     }
 
     // Adds the Freezing clothing suggestion to Bundle to be passed to next activity
-    public void AddFreezing(Clothing clothesObject){
+    public void AddFreezing(Clothing clothesObject, String bundleDest){
         ArrayList<String> upperbody = clothesObject.getUpperBody("0");
         String[] upperbodyList = new String[upperbody.size()];
         for (int i = 0; i < upperbody.size(); i++){
             upperbodyList[i] = upperbody.get(i);
         }
-        this.upperbody.putStringArray(UPPERBODY + ".Freezing", upperbodyList);
+        if (bundleDest == "Plan") {
+            this.upperbody.putStringArray(UPPERBODY + ".Freezing", upperbodyList);
+        }else if (bundleDest == "Consider") {
+            this.upperbodyConsider.putStringArray(UPPERBODY + ".Freezing", upperbodyList);
+        }
         // Lowerbody list
         ArrayList<String> lowerbody = clothesObject.getLowerBody("0");
         String[] lowerbodyList = new String[lowerbody.size()];
         for (int i = 0; i < lowerbody.size(); i++){
             lowerbodyList[i] = lowerbody.get(i);
         }
-        this.lowerbody.putStringArray(LOWERBODY + ".Freezing", lowerbodyList);
+        if (bundleDest == "Plan") {
+            this.lowerbody.putStringArray(LOWERBODY + ".Freezing", lowerbodyList);
+        }else if (bundleDest == "Consider") {
+            this.lowerbodyConsider.putStringArray(LOWERBODY + ".Freezing", lowerbodyList);
+        }
         // Shoes list
         ArrayList<String> shoes = clothesObject.getShoes("0");
         String[] shoesList = new String[shoes.size()];
         for (int i = 0; i < shoes.size(); i++){
             shoesList[i] = shoes.get(i);
         }
-        this.shoes.putStringArray(SHOES + ".Freezing", shoesList);
+        if (bundleDest == "Plan") {
+            this.shoes.putStringArray(SHOES + ".Freezing", shoesList);
+        }else if (bundleDest == "Consider") {
+            this.shoesConsider.putStringArray(SHOES + ".Freezing", shoesList);
+        }
     }
 
     // Displays the data of the given timeframe
