@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public class Suggestion {
 
-    Clothing _clothes = new Clothing();
+    /*Clothing _clothes = new Clothing();
     public Suggestion(Clothing clothes){
         _clothes = clothes;
     }
@@ -19,7 +19,7 @@ public class Suggestion {
     /**
      * Enter temperature and condition to get clothing suggestions
      */
-    public String getSuggestion(String temperature, String condition){
+    /*public String getSuggestion(String temperature, String condition){
         float temp = Float.parseFloat(temperature);
         ArrayList<String> headwear;
         ArrayList<String> upperbody;
@@ -96,5 +96,5 @@ public class Suggestion {
             return "sunglasses";
         }
         return "";
-    }
+    }*/
 }

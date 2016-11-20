@@ -2,6 +2,7 @@ package com.example.kevin.wear_where.AsyncTask;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
 import com.example.kevin.wear_where.WundergroundData.CurrentCondition.ConditionsObject;
 
@@ -31,8 +32,23 @@ public class CurrentConditionAST extends AsyncTask<Void, ConditionsObject, Condi
 
         String current_link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/conditions/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
+        conditionsObject = this.loop(current_link);
+
+        int counter = 0;
+
+        while (conditionsObject == null && counter < 3) {
+            // If the connection failed, try again.
+            conditionsObject = this.loop(current_link);
+            counter++;
+        }
+
+        return conditionsObject;
+    }
+
+    @Nullable
+    private ConditionsObject loop (String link) {
         try {
-            request = new URL(current_link);
+            request = new URL(link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link
@@ -49,14 +65,11 @@ public class CurrentConditionAST extends AsyncTask<Void, ConditionsObject, Condi
                 result.append(line);
             }
 
-            conditionsObject = new ConditionsObject(result);
-
-            return conditionsObject;
+            return new ConditionsObject(result);
 
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
 }

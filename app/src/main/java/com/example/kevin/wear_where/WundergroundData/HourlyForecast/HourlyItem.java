@@ -15,6 +15,16 @@ public class HourlyItem implements JSONData{
     private String condition;
     private String iconURL;
 
+    public HourlyItem () {
+
+    }
+
+    public HourlyItem (int temp, String condition, String iconURL) {
+        this.temperature = new Temperature(temp);
+        this.condition = condition;
+        this.iconURL = iconURL;
+    }
+
     @Override
     public void retrieveData(JSONObject data) {
         hourly = new FCTtime();

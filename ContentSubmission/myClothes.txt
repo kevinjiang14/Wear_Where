@@ -16,6 +16,7 @@
 {
 
 }
+--
         Lower Body Wear
     freezing
 {
@@ -33,6 +34,7 @@
 {
 
 }
+--
         Footwear
     freezing
 {
@@ -50,6 +52,7 @@
 {
 
 }
+--
         Miscellaneous
     freezing
 {

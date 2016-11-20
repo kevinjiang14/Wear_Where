@@ -1,0 +1,16 @@
+date: November 10, 2016
+meeting_type: group + ta
+attendance: [<calvinzh>, <thomas69>, <kevinjia>]
+absent: []
+excused_absences: [<hermesko>]
+task_progress: [
+  {ubit: thomas69, progress: created way for user temperature ranges to be saved},
+  {ubit: calvinzh, progress: hisClothes and herClothes file parsing complete. No errors.},
+  {ubit: hermesko, progress: turned roadtrip layout into scroll view, needs cleaning up},
+  {ubit: kevinjia, progress: added clothing suggestion to vacation tab}
+  ]
+issues: []
+Notes: |
+    - check for drastic weather change and account for more suggestions
+    - implement user preference for temperature range
+    - create pop up for gender specification on first startup of app

@@ -1,10 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
 
-    <ListView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="50dp">
+
+        <ListView
+            android:id="@+id/currentList"
+            android:layout_width="match_parent"
+            android:layout_height="225dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/currentClothes"
+            android:layout_marginTop="13dp"
+            android:background="@color/colorAccent" />
+
+    <TextView
+        android:text="No weather changes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/laterClothes"
+        android:textSize="14sp"
+        android:layout_below="@+id/currentList"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:fontFamily="sans-serif-condensed" />
+
+        <ListView
+            android:id="@+id/laterList"
+            android:layout_width="match_parent"
+            android:layout_height="225dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/laterClothes"
+            android:layout_marginTop="12dp"
+            android:background="@color/colorAccent" />
+
+
+    <TextView
+        android:text="What to wear right now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/currentClothes"
+        android:layout_marginTop="11dp"
+        android:textSize="14sp"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_alignParentTop="true"
-        android:id="@+id/list" />
+        android:layout_alignLeft="@+id/laterClothes"
+        android:layout_alignStart="@+id/laterClothes"
+        android:fontFamily="sans-serif-condensed" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/returnButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="Done" />
+    </RelativeLayout>
 </RelativeLayout>

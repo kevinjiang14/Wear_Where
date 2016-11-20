@@ -2,8 +2,8 @@ package com.example.kevin.wear_where.AsyncTask;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 
-import com.example.kevin.wear_where.WundergroundData.CurrentCondition.ConditionsObject;
 import com.example.kevin.wear_where.WundergroundData.Planner.PlannerObject;
 
 import java.io.BufferedReader;
@@ -36,9 +36,23 @@ public class PlannerAST extends AsyncTask<Void, PlannerObject, PlannerObject> {
 
         String planner_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/planner_%s%s/q/%s/%s.json", Uri.encode(leaveDate), Uri.encode(returnDate), Uri.encode(state), Uri.encode(city));
 
+        plannerObject = this.loop(planner_link);
 
+        int counter = 0;
+
+        // If the connection failed, try again.
+        while (plannerObject == null && counter < 3) {
+            plannerObject = this.loop(planner_link);
+            counter++;
+        }
+
+        return plannerObject;
+    }
+
+    @Nullable
+    private PlannerObject loop (String link) {
         try {
-            request = new URL(planner_link);
+            request = new URL(link);
             // Open a URL connection to link
             URLConnection urlConnection = request.openConnection();
             // Get the input stream of link
@@ -55,15 +69,11 @@ public class PlannerAST extends AsyncTask<Void, PlannerObject, PlannerObject> {
                 result.append(line);
             }
 
-            plannerObject = new PlannerObject(result);
-
-            return plannerObject;
+            return new PlannerObject(result);
 
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return null;
     }
-
 }

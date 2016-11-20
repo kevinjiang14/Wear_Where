@@ -10,7 +10,10 @@ import android.os.AsyncTask;
 
 import com.example.kevin.wear_where.Google.Distance.DistanceMatrixObject;
 import com.example.kevin.wear_where.Google.TimeZone.TimeZoneObject;
+import com.example.kevin.wear_where.MapInformation.MapInformation;
+import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyItem;
 import com.example.kevin.wear_where.WundergroundData.HourlyForecast.HourlyObject;
+import com.example.kevin.wear_where.wear.Clothing;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -22,13 +25,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Hermes on 10/23/2016.
  */
 
-public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<MarkerOptions>> {
+public class IntervalInformationAST extends AsyncTask<Void, Void, MapInformation> {
 
     /* NOTE: For all arrays involving intervals, the order is as follows:
      * Index 0 = Starting Point
@@ -41,6 +46,12 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
     // ArrayList to keep track of the intervals to get set up markers for
     private ArrayList<LatLng> intervals;
 
+    // ArrayLists to keep information used for the ExpandableListView
+    private ArrayList<String> intervalTitles, intervalDetails;
+
+    // ArrayList of ArrayList to keep clothing suggestions for each interval
+    private ArrayList<String> intervalTemperatures;
+
     // ArrayList to keep track of the markers for each interval
     private ArrayList<MarkerOptions> intervalInformation;
 
@@ -51,12 +62,12 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
     private ArrayList<TimeZoneObject> intervalTimeZones;
 
     // ArrayList to keep track of the Wunderground 10 Day Hourly API information for each interval
-    private ArrayList<HourlyObject> mapsHourlyForecast;
+    private ArrayList<HourlyItem> mapsHourlyForecast;
 
     // Get the current UTC Epoch Time in milliseconds
     private Long currentTimeSeconds = System.currentTimeMillis() - ((new GregorianCalendar().getTimeZone().getRawOffset()) + new GregorianCalendar().getTimeZone().getDSTSavings());
 
-    public IntervalInformationAST(ArrayList<LatLng> intervals) {
+    public IntervalInformationAST(final ArrayList<LatLng> intervals) {
 
         // Save parameter for future use
         this.intervals = intervals;
@@ -65,36 +76,46 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
         intervalInformation = new ArrayList<>();
         intervalTimeZones = new ArrayList<>();
         mapsHourlyForecast = new ArrayList<>();
+        intervalTitles = new ArrayList<>();
+        intervalDetails = new ArrayList<>();
+        intervalTemperatures = new ArrayList<>();
 
         // Begin GoogleDistanceAST
-        new GoogleDistanceAST(intervals) {
+        try {
+            distanceMatrixObject = new GoogleDistanceAST(intervals).execute().get();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            @Override
-            protected void onPostExecute(DistanceMatrixObject item) {
+        // Get indexes of each interval for retrieving weather info
+        int[] hourlyIndices = new int[intervals.size()];
+        for (int i = 0; i < intervals.size(); ++i) {
 
-                // Get a handle to the returned object from GoogleDistanceAST
-                distanceMatrixObject = item;
+            // Get the duration for the current interval in milliseconds
+            Long intervalDuration = Long.parseLong((distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getSeconds())) * 1000;
 
+            // Add the index for getting the correct hourly information (the index is how many hours it takes to get to the current interval location)
+            int index = (int) (intervalDuration / (3600 * 1000));
+
+            if (index <= 239) {
+                hourlyIndices[i] = index;
             }
 
-        }.execute();
+            else {
+                hourlyIndices[i] = -1;
+            }
+        }
 
         // For each object in the intervals ArrayList, get the corresponding HourlyObject
         for (int i = 0; i < intervals.size(); ++i) {
+            try {
+                mapsHourlyForecast.add(new MapsForecastAST(intervals.get(i), hourlyIndices[i]).execute().get());
+            }
 
-            // Begin MapsForecastAST (if all goes well, the AsyncTasks will complete in the order they started)
-            new MapsForecastAST(intervals.get(i)) {
-
-                @Override
-                protected void onPostExecute(HourlyObject item) {
-
-                    // Add the HourlyObject returned to the mapsHourlyForecast (if all goes well, the order of objects added will correspond to the order of intervals)
-                    mapsHourlyForecast.add(item);
-
-                }
-
-            }.execute();
-
+            catch(Exception e) {
+                e.printStackTrace();
+            }
         }
 
         // For each object in the intervals ArrayList, get the corresponding TimeZoneObject
@@ -114,21 +135,19 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
             }.execute();
 
         }
+
     }
 
     @Override
-    protected ArrayList<MarkerOptions> doInBackground(Void... params) throws IllegalStateException {
-
-        // Don't proceed until we have the distanceMatrixObject
-        while (distanceMatrixObject == null) {
-        }
+    protected MapInformation doInBackground(Void... params) throws IllegalStateException {
 
         // Don't proceed until we have all information for all intervals
         while (intervals.size() != mapsHourlyForecast.size() && intervals.size() != intervalTimeZones.size()) {
         }
 
         // Get the current UTC Epoch Time in milliseconds
-        Long currentTime = System.currentTimeMillis() - ((new GregorianCalendar().getTimeZone().getRawOffset()) + new GregorianCalendar().getTimeZone().getDSTSavings());
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        Long currentTime = gregorianCalendar.getTimeInMillis() - gregorianCalendar.getTimeZone().getRawOffset();
 
         // Create the list of MarkerOptions to add to the map
         for (int i = 0; i < intervals.size(); ++i) {
@@ -145,17 +164,14 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
             // Create the string representing the estimated time of arrival to the current interval point
             String estimatedTimeOfArrival = new java.text.SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(new java.util.Date(currentTime + intervalDuration + (endingDSTOffset + endingRawOffset))) + '\n' + intervalTimeZones.get(i).getTimeZoneName();
 
-            // Set the index for getting the correct hourly information (the index is how many hours it takes to get to the current interval location)
-            int index = (int) (intervalDuration / (3600 * 1000));
-
             // Declare the strings that will be used to represent the precipitation, temperature (in farenheit), and the iconURL
             String precipitation, temperatureF, iconURL;
 
             // If the index is within range of the 10 days, then initialize the strings to the correct information from the corresponding hourly object
-            if (index <= 240) {
-                precipitation = mapsHourlyForecast.get(i).getCondition(index);
-                temperatureF = Integer.toString(mapsHourlyForecast.get(i).getTemperatureF(index)) + (char) 0x00B0 + " F";
-                iconURL = mapsHourlyForecast.get(i).getIconURL(index);
+            if (mapsHourlyForecast.get(i) != null) {
+                precipitation = mapsHourlyForecast.get(i).getCondition();
+                temperatureF = Integer.toString(mapsHourlyForecast.get(i).getTemperature().getTemperature()) + (char) 0x00B0 + " F";
+                iconURL = mapsHourlyForecast.get(i).getIconURL();
             }
 
             // Else, tell the user that we cannot get information for this interval
@@ -203,42 +219,75 @@ public class IntervalInformationAST extends AsyncTask<Void, Void, ArrayList<Mark
 
             // If i == 0, we are creating the marker for the starting point
             if (i == 0) {
+                // Add the title string
+                intervalTitles.add(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(0));
+
+                // Add the details string
+                intervalDetails.add("Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
+                        "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
+                        "Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                        "Weather at beginning of trip: " + '\n' + precipitation + ", " + temperatureF + '\n');
+
+                // Add the MarkerOption
+                String parts[] = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(0).split(", ", 2);
                 intervalInformation.add(new MarkerOptions().position(intervals.get(0))
-                        .title("Origin")
-                        .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(0) + '\n' +
-                                "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
-                                "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
-                                "Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                        .title(parts[0] + "," + '\n' + parts[1])
+                        .snippet("Time at beginning of trip: " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                                "Weather at beginning of trip: " + '\n' + precipitation + ", " + temperatureF)
                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+
+                // Add the temperature
+                intervalTemperatures.add(Integer.toString(mapsHourlyForecast.get(i).getTemperature().getTemperature()));
             }
 
             // If i == interval.size() - 1, we are creating the marker for the ending point
             else if (i == intervals.size() - 1) {
+                // Add the title string
+                intervalTitles.add(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i));
+
+                // Add the details string
+                intervalDetails.add("Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
+                        "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
+                        "Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                        "Weather at ETA: " + '\n' + precipitation + ", " + temperatureF + '\n');
+
+                // Add the MarkerOption
+                String parts[] = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i).split(", ", 2);
                 intervalInformation.add(new MarkerOptions().position(intervals.get(i))
-                        .title("Destination")
-                        .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i) + '\n' +
-                                "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
-                                "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
-                                "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                        .title(parts[0] + "," + '\n' + parts[1])
+                        .snippet("Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                                "Weather at ETA: " + '\n' + precipitation + ", " + temperatureF)
                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+
+                // Add the temperature
+                intervalTemperatures.add(Integer.toString(mapsHourlyForecast.get(i).getTemperature().getTemperature()));
             }
 
             // Else, we are creating a marker for an interval point
             else {
+                // Add the title string
+                intervalTitles.add(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i));
+
+                // Add the details string
+                intervalDetails.add("Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
+                        "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
+                        "Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                        "Weather at ETA: " + '\n' + precipitation + ", " + temperatureF + '\n');
+
+                // Add the MarkerOption
+                String parts[] = distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i).split(", ", 2);
                 intervalInformation.add(new MarkerOptions().position(intervals.get(i))
-                        .title("Interval")
-                        .snippet(distanceMatrixObject.getDestinationAddressesArray().getDestinationAddressesArrayItems().get(i) + '\n' +
-                                "Distance Travelled: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDistance().getDistance() + '\n' +
-                                "Time elapsed: " + distanceMatrixObject.getRowsArray().getElementsArray().getElementsArrayItems().get(i).getDuration().getDuration() + "\n\n" +
-                                "Estimated Arrival Time: " + '\n' + estimatedTimeOfArrival + "\n\n" +
-                                "Weather at ETA: " + '\n' + precipitation + '\n' + temperatureF)
+                        .title(parts[0] + "," + '\n' + parts[1])
+                        .snippet("Estimated Arrival Time (ETA): " + '\n' + estimatedTimeOfArrival + "\n\n" +
+                                "Weather at ETA: " + '\n' + precipitation + ", " + temperatureF)
                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap)));
+
+                // Add the temperature
+                intervalTemperatures.add(Integer.toString(mapsHourlyForecast.get(i).getTemperature().getTemperature()));
             }
         }
 
         // Return the ArrayList of MarkerOptions
-        return intervalInformation;
+        return new MapInformation(intervalInformation, intervalTitles, intervalDetails, intervalTemperatures);
     }
 }

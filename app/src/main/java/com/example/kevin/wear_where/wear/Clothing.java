@@ -1,5 +1,15 @@
 package com.example.kevin.wear_where.wear;
 
+import android.content.res.AssetManager;
+
+import com.example.kevin.wear_where.MainActivity;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,220 +20,445 @@ import java.util.HashMap;
 
 public class Clothing {
 
-    // Initializing data structures to hold clothing types
-    HashMap<Integer,ArrayList<String>> headWear = new HashMap<>();
-    HashMap<Integer,ArrayList<String>> upperBody = new HashMap<>();
-    HashMap<Integer,ArrayList<String>> lowerBody = new HashMap<>();
-    HashMap<Integer,ArrayList<String>> shoes = new HashMap<>();
+    //Holds gender -> Clothes -> body part -> temperature range of clothing
+    HashMap<String,ArrayList<HashMap<Integer,ArrayList<String>>>> Factory = new HashMap<>();
 
-    public Clothing(){
-        /**
-         *  Integer key of hash map determines the level of the temperature outside and type of clothing
-         *  1- Freezing
-         *  2- Chilly
-         *  3- Warm
-         *  4- Hot
-         */
+    //Holds Clothes -> body part -> temperature range of clothing
+    ArrayList<HashMap<Integer,ArrayList<String>>> Clothes;
 
-        ArrayList<String> freezing = new ArrayList<>();
-        ArrayList<String> chilly = new ArrayList<>();
-        ArrayList<String> warm = new ArrayList<>();
-        ArrayList<String> hot = new ArrayList<>();
+    //Holds body part -> temperature range of clothing
+    private HashMap<Integer,ArrayList<String>> upperBody;
+    private HashMap<Integer,ArrayList<String>> lowerBody;
+    private HashMap<Integer,ArrayList<String>> overall;
+    private HashMap<Integer,ArrayList<String>> shoeWear;
+    private HashMap<Integer,ArrayList<String>> miscellaneous;
 
-        freezing.add("fur hat");
-        chilly.add("beanie");
-        warm.add("snapback");
-        warm.add("cool hairstyle");
-        hot.add("sun hat");
+    //Holds temperature range of clothing
+    private ArrayList<String> freezing;
+    private ArrayList<String> chilly;
+    private ArrayList<String> warm;
+    private ArrayList<String> hot;
 
-        headWear.put(1,freezing);
-        headWear.put(2,chilly);
-        headWear.put(3,warm);
-        headWear.put(4,hot);
+    public String gender;
 
-        freezing = new ArrayList<>();
-        chilly = new ArrayList<>();
-        warm = new ArrayList<>();
-        hot = new ArrayList<>();
+    //users preferences of temperature, default set as infinity
+    //float thetaFreezing = Float.POSITIVE_INFINITY;
+    public float lowerChilly = Float.POSITIVE_INFINITY;
+    public float upperChilly = Float.POSITIVE_INFINITY;
+    public float lowerWarm = Float.POSITIVE_INFINITY;
+    public float upperWarm = Float.POSITIVE_INFINITY;
+    //float thetaHot = Float.POSITIVE_INFINITY;
 
-        freezing.add("coat");
-        chilly.add("jacket");
-        chilly.add("hoodie");
-        chilly.add("sweater");
-        chilly.add("long sleeve");
-        warm.add("graphic tee");
-        warm.add("flannel shirt");
-        warm.add("polo");
-        hot.add("tanktop");
+    public Clothing(InputStream firstFile, InputStream secondFile){
 
-        upperBody.put(1,freezing);
-        upperBody.put(2,chilly);
-        upperBody.put(3,warm);
-        upperBody.put(4,hot);
+        ArrayList<InputStream> files = new ArrayList<>();
+        files.add(firstFile);
+        files.add(secondFile);
+        for (int i = 0; i < files.size(); i++){
+            Clothes = new ArrayList<>();
+            try {
+                InputStreamReader file = new InputStreamReader(files.get(i));
+                BufferedReader br = new BufferedReader(file);
+                String myLine = br.readLine();
+                if (myLine.contains("Female") || myLine.contains("female")){
+                    gender = "female";
+                }
+                else if (myLine.contains("Male") || myLine.contains("male")){
+                    gender = "male";
+                }
+                else{
+                    gender = "male";
+                }
 
-        freezing = new ArrayList<>();
-        chilly = new ArrayList<>();
-        warm = new ArrayList<>();
-        hot = new ArrayList<>();
 
-        freezing.add("thermal leggings under your warmest pants");
-        freezing.add("snow pants");
-        chilly.add("sweat pants");
-        chilly.add("jeans");
-        warm.add("shorts");
-        warm.add("jeans");
-        hot.add("short shorts!");
+                while ((myLine = br.readLine()) != null){
+                    if (myLine.contains("Upper Body Wear")){
+                        upperBody = new HashMap<>();
+                        freezing = new ArrayList<>();
+                        chilly = new ArrayList<>();
+                        warm = new ArrayList<>();
+                        hot = new ArrayList<>();
 
-        lowerBody.put(1, freezing);
-        lowerBody.put(2, chilly);
-        lowerBody.put(3, warm);
-        lowerBody.put(4, hot);
+                        while (!(myLine = br.readLine()).contains("chilly")){
+                            if (!myLine.contains("{") && !myLine.contains("}") && !myLine.contains("freezing")){
+                                freezing.add(myLine);
+                            }
+                        }
 
-        freezing = new ArrayList<>();
-        chilly = new ArrayList<>();
-        warm = new ArrayList<>();
-        hot = new ArrayList<>();
+                        while (!(myLine = br.readLine()).contains("warm")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                chilly.add(myLine);
+                            }
+                        }
 
-        freezing.add("snow boots");
-        chilly.add("boots");
-        warm.add("sneakers");
-        hot.add("flip flops");
+                        while (!(myLine = br.readLine()).contains("hot")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                warm.add(myLine);
+                            }
+                        }
 
-        shoes.put(1, freezing);
-        shoes.put(2, chilly);
-        shoes.put(3, warm);
-        shoes.put(4, hot);
+                        while (!(myLine = br.readLine()).contains("--")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                hot.add(myLine);
+                            }
+                        }
+
+                        upperBody.put(1, freezing);
+                        upperBody.put(2, chilly);
+                        upperBody.put(3, warm);
+                        upperBody.put(4, hot);
+                        Clothes.add(upperBody);
+                    }
+
+
+                    if (myLine.contains("Lower Body Wear")){
+                        lowerBody = new HashMap<>();
+                        freezing = new ArrayList<>();
+                        chilly = new ArrayList<>();
+                        warm = new ArrayList<>();
+                        hot = new ArrayList<>();
+
+                        while (!(myLine = br.readLine()).contains("chilly")){
+                            if (!myLine.contains("{") && !myLine.contains("}") && !myLine.contains("freezing")){
+                                freezing.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("warm")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                chilly.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("hot")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                warm.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("--")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                hot.add(myLine);
+                            }
+                        }
+                        lowerBody.put(1, freezing);
+                        lowerBody.put(2, chilly);
+                        lowerBody.put(3, warm);
+                        lowerBody.put(4, hot);
+                        Clothes.add(lowerBody);
+                    }
+
+                    if (myLine.contains("Overall Wear")){
+                        overall = new HashMap<>();
+                        freezing = new ArrayList<>();
+                        chilly = new ArrayList<>();
+                        warm = new ArrayList<>();
+                        hot = new ArrayList<>();
+                        while (!(myLine = br.readLine()).contains("chilly")){
+                            if (!myLine.contains("{") && !myLine.contains("}") && !myLine.contains("freezing")){
+                                freezing.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("warm")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                chilly.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("hot")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                warm.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("--")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                hot.add(myLine);
+                            }
+                        }
+                        overall.put(1, freezing);
+                        overall.put(2, chilly);
+                        overall.put(3, warm);
+                        overall.put(4, hot);
+                        Clothes.add(overall);
+                    }
+
+
+                    if (myLine.contains("Footwear")){
+                        shoeWear = new HashMap<>();
+                        freezing = new ArrayList<>();
+                        chilly = new ArrayList<>();
+                        warm = new ArrayList<>();
+                        hot = new ArrayList<>();
+                        while (!(myLine = br.readLine()).contains("chilly")){
+                            if (!myLine.contains("{") && !myLine.contains("}") && !myLine.contains("freezing")){
+                                freezing.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("warm")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                chilly.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("hot")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                warm.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("--")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                hot.add(myLine);
+                            }
+                        }
+                        shoeWear.put(1, freezing);
+                        shoeWear.put(2, chilly);
+                        shoeWear.put(3, warm);
+                        shoeWear.put(4, hot);
+                        Clothes.add(shoeWear);
+                    }
+
+                    if (myLine.contains("Miscellaneous")){
+                        miscellaneous = new HashMap<>();
+                        freezing = new ArrayList<>();
+                        chilly = new ArrayList<>();
+                        warm = new ArrayList<>();
+                        hot = new ArrayList<>();
+                        while (!(myLine = br.readLine()).contains("chilly")){
+                            if (!myLine.contains("{") && !myLine.contains("}") && !myLine.contains("freezing")){
+                                freezing.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("warm")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                chilly.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("hot")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                warm.add(myLine);
+                            }
+                        }
+
+                        while (!(myLine = br.readLine()).contains("--")){
+                            if (!myLine.contains("{") && !myLine.contains("}")){
+                                hot.add(myLine);
+                            }
+                        }
+                        miscellaneous.put(1, freezing);
+                        miscellaneous.put(2, chilly);
+                        miscellaneous.put(3, warm);
+                        miscellaneous.put(4, hot);
+                        Clothes.add(miscellaneous);
+                    }
+
+                    Factory.put(gender, Clothes);
+                }
+            }
+            catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
 
 
     }
 
 
-    public ArrayList<String> getHeadWear(String temperature){
-        float temp = Float.parseFloat(temperature);
-        if (temp < 32){
-            return headWear.get(1);
-        }
-        else if (temp >= 32 && temp < 55){
-            return headWear.get(2);
-        }
-        else if (temp >= 55 && temp < 80){
-            return headWear.get(3);
-        }
-        else if (temp >= 80){
-            return headWear.get(4);
-        }
-        return new ArrayList<>();
-    }
+    /**
+     * 	First get gender of clothes from Factory, then get body part, finally
+     * 	the temperature range.
+     *
+     * 	For getting body part.
+     * 	0- upper body
+     * 	1- lower body
+     * 	2- overall
+     * 	3- shoes
+     * 	4- miscellaneous
+     *
+     * 	For getting clothing of certain temperature range
+     *  1- Freezing
+     *  2- Chilly
+     *  3- Warm
+     *  4- Hot
+     */
 
     public ArrayList<String> getUpperBody(String temperature){
         float temp = Float.parseFloat(temperature);
-        if (temp < 32){
-            return upperBody.get(1);
+        if (lowerChilly != Float.POSITIVE_INFINITY &&
+                upperChilly != Float.POSITIVE_INFINITY &&
+                lowerWarm != Float.POSITIVE_INFINITY &&
+                upperWarm != Float.POSITIVE_INFINITY){
+
+            if (temp < lowerChilly){
+                return Factory.get(gender).get(0).get(1);
+            }
+            else if (temp >= lowerChilly && temp < upperChilly){
+                return Factory.get(gender).get(0).get(2);
+            }
+            else if (temp >= lowerWarm && temp < upperWarm){
+                return Factory.get(gender).get(0).get(3);
+            }
+            else if (temp > upperWarm){
+                return Factory.get(gender).get(0).get(4);
+            }
         }
-        else if (temp >= 32 && temp < 55){
-            return upperBody.get(2);
-        }
-        else if (temp >= 55 && temp < 80){
-            return upperBody.get(3);
-        }
-        else if (temp >= 80){
-            return upperBody.get(4);
+        else {
+            if (temp < 40) {
+                return Factory.get(gender).get(0).get(1);
+            } else if (temp >= 40 && temp < 60) {
+                return Factory.get(gender).get(0).get(2);
+            } else if (temp >= 60 && temp < 80) {
+                return Factory.get(gender).get(0).get(3);
+            } else if (temp >= 80) {
+                return Factory.get(gender).get(0).get(4);
+            }
         }
         return new ArrayList<>();
     }
 
     public ArrayList<String> getLowerBody(String temperature){
         float temp = Float.parseFloat(temperature);
-        if (temp < 32){
-            return lowerBody.get(1);
+        if (lowerChilly != Float.POSITIVE_INFINITY &&
+                upperChilly != Float.POSITIVE_INFINITY &&
+                lowerWarm != Float.POSITIVE_INFINITY &&
+                upperWarm != Float.POSITIVE_INFINITY){
+
+            if (temp < lowerChilly){
+                return Factory.get(gender).get(1).get(1);
+            }
+            else if (temp >= lowerChilly && temp < upperChilly){
+                return Factory.get(gender).get(1).get(2);
+            }
+            else if (temp >= lowerWarm && temp < upperWarm){
+                return Factory.get(gender).get(1).get(3);
+            }
+            else if (temp > upperWarm){
+                return Factory.get(gender).get(1).get(4);
+            }
         }
-        else if (temp >= 32 && temp < 55){
-            return lowerBody.get(2);
+        else {
+            if (temp < 40) {
+                return Factory.get(gender).get(1).get(1);
+            } else if (temp >= 40 && temp < 60) {
+                return Factory.get(gender).get(1).get(2);
+            } else if (temp >= 60 && temp < 80) {
+                return Factory.get(gender).get(1).get(3);
+            } else if (temp >= 80) {
+                return Factory.get(gender).get(1).get(4);
+            }
         }
-        else if (temp >= 55 && temp < 80){
-            return lowerBody.get(3);
+        return new ArrayList<>();
+    }
+
+    public ArrayList<String> getOveralls(String temperature){
+        float temp = Float.parseFloat(temperature);
+        if (lowerChilly != Float.POSITIVE_INFINITY &&
+                upperChilly != Float.POSITIVE_INFINITY &&
+                lowerWarm != Float.POSITIVE_INFINITY &&
+                upperWarm != Float.POSITIVE_INFINITY){
+
+            if (temp < lowerChilly){
+                return Factory.get(gender).get(2).get(1);
+            }
+            else if (temp >= lowerChilly && temp < upperChilly){
+                return Factory.get(gender).get(2).get(2);
+            }
+            else if (temp >= lowerWarm && temp < upperWarm){
+                return Factory.get(gender).get(2).get(3);
+            }
+            else if (temp > upperWarm){
+                return Factory.get(gender).get(2).get(4);
+            }
         }
-        else if (temp >= 80){
-            return lowerBody.get(4);
+        else {
+            if (temp < 40) {
+                return Factory.get(gender).get(2).get(1);
+            } else if (temp >= 40 && temp < 60) {
+                return Factory.get(gender).get(2).get(2);
+            } else if (temp >= 60 && temp < 80) {
+                return Factory.get(gender).get(2).get(3);
+            } else if (temp >= 80) {
+                return Factory.get(gender).get(2).get(4);
+            }
         }
         return new ArrayList<>();
     }
 
     public ArrayList<String> getShoes(String temperature){
         float temp = Float.parseFloat(temperature);
-        if (temp < 32){
-            return shoes.get(1);
+        if (lowerChilly != Float.POSITIVE_INFINITY &&
+                upperChilly != Float.POSITIVE_INFINITY &&
+                lowerWarm != Float.POSITIVE_INFINITY &&
+                upperWarm != Float.POSITIVE_INFINITY){
+
+            if (temp < lowerChilly){
+                return Factory.get(gender).get(3).get(1);
+            }
+            else if (temp >= lowerChilly && temp < upperChilly){
+                return Factory.get(gender).get(3).get(2);
+            }
+            else if (temp >= lowerWarm && temp < upperWarm){
+                return Factory.get(gender).get(3).get(3);
+            }
+            else if (temp > upperWarm){
+                return Factory.get(gender).get(3).get(4);
+            }
         }
-        else if (temp >= 32 && temp < 55){
-            return shoes.get(2);
-        }
-        else if (temp >= 55 && temp < 80){
-            return shoes.get(3);
-        }
-        else if (temp >= 80){
-            return shoes.get(4);
+        else {
+            if (temp < 40) {
+                return Factory.get(gender).get(3).get(1);
+            } else if (temp >= 40 && temp < 60) {
+                return Factory.get(gender).get(3).get(2);
+            } else if (temp >= 60 && temp < 80) {
+                return Factory.get(gender).get(3).get(3);
+            } else if (temp >= 80) {
+                return Factory.get(gender).get(3).get(4);
+            }
         }
         return new ArrayList<>();
     }
 
-    //Scrap this method for the moment. Not in use.
-    private String getClothing(String temperature, String clothing){
-        /**
-         * clothing input can only be the following:
-         * 'headwear'
-         * 'upperbody'
-         * 'lowerbody'
-         */
-        int temp = Integer.parseInt(temperature);
-        if (temp < 32){
-            switch(clothing){
-                case "headwear":
-                    return headWear.get(1).get(0);
+    public ArrayList<String> getMisc(String temperature){
+        float temp = Float.parseFloat(temperature);
+        if (lowerChilly != Float.POSITIVE_INFINITY &&
+                upperChilly != Float.POSITIVE_INFINITY &&
+                lowerWarm != Float.POSITIVE_INFINITY &&
+                upperWarm != Float.POSITIVE_INFINITY){
 
-                case "upperbody":
-                    return upperBody.get(1).get(0);
-
-                case "lowerbody":
-                    return lowerBody.get(1).get(0);
+            if (temp < lowerChilly){
+                return Factory.get(gender).get(4).get(1);
+            }
+            else if (temp >= lowerChilly && temp < upperChilly){
+                return Factory.get(gender).get(4).get(2);
+            }
+            else if (temp >= lowerWarm && temp < upperWarm){
+                return Factory.get(gender).get(4).get(3);
+            }
+            else if (temp > upperWarm){
+                return Factory.get(gender).get(4).get(4);
             }
         }
-        else if (temp >= 32 && temp < 55){
-            switch(clothing){
-                case "headwear":
-                    return headWear.get(2).get(0);
-
-                case "upperbody":
-                    return upperBody.get(2).get(0);
-
-                case "lowerbody":
-                    return lowerBody.get(2).get(0);
+        else {
+            if (temp < 40) {
+                return Factory.get(gender).get(4).get(1);
+            } else if (temp >= 40 && temp < 60) {
+                return Factory.get(gender).get(4).get(2);
+            } else if (temp >= 60 && temp < 80) {
+                return Factory.get(gender).get(4).get(3);
+            } else if (temp >= 80) {
+                return Factory.get(gender).get(4).get(4);
             }
         }
-        else if (temp >= 55 && temp < 80){
-            switch(clothing){
-                case "headwear":
-                    return headWear.get(3).get(0);
-
-                case "upperbody":
-                    return upperBody.get(3).get(0);
-
-                case "lowerbody":
-                    return lowerBody.get(3).get(0);
-            }
-        }
-        else if (temp > 80){
-            switch(clothing){
-                case "headwear":
-                    return headWear.get(4).get(0);
-
-                case "upperbody":
-                    return upperBody.get(4).get(0);
-
-                case "lowerbody":
-                    return lowerBody.get(4).get(0);
-            }
-        }
-        return "Temperature out of bounds";
+        return new ArrayList<>();
     }
-}
 
+
+}

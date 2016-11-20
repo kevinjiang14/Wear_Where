@@ -1,0 +1,147 @@
+            Gender:
+        Upper Body Wear
+    freezing
+{
+Canada Goose Coat
+Pea Coat
+Duffle Coat
+Parka Coat
+North Face Jacket
+Wool Coat
+}
+    chilly
+{
+North Face Jacket
+Roll Neck Jumper
+Crew Neck Jumper
+V Neck Sweater
+Thermal Long Sleeve
+Hoodie
+Cotton Hoodie
+Sweater
+Flannel Shirt
+}
+    warm
+{
+T-Shirt
+Flannel Shirt
+Button Down Linen Shirt
+Baseball Tee
+Graphic Tee
+Plain Tee
+}
+    hot
+{
+Graphic Tee
+Plain Tee
+Graphic Tank
+Tank Top
+}
+--
+        Lower Body Wear
+    freezing
+{
+Thermal Leggings
+Snow Pants
+Wool Trousers
+Fleece Trousers
+Jeans
+}
+    chilly
+{
+Jeans
+Sweat Pants
+Khakis
+Trousers
+Chinos
+}
+    warm
+{
+Jeans
+Chinos
+Joggers
+Denim Shorts
+Cargo Shorts
+Basketball Shorts
+}
+    hot
+{
+Cargo Shorts
+Basketball Shorts
+Denim Shorts
+Joggers
+}
+--
+        Overall Wear
+    freezing
+{
+
+}
+    chilly
+{
+
+}
+    warm
+{
+
+}
+    hot
+{
+
+}
+--
+        Footwear
+    freezing
+{
+Snow Boots
+Timberland Boots
+Winter Work Boots
+}
+    chilly
+{
+Nike High Tops
+Jordan High Tops
+Clark Boots
+}
+    warm
+{
+Nike Runs
+Nike Free
+Converses
+Vans
+Loafers
+Boat Shoes
+}
+    hot
+{
+Loafers
+Sandals
+Flip Flops
+}
+--
+        Miscellaneous
+    freezing
+{
+Woolen Beanie
+Cotton Scarf
+Woolen Scarf
+Woolen Gloves
+Fuzzy Socks
+}
+    chilly
+{
+Woolen Beanie
+Woolen Scarf
+Cotton Scarf
+}
+    warm
+{
+Sun Glasses
+Hat
+}
+    hot
+{
+Hat
+Sunglasses
+}
+--

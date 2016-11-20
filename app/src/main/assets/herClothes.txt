@@ -1,0 +1,199 @@
+            Gender: Female
+        Upper Body Wear
+    freezing
+{
+North Face Coat
+Express Coat
+Calvin Klein Coat
+Fat Goose Coat
+LLBeans Jacket
+}
+    chilly
+{
+North Face Wind Breaker
+North Face Fleece Jacket
+College Sweatshirt
+Cashmere Sweater
+Forever 21 Cardigan
+North Face Vest
+H&M Hoodie
+Michael Kors Trench Coat
+Forever 21 Leather Jacket
+Under Armour Zip Up
+Forever 21 Sweater Dress
+Baggy Sweater
+Cardigan
+Long Sleeve
+Fleece
+}
+    warm
+{
+Graphic T-Shirt
+H&M V-neck
+Under Armour Long Sleeve Shirt
+Forever 21 Crop Top
+H&M Skater Dress
+H&M Maxi Dress
+Forever 21 Romper
+Plain Tee
+Blouses
+Long Sleeve
+Dress
+}
+    hot
+{
+Forever 21 Crop Top
+H&M V-neck
+H&M Tank Top
+Forever 21 Romper
+H&M Skater Dress
+Tank Top
+Sleeveless Top
+Short Sleeves
+}
+--
+        Lower Body Wear
+    freezing
+{
+Gap Jeans
+Uniqlo Heat Tech Pants
+Uniqlo Heat Tech Leggings
+H&M Fleece Lined Leggings
+Thermal Leggings
+Joggers
+Jeans
+}
+    chilly
+{
+Forever 21 Leggings
+Gap Jeans
+Under Armour Leggings
+Adidas Track Pants
+Forever 21 Jeans
+Jeggings
+Jeans
+Leggings
+}
+    warm
+{
+Charlotte Russe Shorts
+H&M Maxi Skirt
+Forever 21 Skirt
+Capris
+Leggings
+}
+    hot
+{
+Charlotte Russe Shorts
+H&M Maxi Skirt
+Forever 21 Skirt
+Capris
+Leggings
+Sports Leggings
+Skirts
+Shorts
+}
+--
+        Overall Wear
+    freezing
+{
+
+}
+    chilly
+{
+Forever 21 Sweater Dress
+}
+    warm
+{
+H&M Skater Dress
+H&M Maxi Dress
+Forever 21 Romper
+}
+    hot
+{
+Forever 21 Romper
+H&M Skater Dress
+}
+--
+        Footwear
+    freezing
+{
+Ugg Waterproof Boots
+Nike Jordan's
+Nike Air Maxes
+Full Length Leather Boots
+UGG Boots
+Long Boots
+}
+    chilly
+{
+Converses
+Nike Free Runs
+Hunter Rain boots
+Nike Jordan's
+Nike Air Maxes
+Half Length Leather Boots
+Furry Moccasins
+Boots
+}
+    warm
+{
+Forever 21 Flats
+Aldo Sandals
+Old Navy Flip Flops
+Converses
+Nike Free Runs
+Nike Jordan's
+Nike Air Maxes
+Flats
+Sandals
+Boat Shoes
+Sneakers
+Vans
+}
+    hot
+{
+Forever 21 Flats
+Aldo Sandals
+Old Navy Flip Flops
+Converses
+Flip Flops
+Boat Shoes
+Sandals
+Flats
+}
+--
+        Miscellaneous
+    freezing
+{
+American Apparel Scarf
+Forever 21 Beanie
+Woolen Gloves
+Woolen Beanie
+Woolen Scarf
+Tissues
+}
+    chilly
+{
+Spencer's Baseball Hat
+American Apparel Scarf
+Forever 21 Beanie
+Gloves
+Scarf
+}
+    warm
+{
+Sun Glasses
+Earrings
+Necklace
+Bracelet
+Hat
+}
+    hot
+{
+Earrings
+Sun Glasses
+Sun Screen
+Tissues
+}
+--
