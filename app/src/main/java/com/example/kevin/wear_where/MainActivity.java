@@ -1067,6 +1067,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 getCurrentRequest();
                 getHourlyRequest();
                 getDailyRequest();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1415,10 +1416,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 tripBounds = new LatLngBounds(endingCoordinates, startingCoordinates);
             }
             maps.moveCamera(CameraUpdateFactory.newLatLngBounds(tripBounds, 48));
+
+            //update the map with the corresponding markers for the starting and ending points
+            mapFragment.getMapAsync(this);
         }
 
-        //update the map with the corresponding markers for the starting and ending points
-        mapFragment.getMapAsync(this);
+        else {
+
+            // Reset the coordinates
+            startingCoordinates = null;
+            endingCoordinates = null;
+
+            // Let the user know to requery
+            startingLocation.setText("Please enter a location again...");
+            endingLocation.setText("Please enter a location again...");
+
+            // Toast to let the user know what to do
+            Toast toast = Toast.makeText(getApplicationContext(), "You must enter both a starting AND an ending location!" + '\n' + "Please try again.", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     @Override
