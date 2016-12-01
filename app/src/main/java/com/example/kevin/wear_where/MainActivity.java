@@ -986,22 +986,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(vacationAddresses.get(0).getCountryCode().equals("US")) {
-                    vacationData.putExtra("city", vacationAddresses.get(0).getLocality());
-                    vacationData.putExtra("state", vacationAddresses.get(0).getAdminArea());
-                }
-                else if(vacationAddresses.get(0).getAdminArea() == null) {
-                    vacationData.putExtra("city", vacationAddresses.get(0).getLocality());
-                    vacationData.putExtra("state", vacationAddresses.get(0).getCountryCode());
-                }
-                else {
-                    vacationData.putExtra("city", vacationAddresses.get(0).getAdminArea());
-                    vacationData.putExtra("state", vacationAddresses.get(0).getCountryCode());
+                if(vacationAddresses != null) {
+                    if (vacationAddresses.get(0).getCountryCode().equals("US")) {
+                        vacationData.putExtra("city", vacationAddresses.get(0).getLocality());
+                        vacationData.putExtra("state", vacationAddresses.get(0).getAdminArea());
+                    } else if (vacationAddresses.get(0).getAdminArea() == null) {
+                        vacationData.putExtra("city", vacationAddresses.get(0).getLocality());
+                        vacationData.putExtra("state", vacationAddresses.get(0).getCountryCode());
+                    } else {
+                        vacationData.putExtra("city", vacationAddresses.get(0).getAdminArea());
+                        vacationData.putExtra("state", vacationAddresses.get(0).getCountryCode());
+                    }
                 }
 
                 vacationData.putExtra("leaveDate", leaveDate.getText().toString());
                 vacationData.putExtra("returnDate", returnDate.getText().toString());
-                startActivity(vacationData);
+                if(vacationData.getStringExtra("city") != null && vacationData.getStringExtra("state") != null && vacationData.getStringExtra("leaveDate") != null && vacationData.getStringExtra("returnDate") != null) {
+                    startActivity(vacationData);
+                }
+                else Toast.makeText(MainActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -1011,7 +1014,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         refreshSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getLocation();
+                displayDailyResults();
+                displayCurrentResults();
+                displayHourlyResults();
                 completeRefresh();
             }
         });
@@ -1077,210 +1082,223 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void displayCurrentResults() {
-        String iconURL = currentForecast.getConditionImageLink();
-        new ImageLoaderAST(iconURL, conditionIcon).execute();
+        try {
+            String iconURL = currentForecast.getConditionImageLink();
+            new ImageLoaderAST(iconURL, conditionIcon).execute();
 
-        temperature.setText("" + currentForecast.getTemperature() + (char) 0x00B0 + " F");
-        description.setText("" + currentForecast.getCondition());
-        location.setText("" + city + ", " + state);
+            temperature.setText("" + currentForecast.getTemperature() + (char) 0x00B0 + " F");
+            description.setText("" + currentForecast.getCondition());
+            location.setText("" + city + ", " + state);
+        }
+        catch(Exception e){
+            Toast.makeText(MainActivity.this, "Error fetching information. Try restarting the application", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
     public void displayHourlyResults(){
-        String iconURL = hourlyForecast.getIconURL(0);
-        new ImageLoaderAST(iconURL, icon1).execute();
+        try {
+            String iconURL = hourlyForecast.getIconURL(0);
+            new ImageLoaderAST(iconURL, icon1).execute();
 
-        iconURL = hourlyForecast.getIconURL(1);
-        new ImageLoaderAST(iconURL, icon2).execute();
+            iconURL = hourlyForecast.getIconURL(1);
+            new ImageLoaderAST(iconURL, icon2).execute();
 
-        iconURL = hourlyForecast.getIconURL(2);
-        new ImageLoaderAST(iconURL, icon3).execute();
+            iconURL = hourlyForecast.getIconURL(2);
+            new ImageLoaderAST(iconURL, icon3).execute();
 
-        iconURL = hourlyForecast.getIconURL(3);
-        new ImageLoaderAST(iconURL, icon4).execute();
+            iconURL = hourlyForecast.getIconURL(3);
+            new ImageLoaderAST(iconURL, icon4).execute();
 
-        iconURL = hourlyForecast.getIconURL(4);
-        new ImageLoaderAST(iconURL, icon5).execute();
+            iconURL = hourlyForecast.getIconURL(4);
+            new ImageLoaderAST(iconURL, icon5).execute();
 
-        iconURL = hourlyForecast.getIconURL(5);
-        new ImageLoaderAST(iconURL, icon6).execute();
+            iconURL = hourlyForecast.getIconURL(5);
+            new ImageLoaderAST(iconURL, icon6).execute();
 
-        iconURL = hourlyForecast.getIconURL(6);
-        new ImageLoaderAST(iconURL, icon7).execute();
+            iconURL = hourlyForecast.getIconURL(6);
+            new ImageLoaderAST(iconURL, icon7).execute();
 
-        iconURL = hourlyForecast.getIconURL(7);
-        new ImageLoaderAST(iconURL, icon8).execute();
+            iconURL = hourlyForecast.getIconURL(7);
+            new ImageLoaderAST(iconURL, icon8).execute();
 
-        iconURL = hourlyForecast.getIconURL(8);
-        new ImageLoaderAST(iconURL, icon9).execute();
+            iconURL = hourlyForecast.getIconURL(8);
+            new ImageLoaderAST(iconURL, icon9).execute();
 
-        iconURL = hourlyForecast.getIconURL(9);
-        new ImageLoaderAST(iconURL, icon10).execute();
+            iconURL = hourlyForecast.getIconURL(9);
+            new ImageLoaderAST(iconURL, icon10).execute();
 
-        iconURL = hourlyForecast.getIconURL(10);
-        new ImageLoaderAST(iconURL, icon11).execute();
+            iconURL = hourlyForecast.getIconURL(10);
+            new ImageLoaderAST(iconURL, icon11).execute();
 
-        iconURL = hourlyForecast.getIconURL(11);
-        new ImageLoaderAST(iconURL, icon12).execute();
+            iconURL = hourlyForecast.getIconURL(11);
+            new ImageLoaderAST(iconURL, icon12).execute();
 
-        iconURL = hourlyForecast.getIconURL(12);
-        new ImageLoaderAST(iconURL, icon13).execute();
+            iconURL = hourlyForecast.getIconURL(12);
+            new ImageLoaderAST(iconURL, icon13).execute();
 
-        iconURL = hourlyForecast.getIconURL(13);
-        new ImageLoaderAST(iconURL, icon14).execute();
+            iconURL = hourlyForecast.getIconURL(13);
+            new ImageLoaderAST(iconURL, icon14).execute();
 
-        iconURL = hourlyForecast.getIconURL(14);
-        new ImageLoaderAST(iconURL, icon15).execute();
+            iconURL = hourlyForecast.getIconURL(14);
+            new ImageLoaderAST(iconURL, icon15).execute();
 
-        iconURL = hourlyForecast.getIconURL(15);
-        new ImageLoaderAST(iconURL, icon16).execute();
+            iconURL = hourlyForecast.getIconURL(15);
+            new ImageLoaderAST(iconURL, icon16).execute();
 
-        temperature1.setText("" + hourlyForecast.getTemperatureF(0) + (char) 0x00B0 + " F");
-        time1.setText("" + hourlyForecast.getHour(0) + ":00" + hourlyForecast.getAMPM(0));
-        description1.setText("" + hourlyForecast.getCondition(0));
+            temperature1.setText("" + hourlyForecast.getTemperatureF(0) + (char) 0x00B0 + " F");
+            time1.setText("" + hourlyForecast.getHour(0) + ":00" + hourlyForecast.getAMPM(0));
+            description1.setText("" + hourlyForecast.getCondition(0));
 
-        temperature2.setText("" + hourlyForecast.getTemperatureF(1) + (char) 0x00B0 + " F");
-        time2.setText("" + hourlyForecast.getHour(1) + ":00" + hourlyForecast.getAMPM(1));
-        description2.setText("" + hourlyForecast.getCondition(1));
+            temperature2.setText("" + hourlyForecast.getTemperatureF(1) + (char) 0x00B0 + " F");
+            time2.setText("" + hourlyForecast.getHour(1) + ":00" + hourlyForecast.getAMPM(1));
+            description2.setText("" + hourlyForecast.getCondition(1));
 
-        temperature3.setText("" + hourlyForecast.getTemperatureF(2) + (char) 0x00B0 + " F");
-        time3.setText("" + hourlyForecast.getHour(2) + ":00" + hourlyForecast.getAMPM(2));
-        description3.setText("" + hourlyForecast.getCondition(2));
+            temperature3.setText("" + hourlyForecast.getTemperatureF(2) + (char) 0x00B0 + " F");
+            time3.setText("" + hourlyForecast.getHour(2) + ":00" + hourlyForecast.getAMPM(2));
+            description3.setText("" + hourlyForecast.getCondition(2));
 
-        temperature4.setText("" + hourlyForecast.getTemperatureF(3) + (char) 0x00B0 + " F");
-        time4.setText("" + hourlyForecast.getHour(3) + ":00" + hourlyForecast.getAMPM(3));
-        description4.setText("" + hourlyForecast.getCondition(3));
+            temperature4.setText("" + hourlyForecast.getTemperatureF(3) + (char) 0x00B0 + " F");
+            time4.setText("" + hourlyForecast.getHour(3) + ":00" + hourlyForecast.getAMPM(3));
+            description4.setText("" + hourlyForecast.getCondition(3));
 
-        temperature5.setText("" + hourlyForecast.getTemperatureF(4) + (char) 0x00B0 + " F");
-        time5.setText("" + hourlyForecast.getHour(4) + ":00" + hourlyForecast.getAMPM(4));
-        description5.setText("" + hourlyForecast.getCondition(4));
+            temperature5.setText("" + hourlyForecast.getTemperatureF(4) + (char) 0x00B0 + " F");
+            time5.setText("" + hourlyForecast.getHour(4) + ":00" + hourlyForecast.getAMPM(4));
+            description5.setText("" + hourlyForecast.getCondition(4));
 
-        temperature6.setText("" + hourlyForecast.getTemperatureF(5) + (char) 0x00B0 + " F");
-        time6.setText("" + hourlyForecast.getHour(5) + ":00" + hourlyForecast.getAMPM(5));
-        description6.setText("" + hourlyForecast.getCondition(5));
+            temperature6.setText("" + hourlyForecast.getTemperatureF(5) + (char) 0x00B0 + " F");
+            time6.setText("" + hourlyForecast.getHour(5) + ":00" + hourlyForecast.getAMPM(5));
+            description6.setText("" + hourlyForecast.getCondition(5));
 
-        temperature7.setText("" + hourlyForecast.getTemperatureF(6) + (char) 0x00B0 + " F");
-        time7.setText("" + hourlyForecast.getHour(6) + ":00" + hourlyForecast.getAMPM(6));
-        description7.setText("" + hourlyForecast.getCondition(6));
+            temperature7.setText("" + hourlyForecast.getTemperatureF(6) + (char) 0x00B0 + " F");
+            time7.setText("" + hourlyForecast.getHour(6) + ":00" + hourlyForecast.getAMPM(6));
+            description7.setText("" + hourlyForecast.getCondition(6));
 
-        temperature8.setText("" + hourlyForecast.getTemperatureF(7) + (char) 0x00B0 + " F");
-        time8.setText("" + hourlyForecast.getHour(7) + ":00" + hourlyForecast.getAMPM(7));
-        description8.setText("" + hourlyForecast.getCondition(7));
+            temperature8.setText("" + hourlyForecast.getTemperatureF(7) + (char) 0x00B0 + " F");
+            time8.setText("" + hourlyForecast.getHour(7) + ":00" + hourlyForecast.getAMPM(7));
+            description8.setText("" + hourlyForecast.getCondition(7));
 
-        temperature9.setText("" + hourlyForecast.getTemperatureF(8) + (char) 0x00B0 + " F");
-        time9.setText("" + hourlyForecast.getHour(8) + ":00" + hourlyForecast.getAMPM(8));
-        description9.setText("" + hourlyForecast.getCondition(8));
+            temperature9.setText("" + hourlyForecast.getTemperatureF(8) + (char) 0x00B0 + " F");
+            time9.setText("" + hourlyForecast.getHour(8) + ":00" + hourlyForecast.getAMPM(8));
+            description9.setText("" + hourlyForecast.getCondition(8));
 
-        temperature10.setText("" + hourlyForecast.getTemperatureF(9) + (char) 0x00B0 + " F");
-        time10.setText("" + hourlyForecast.getHour(9) + ":00" + hourlyForecast.getAMPM(9));
-        description10.setText("" + hourlyForecast.getCondition(9));
+            temperature10.setText("" + hourlyForecast.getTemperatureF(9) + (char) 0x00B0 + " F");
+            time10.setText("" + hourlyForecast.getHour(9) + ":00" + hourlyForecast.getAMPM(9));
+            description10.setText("" + hourlyForecast.getCondition(9));
 
-        temperature11.setText("" + hourlyForecast.getTemperatureF(10) + (char) 0x00B0 + " F");
-        time11.setText("" + hourlyForecast.getHour(10) + ":00" + hourlyForecast.getAMPM(10));
-        description11.setText("" + hourlyForecast.getCondition(10));
+            temperature11.setText("" + hourlyForecast.getTemperatureF(10) + (char) 0x00B0 + " F");
+            time11.setText("" + hourlyForecast.getHour(10) + ":00" + hourlyForecast.getAMPM(10));
+            description11.setText("" + hourlyForecast.getCondition(10));
 
-        temperature12.setText("" + hourlyForecast.getTemperatureF(11) + (char) 0x00B0 + " F");
-        time12.setText("" + hourlyForecast.getHour(11) + ":00" + hourlyForecast.getAMPM(11));
-        description12.setText("" + hourlyForecast.getCondition(11));
+            temperature12.setText("" + hourlyForecast.getTemperatureF(11) + (char) 0x00B0 + " F");
+            time12.setText("" + hourlyForecast.getHour(11) + ":00" + hourlyForecast.getAMPM(11));
+            description12.setText("" + hourlyForecast.getCondition(11));
 
-        temperature13.setText("" + hourlyForecast.getTemperatureF(12) + (char) 0x00B0 + " F");
-        time13.setText("" + hourlyForecast.getHour(12) + ":00" + hourlyForecast.getAMPM(12));
-        description13.setText("" + hourlyForecast.getCondition(12));
+            temperature13.setText("" + hourlyForecast.getTemperatureF(12) + (char) 0x00B0 + " F");
+            time13.setText("" + hourlyForecast.getHour(12) + ":00" + hourlyForecast.getAMPM(12));
+            description13.setText("" + hourlyForecast.getCondition(12));
 
-        temperature14.setText("" + hourlyForecast.getTemperatureF(13) + (char) 0x00B0 + " F");
-        time14.setText("" + hourlyForecast.getHour(13) + ":00" + hourlyForecast.getAMPM(13));
-        description14.setText("" + hourlyForecast.getCondition(13));
+            temperature14.setText("" + hourlyForecast.getTemperatureF(13) + (char) 0x00B0 + " F");
+            time14.setText("" + hourlyForecast.getHour(13) + ":00" + hourlyForecast.getAMPM(13));
+            description14.setText("" + hourlyForecast.getCondition(13));
 
-        temperature15.setText("" + hourlyForecast.getTemperatureF(14) + (char) 0x00B0 + " F");
-        time15.setText("" + hourlyForecast.getHour(14) + ":00" + hourlyForecast.getAMPM(14));
-        description15.setText("" + hourlyForecast.getCondition(14));
+            temperature15.setText("" + hourlyForecast.getTemperatureF(14) + (char) 0x00B0 + " F");
+            time15.setText("" + hourlyForecast.getHour(14) + ":00" + hourlyForecast.getAMPM(14));
+            description15.setText("" + hourlyForecast.getCondition(14));
 
-        temperature16.setText("" + hourlyForecast.getTemperatureF(15) + (char) 0x00B0 + " F");
-        time16.setText("" + hourlyForecast.getHour(15) + ":00" + hourlyForecast.getAMPM(15));
-        description16.setText("" + hourlyForecast.getCondition(15));
+            temperature16.setText("" + hourlyForecast.getTemperatureF(15) + (char) 0x00B0 + " F");
+            time16.setText("" + hourlyForecast.getHour(15) + ":00" + hourlyForecast.getAMPM(15));
+            description16.setText("" + hourlyForecast.getCondition(15));
 
-        TextView warningText = (TextView)findViewById(R.id.warningText);
-        Boolean rain = false;
-        Boolean snow = false;
-        for (int i = 0; i < 16; i++){
-            if (hourlyForecast.getCondition(i).contains("Rain") ||
-                    hourlyForecast.getCondition(i).contains("Shower") ||
-                    hourlyForecast.getCondition(i).contains("Storm")){
-                rain = true;
+            TextView warningText = (TextView) findViewById(R.id.warningText);
+            Boolean rain = false;
+            Boolean snow = false;
+            for (int i = 0; i < 16; i++) {
+                if (hourlyForecast.getCondition(i).contains("Rain") ||
+                        hourlyForecast.getCondition(i).contains("Shower") ||
+                        hourlyForecast.getCondition(i).contains("Storm")) {
+                    rain = true;
+                }
+                if (hourlyForecast.getCondition(i).contains("Snow Showers") ||
+                        hourlyForecast.getCondition(i).contains("Snow")) {
+                    snow = true;
+                }
             }
-            if (hourlyForecast.getCondition(i).contains("Snow Showers") ||
-                    hourlyForecast.getCondition(i).contains("Snow")){
-                snow = true;
+
+            if (rain == true && snow == true) {
+                warningText.setText("WARNING: There's rain and snow today!!! Bring an umbrella and bundle up!");
+            } else if (rain == true) {
+                warningText.setText("WARNING: There's rain today!!! Bring an umbrella!");
+            } else if (snow == true) {
+                warningText.setText("WARNING: There's snow today!!! Bundle up!");
             }
         }
-
-        if (rain == true && snow == true){
-            warningText.setText("WARNING: There's rain and snow today!!! Bring an umbrella and bundle up!");
-        }
-        else if (rain == true){
-            warningText.setText("WARNING: There's rain today!!! Bring an umbrella!");
-        }
-        else if (snow == true){
-            warningText.setText("WARNING: There's snow today!!! Bundle up!");
+        catch(Exception e){
+            Toast.makeText(MainActivity.this, "Error fetching information. Try restarting the application", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void displayDailyResults(){
-        String iconURL = dailyForecast.getIconURL(1);
-        new ImageLoaderAST(iconURL, day1icon).execute();
+        try {
+            String iconURL = dailyForecast.getIconURL(1);
+            new ImageLoaderAST(iconURL, day1icon).execute();
 
-        iconURL = dailyForecast.getIconURL(2);
-        new ImageLoaderAST(iconURL, day2icon).execute();
+            iconURL = dailyForecast.getIconURL(2);
+            new ImageLoaderAST(iconURL, day2icon).execute();
 
-        iconURL = dailyForecast.getIconURL(3);
-        new ImageLoaderAST(iconURL, day3icon).execute();
+            iconURL = dailyForecast.getIconURL(3);
+            new ImageLoaderAST(iconURL, day3icon).execute();
 
-        iconURL = dailyForecast.getIconURL(4);
-        new ImageLoaderAST(iconURL, day4icon).execute();
+            iconURL = dailyForecast.getIconURL(4);
+            new ImageLoaderAST(iconURL, day4icon).execute();
 
-        iconURL = dailyForecast.getIconURL(5);
-        new ImageLoaderAST(iconURL, day5icon).execute();
+            iconURL = dailyForecast.getIconURL(5);
+            new ImageLoaderAST(iconURL, day5icon).execute();
 
-        iconURL = dailyForecast.getIconURL(6);
-        new ImageLoaderAST(iconURL, day6icon).execute();
+            iconURL = dailyForecast.getIconURL(6);
+            new ImageLoaderAST(iconURL, day6icon).execute();
 
-        iconURL = dailyForecast.getIconURL(7);
-        new ImageLoaderAST(iconURL, day7icon).execute();
+            iconURL = dailyForecast.getIconURL(7);
+            new ImageLoaderAST(iconURL, day7icon).execute();
 
-        day1weekday.setText(dailyForecast.getDate(1));
-        day1condition.setText(dailyForecast.getCondition(1));
-        day1low.setText("Low: " + dailyForecast.getLow(1) + (char) 0x00B0 + " F");
-        day1high.setText("High: " + dailyForecast.getHigh(1) + (char) 0x00B0 + " F");
+            day1weekday.setText(dailyForecast.getDate(1));
+            day1condition.setText(dailyForecast.getCondition(1));
+            day1low.setText("Low: " + dailyForecast.getLow(1) + (char) 0x00B0 + " F");
+            day1high.setText("High: " + dailyForecast.getHigh(1) + (char) 0x00B0 + " F");
 
-        day2weekday.setText(dailyForecast.getDate(2));
-        day2condition.setText(dailyForecast.getCondition(2));
-        day2low.setText("Low " + dailyForecast.getLow(2) + (char) 0x00B0 + " F");
-        day2high.setText("High: " + dailyForecast.getHigh(2) + (char) 0x00B0 + " F");
+            day2weekday.setText(dailyForecast.getDate(2));
+            day2condition.setText(dailyForecast.getCondition(2));
+            day2low.setText("Low " + dailyForecast.getLow(2) + (char) 0x00B0 + " F");
+            day2high.setText("High: " + dailyForecast.getHigh(2) + (char) 0x00B0 + " F");
 
-        day3weekday.setText(dailyForecast.getDate(3));
-        day3condition.setText(dailyForecast.getCondition(3));
-        day3low.setText("Low: " + dailyForecast.getLow(3) + (char) 0x00B0 + " F");
-        day3high.setText("High: " + dailyForecast.getHigh(3) + (char) 0x00B0 + " F");
+            day3weekday.setText(dailyForecast.getDate(3));
+            day3condition.setText(dailyForecast.getCondition(3));
+            day3low.setText("Low: " + dailyForecast.getLow(3) + (char) 0x00B0 + " F");
+            day3high.setText("High: " + dailyForecast.getHigh(3) + (char) 0x00B0 + " F");
 
-        day4weekday.setText(dailyForecast.getDate(4));
-        day4condition.setText(dailyForecast.getCondition(4));
-        day4low.setText("Low: " + dailyForecast.getLow(4) + (char) 0x00B0 + " F");
-        day4high.setText("High: " + dailyForecast.getHigh(4) + (char) 0x00B0 + " F");
+            day4weekday.setText(dailyForecast.getDate(4));
+            day4condition.setText(dailyForecast.getCondition(4));
+            day4low.setText("Low: " + dailyForecast.getLow(4) + (char) 0x00B0 + " F");
+            day4high.setText("High: " + dailyForecast.getHigh(4) + (char) 0x00B0 + " F");
 
-        day5weekday.setText(dailyForecast.getDate(5));
-        day5condition.setText(dailyForecast.getCondition(5));
-        day5low.setText("Low: " + dailyForecast.getLow(5) + (char) 0x00B0 + " F");
-        day5high.setText("High: " + dailyForecast.getHigh(5) + (char) 0x00B0 + " F");
+            day5weekday.setText(dailyForecast.getDate(5));
+            day5condition.setText(dailyForecast.getCondition(5));
+            day5low.setText("Low: " + dailyForecast.getLow(5) + (char) 0x00B0 + " F");
+            day5high.setText("High: " + dailyForecast.getHigh(5) + (char) 0x00B0 + " F");
 
-        day6weekday.setText(dailyForecast.getDate(6));
-        day6condition.setText(dailyForecast.getCondition(6));
-        day6low.setText("Low: " + dailyForecast.getLow(6) + (char) 0x00B0 + " F");
-        day6high.setText("High: " + dailyForecast.getHigh(6) + (char) 0x00B0 + " F");
+            day6weekday.setText(dailyForecast.getDate(6));
+            day6condition.setText(dailyForecast.getCondition(6));
+            day6low.setText("Low: " + dailyForecast.getLow(6) + (char) 0x00B0 + " F");
+            day6high.setText("High: " + dailyForecast.getHigh(6) + (char) 0x00B0 + " F");
 
-        day7weekday.setText(dailyForecast.getDate(7));
-        day7condition.setText(dailyForecast.getCondition(7));
-        day7low.setText("Low: " + dailyForecast.getLow(7) + (char) 0x00B0 + " F");
-        day7high.setText("High: " + dailyForecast.getHigh(7) + (char) 0x00B0 + " F");
+            day7weekday.setText(dailyForecast.getDate(7));
+            day7condition.setText(dailyForecast.getCondition(7));
+            day7low.setText("Low: " + dailyForecast.getLow(7) + (char) 0x00B0 + " F");
+            day7high.setText("High: " + dailyForecast.getHigh(7) + (char) 0x00B0 + " F");
+        }
+        catch(Exception e){
+            Toast.makeText(MainActivity.this, "Error fetching information. Try restarting the application", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void getHourlyRequest(){
