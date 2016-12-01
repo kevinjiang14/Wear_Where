@@ -318,11 +318,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
-                    Toast.makeText(getApplicationContext(),"Gender set to female", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Gender set to female", Toast.LENGTH_SHORT).show();
                     clothes.gender = "female";
                 }
                 else {
-                    Toast.makeText(getApplicationContext(),"Gender set to male",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Gender set to male",Toast.LENGTH_SHORT).show();
                     clothes.gender = "male";
                 }
             }
@@ -1011,9 +1011,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         refreshSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                displayCurrentResults();
-                displayHourlyResults();
-                displayDailyResults();
+                getLocation();
                 completeRefresh();
             }
         });
