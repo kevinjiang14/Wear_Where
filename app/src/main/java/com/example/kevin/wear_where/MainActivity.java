@@ -1011,9 +1011,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         refreshSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                displayCurrentResults();
-                displayHourlyResults();
-                displayDailyResults();
+                getLocation();
                 completeRefresh();
             }
         });
@@ -1069,6 +1067,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 getCurrentRequest();
                 getHourlyRequest();
                 getDailyRequest();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1378,10 +1377,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         // First start, configure the map to how we want it (center upon current location, and enable button to focus on current location)
-        if (firstStart == 1) {
-            maps.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
-            maps.setMyLocationEnabled(true);
-            firstStart = 0;
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED) {
+            if (firstStart == 1) {
+                maps.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
+                maps.setMyLocationEnabled(true);
+                firstStart = 0;
+            }
         }
 
     }
@@ -1415,10 +1416,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 tripBounds = new LatLngBounds(endingCoordinates, startingCoordinates);
             }
             maps.moveCamera(CameraUpdateFactory.newLatLngBounds(tripBounds, 48));
+
+            //update the map with the corresponding markers for the starting and ending points
+            mapFragment.getMapAsync(this);
         }
 
-        //update the map with the corresponding markers for the starting and ending points
-        mapFragment.getMapAsync(this);
+        else {
+
+            // Reset the coordinates
+            startingCoordinates = null;
+            endingCoordinates = null;
+
+            // Let the user know to requery
+            startingLocation.setText("Please enter a location again...");
+            endingLocation.setText("Please enter a location again...");
+
+            // Toast to let the user know what to do
+            Toast toast = Toast.makeText(getApplicationContext(), "You must enter both a starting AND an ending location!" + '\n' + "Please try again.", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     @Override
