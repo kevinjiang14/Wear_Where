@@ -1011,9 +1011,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         refreshSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                displayCurrentResults();
-                displayHourlyResults();
-                displayDailyResults();
+                getLocation();
                 completeRefresh();
             }
         });
@@ -1378,10 +1376,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         // First start, configure the map to how we want it (center upon current location, and enable button to focus on current location)
-        if (firstStart == 1) {
-            maps.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
-            maps.setMyLocationEnabled(true);
-            firstStart = 0;
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED) {
+            if (firstStart == 1) {
+                maps.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15));
+                maps.setMyLocationEnabled(true);
+                firstStart = 0;
+            }
         }
 
     }
