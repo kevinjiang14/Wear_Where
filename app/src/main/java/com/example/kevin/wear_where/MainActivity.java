@@ -76,6 +76,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
+import com.google.maps.android.SphericalUtil;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -1444,8 +1446,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             endingCoordinates = null;
 
             // Let the user know to requery
-            startingLocation.setText("Please enter a location again...");
-            endingLocation.setText("Please enter a location again...");
+            startingLocation.setText("");
+            endingLocation.setText("");
 
             // Toast to let the user know what to do
             Toast toast = Toast.makeText(getApplicationContext(), "You must enter both a starting AND an ending location!" + '\n' + "Please try again.", Toast.LENGTH_SHORT);
@@ -1684,7 +1686,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                 // Uses overview polyline (not as laggy but will do for now)
                 String encodedOverviewPolyline = directionsObject.getRoutesArray().getEncodedOverviewPolyLine().getEncodedOverviewPolyline();
-                polyline = com.google.maps.android.PolyUtil.decode(encodedOverviewPolyline);
+                polyline = PolyUtil.decode(encodedOverviewPolyline);
 
                 // Store the total distance for interval calculation
                 double totalDistance = Double.parseDouble(directionsObject.getRoutesArray().getLegsArray().getDistance().getMeters());
@@ -1724,10 +1726,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     maps.addPolyline(new PolylineOptions().add(polyline.get(i), polyline.get(i+1)).width(8).color(Color.rgb(93,188,210)));
 
                     // Keep track of which LatLng objects to get weather information for, store each object in weatherPoints
-                    counter += com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
+                    counter += SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
                     if (counter >= interval) {
                         weatherPoints.add(polyline.get(i));
-                        counter = com.google.maps.android.SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
+                        counter = SphericalUtil.computeDistanceBetween(polyline.get(i), polyline.get(i+1));
                     }
                 }
 
@@ -1738,16 +1740,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if (weatherPoints.size() > 3) {
 
                     // Check whether the second to last point is too close to the ending point
-                    double distBetweenEndingAndSecondToEnding = com.google.maps.android.SphericalUtil.computeDistanceBetween(weatherPoints.get(weatherPoints.size() - 2), weatherPoints.get(weatherPoints.size() - 1));
-                    double distBetweenSecondToEndingAndThirdToEnding = com.google.maps.android.SphericalUtil.computeDistanceBetween(weatherPoints.get(weatherPoints.size() - 3), weatherPoints.get(weatherPoints.size() - 2));
+                    double distBetweenEndingAndSecondToEnding = SphericalUtil.computeDistanceBetween(weatherPoints.get(weatherPoints.size() - 2), weatherPoints.get(weatherPoints.size() - 1));
+                    double distBetweenSecondToEndingAndThirdToEnding = SphericalUtil.computeDistanceBetween(weatherPoints.get(weatherPoints.size() - 3), weatherPoints.get(weatherPoints.size() - 2));
                     if (distBetweenEndingAndSecondToEnding < 0.5 * distBetweenSecondToEndingAndThirdToEnding) {
                         weatherPoints.remove(weatherPoints.size() - 2);
                     }
 
                 }
 
-                // Get the information pertaining to each interval in weatherPoints
-                getIntervalInformation(weatherPoints);
+                try {
+                    // Get the information pertaining to each interval in weatherPoints
+                    getIntervalInformation(weatherPoints);
+                }
+                catch (Exception e) {
+                    Toast.makeText(MainActivity.this, "Error getting the map information, try again!", Toast.LENGTH_SHORT).show();
+                }
 
                 // MOST ACCURATE POLYLINE, BUT EXTREMELY LAGGY!!!
                 /*ArrayList<StepsArrayItem> stepsArrayItems = directionsObject.getRoutesArray().getLegsArray().getStepsArray().getStepsArrayItems();
@@ -1762,138 +1769,142 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void getIntervalInformation (ArrayList<LatLng> intervals) {
+        try {
+            // Get the MarkerOptions for the intervals passed into the markers
+            new IntervalInformationAST(intervals) {
 
-        // Get the MarkerOptions for the intervals passed into the markers
-        new IntervalInformationAST(intervals) {
+                @Override
+                protected void onPostExecute(MapInformation mapInformation) {
+                    markers = mapInformation.intervalInformation;
 
-            @Override
-            protected void onPostExecute(MapInformation mapInformation) {
-                markers = mapInformation.intervalInformation;
+                    // ArrayLists holding overallSuggestions
+                    ArrayList<String> overallMisc = new ArrayList<>();
+                    ArrayList<String> overallUpperbody = new ArrayList<>();
+                    ArrayList<String> overallLowerbody = new ArrayList<>();
+                    ArrayList<String> overallShoes = new ArrayList<>();
 
-                // ArrayLists holding overallSuggestions
-                ArrayList<String> overallMisc = new ArrayList<>();
-                ArrayList<String> overallUpperbody = new ArrayList<>();
-                ArrayList<String> overallLowerbody = new ArrayList<>();
-                ArrayList<String> overallShoes = new ArrayList<>();
-
-                // Get the overall suggestions
-                for (int i = 0; i < mapInformation.intervalTemperatures.size(); ++i) {
-                    ArrayList<String> misc = clothes.getMisc(mapInformation.intervalTemperatures.get(i));
-                    for (int j = 0; j < misc.size(); ++j) {
-                        if (misc.size() == 0) {
-                            break;
+                    // Get the overall suggestions
+                    for (int i = 0; i < mapInformation.intervalTemperatures.size(); ++i) {
+                        ArrayList<String> misc = clothes.getMisc(mapInformation.intervalTemperatures.get(i));
+                        for (int j = 0; j < misc.size(); ++j) {
+                            if (misc.size() == 0) {
+                                break;
+                            }
+                            if (!overallMisc.contains(misc.get(j))) {
+                                overallMisc.add(misc.get(j));
+                            }
                         }
-                        if (!overallMisc.contains(misc.get(j))) {
-                            overallMisc.add(misc.get(j));
+
+                        ArrayList<String> upperbody = clothes.getUpperBody(mapInformation.intervalTemperatures.get(i));
+                        for (int j = 0; j < upperbody.size(); ++j) {
+                            if (upperbody.size() == 0) {
+                                break;
+                            }
+                            if (!overallUpperbody.contains(upperbody.get(j))) {
+                                overallUpperbody.add(upperbody.get(j));
+                            }
+                        }
+
+                        ArrayList<String> lowerbody = clothes.getLowerBody(mapInformation.intervalTemperatures.get(i));
+                        for (int j = 0; j < lowerbody.size(); ++j) {
+                            if (lowerbody.size() == 0) {
+                                break;
+                            }
+                            if (!overallLowerbody.contains(lowerbody.get(j))) {
+                                overallLowerbody.add(lowerbody.get(j));
+                            }
+                        }
+
+                        ArrayList<String> shoes = clothes.getShoes(mapInformation.intervalTemperatures.get(i));
+                        for (int j = 0; j < shoes.size(); ++j) {
+                            if (shoes.size() == 0) {
+                                break;
+                            }
+                            if (!overallShoes.contains(shoes.get(j))) {
+                                overallShoes.add(shoes.get(j));
+                            }
                         }
                     }
 
-                    ArrayList<String> upperbody = clothes.getUpperBody(mapInformation.intervalTemperatures.get(i));
-                    for (int j = 0; j < upperbody.size(); ++j) {
-                        if (upperbody.size() == 0) {
-                            break;
+                    // If the returned list is not null, then add the markers to the map
+                    if (markers != null) {
+                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.intervalInformationLayout);
+                        linearLayout.removeAllViews();
+
+                        // Display the overallSuggestions
+                        TextView intervalDetailsTitle = (TextView) findViewById(R.id.intervalDetailsTitle);
+                        intervalDetailsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                        intervalDetailsTitle.setText("Interval Details");
+
+                        IntervalAdapter adapter = new IntervalAdapter(context, mapInformation, clothes);
+                        for (int i = 0; i < markers.size(); ++i) {
+                            linearLayout.addView(adapter.getView(i, null, null));
+                            maps.addMarker(markers.get(i));
                         }
-                        if (!overallUpperbody.contains(upperbody.get(j))) {
-                            overallUpperbody.add(upperbody.get(j));
+
+                        // Display the overallSuggestions
+                        TextView overallSuggestionsTitle = (TextView) findViewById(R.id.overallSuggestionTitleTextView);
+                        overallSuggestionsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                        overallSuggestionsTitle.setText("Bring these on your trip!");
+
+                        TextView overallSuggestions = (TextView) findViewById(R.id.overallSuggestionTextView);
+                        overallSuggestions.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+
+                        String misc = overallMisc.toString();
+                        if (misc.length() == 2) {
+                            misc = "[N/A]";
                         }
+                        String upperbody = overallUpperbody.toString();
+                        if (upperbody.length() == 2) {
+                            upperbody = "[N/A]";
+                        }
+                        String lowerbody = overallLowerbody.toString();
+                        if (lowerbody.length() == 2) {
+                            lowerbody = "[N/A]";
+                        }
+                        String shoes = overallShoes.toString();
+                        if (shoes.length() == 2) {
+                            shoes = "[N/A]";
+                        }
+
+                        overallSuggestions.setText("Miscellaneous:" + '\n' + misc.substring(1, misc.length() - 1) + "\n\n" +
+                                "Upperbody:" + '\n' + upperbody.substring(1, upperbody.length() - 1) + "\n\n" +
+                                "Lowerbody:" + '\n' + lowerbody.substring(1, lowerbody.length() - 1) + "\n\n" +
+                                "Shoes:" + '\n' + shoes.substring(1, shoes.length() - 1) + '\n');
                     }
 
-                    ArrayList<String> lowerbody = clothes.getLowerBody(mapInformation.intervalTemperatures.get(i));
-                    for (int j = 0; j < lowerbody.size(); ++j) {
-                        if (lowerbody.size() == 0) {
-                            break;
-                        }
-                        if (!overallLowerbody.contains(lowerbody.get(j))) {
-                            overallLowerbody.add(lowerbody.get(j));
-                        }
+                    // Else, notify the user that the attempt to get information has failed.
+                    else {
+                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.intervalInformationLayout);
+                        linearLayout.removeAllViews();
+
+                        TextView overallSuggestionsTitle = (TextView) findViewById(R.id.overallSuggestionTextView);
+                        overallSuggestionsTitle.setText(null);
+                        overallSuggestionsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 0);
+
+                        TextView intervalDetailsTitle = (TextView) findViewById(R.id.intervalDetailsTitle);
+                        intervalDetailsTitle.setText(null);
+                        intervalDetailsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 0);
+
+                        TextView overallSuggestions = (TextView) findViewById(R.id.overallSuggestionTextView);
+                        overallSuggestions.setText(null);
+                        overallSuggestions.setTextSize(TypedValue.COMPLEX_UNIT_SP, 0);
+
+                        Toast toast = Toast.makeText(getApplicationContext(), "An error has occured while trying to fetch the queried route." + '\n' + "Please try again!", Toast.LENGTH_SHORT);
+                        toast.show();
+                        maps.clear();
                     }
 
-                    ArrayList<String> shoes = clothes.getShoes(mapInformation.intervalTemperatures.get(i));
-                    for (int j = 0; j < shoes.size(); ++j) {
-                        if (shoes.size() == 0) {
-                            break;
-                        }
-                        if (!overallShoes.contains(shoes.get(j))) {
-                            overallShoes.add(shoes.get(j));
-                        }
-                    }
                 }
 
-                // If the returned list is not null, then add the markers to the map
-                if (markers != null) {
-                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.intervalInformationLayout);
-                    linearLayout.removeAllViews();
+            }.execute();
 
-                    // Display the overallSuggestions
-                    TextView intervalDetailsTitle = (TextView) findViewById(R.id.intervalDetailsTitle);
-                    intervalDetailsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-                    intervalDetailsTitle.setText("Interval Details");
-
-                    IntervalAdapter adapter = new IntervalAdapter(context, mapInformation, clothes);
-                    for (int i = 0; i < markers.size(); ++i) {
-                        linearLayout.addView(adapter.getView(i, null, null));
-                        maps.addMarker(markers.get(i));
-                    }
-
-                    // Display the overallSuggestions
-                    TextView overallSuggestionsTitle = (TextView) findViewById(R.id.overallSuggestionTitleTextView);
-                    overallSuggestionsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-                    overallSuggestionsTitle.setText("Bring these on your trip!");
-
-                    TextView overallSuggestions = (TextView) findViewById(R.id.overallSuggestionTextView);
-                    overallSuggestions.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-
-                    String misc = overallMisc.toString();
-                    if (misc.length() == 2) {
-                        misc = "[N/A]";
-                    }
-                    String upperbody = overallUpperbody.toString();
-                    if (upperbody.length() == 2) {
-                        upperbody = "[N/A]";
-                    }
-                    String lowerbody = overallLowerbody.toString();
-                    if (lowerbody.length() == 2) {
-                        lowerbody = "[N/A]";
-                    }
-                    String shoes = overallShoes.toString();
-                    if (shoes.length() == 2) {
-                        shoes = "[N/A]";
-                    }
-
-                    overallSuggestions.setText("Miscellaneous:" + '\n' + misc.substring(1, misc.length() - 1) + "\n\n" +
-                            "Upperbody:" + '\n' +  upperbody.substring(1, upperbody.length() - 1) + "\n\n" +
-                            "Lowerbody:" + '\n' + lowerbody.substring(1, lowerbody.length() - 1) + "\n\n" +
-                            "Shoes:" + '\n' + shoes.substring(1, shoes.length() - 1) + '\n');
-                }
-
-                // Else, notify the user that the attempt to get information has failed.
-                else {
-                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.intervalInformationLayout);
-                    linearLayout.removeAllViews();
-
-                    TextView overallSuggestionsTitle = (TextView) findViewById(R.id.overallSuggestionTextView);
-                    overallSuggestionsTitle.setText(null);
-                    overallSuggestionsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 0);
-
-                    TextView intervalDetailsTitle = (TextView) findViewById(R.id.intervalDetailsTitle);
-                    intervalDetailsTitle.setText(null);
-                    intervalDetailsTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 0);
-
-                    TextView overallSuggestions = (TextView) findViewById(R.id.overallSuggestionTextView);
-                    overallSuggestions.setText(null);
-                    overallSuggestions.setTextSize(TypedValue.COMPLEX_UNIT_SP, 0);
-
-                    Toast toast = Toast.makeText(getApplicationContext(), "An error has occured while trying to fetch the queried route." + '\n' + "Please try again!", Toast.LENGTH_SHORT);
-                    toast.show();
-                    maps.clear();
-                }
-
-            }
-
-        }.execute();
-
-        // Refresh the map
-        this.updateMap();
+            // Refresh the map
+            this.updateMap();
+        }
+        catch (Exception e) {
+            Toast.makeText(MainActivity.this, "Error getting the map information, try again!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void updateMap() {
