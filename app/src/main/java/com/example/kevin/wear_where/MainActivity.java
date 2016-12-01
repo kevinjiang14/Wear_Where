@@ -1072,6 +1072,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 getDailyRequest();
             } catch (Exception e) {
                 e.printStackTrace();
+                Toast.makeText(this, "Error getting location. Check your internet connection.", Toast.LENGTH_SHORT).show();
             }
         }
 
