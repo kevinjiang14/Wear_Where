@@ -284,7 +284,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        // Create and/or open database
+        // Start up and open database
         datasource = new DatabaseInterface(this);
         datasource.open();
 
@@ -1470,13 +1470,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onResume() {
-        datasource.open();
+        datasource.open();          // Neet  to reopen database on resume
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        datasource.close();
+        datasource.close();         // Need to close database when the app is paused
         super.onPause();
     }
 
