@@ -822,8 +822,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        menuButton = (Button) findViewById(R.id.button);
-
         // Assign hourly forecast widgets
         temperature = (TextView) findViewById(R.id.temperature);
         conditionIcon = (ImageView) findViewById(R.id.conditionIcon);
