@@ -1075,13 +1075,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             latitude = mLastLocation.getLatitude();
             longitude = mLastLocation.getLongitude();
 
+            // Get city and state from latitude and longitude
             geocoder = new Geocoder(this, Locale.getDefault());
             try {
-                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                city = addresses.get(0).getLocality();
-                state = addresses.get(0).getAdminArea();
-                location.setText(city + ", " + state);
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);     // Return list of address based on latitude & longitude
+                city = addresses.get(0).getLocality();                                          // Returns city from first address
+                state = addresses.get(0).getAdminArea();                                        // Returns state from first address
+                location.setText(city + ", " + state);                                          // Update textbox with city & state
 
+                // API calls for weather based based on city & state
                 getCurrentRequest();
                 getHourlyRequest();
                 getDailyRequest();
