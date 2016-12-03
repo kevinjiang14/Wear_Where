@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseCreator extends SQLiteOpenHelper{
 
+    // SQL code to create table
     private static final String DATABASE_CREATE = "create table ranges(_id integer primary key autoincrement, min integer not null, max integer not null);";
+
     private static final String DATABASE_NAME = "range.db";
     private static final int DATABASE_VERSION = 1;
 
@@ -16,6 +18,7 @@ public class DatabaseCreator extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Run SQL code to create table
         db.execSQL(DATABASE_CREATE);
     }
 
