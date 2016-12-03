@@ -205,7 +205,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public final static String FIRSTMESSAGE = "com.example.kevin.wear_where.MESSAGE_ONE";
     public final static String SECONDMESSAGE = "com.example.kevin.wear_wear.MESSAGE_TWO";
 
-    private Button menuButton;
     final Context context = this;
 
     // Global Geocoder class
