@@ -197,7 +197,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String city;
     private String state;
 
+    // Variable used for updateing database
     private DatabaseInterface datasource;
+
+    // Variables used for updating temperature ranges
     private TempRange warmRange;
     private TempRange chillyRange;
 
@@ -281,14 +284,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        // Create and/or open database
         datasource = new DatabaseInterface(this);
         datasource.open();
 
+        // If first time using app, add default values to database
         warmRange = datasource.getWarmRange();
         if(warmRange == null){
             datasource.createRange(60, 79);
         }
-
         chillyRange = datasource.getChillyRange();
         if(chillyRange == null){
             datasource.createRange(40, 59);
@@ -334,12 +338,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         miscellaneous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Get latest temperature values from user
                 warmRange = datasource.getWarmRange();
                 chillyRange = datasource.getChillyRange();
                 clothes.lowerWarm = (float) warmRange.getMin();
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+
                 HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> miscellaneous = clothes.getMisc(currentForecast.getTemperature());
                 String[] miscellaneousList = new String[miscellaneous.size()];
@@ -421,12 +428,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         upperbody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Get latest temperature values from user
                 warmRange = datasource.getWarmRange();
                 chillyRange = datasource.getChillyRange();
                 clothes.lowerWarm = (float) warmRange.getMin();
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+
                 HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> upperbody = clothes.getUpperBody(currentForecast.getTemperature());
                 String[] upperbodyList = new String[upperbody.size()];
@@ -507,12 +517,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         lowerbody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Get latest temperature values from user
                 warmRange = datasource.getWarmRange();
                 chillyRange = datasource.getChillyRange();
                 clothes.lowerWarm = (float) warmRange.getMin();
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+
                 HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> lowerbody = clothes.getLowerBody(currentForecast.getTemperature());
                 String[] lowerbodyList = new String[lowerbody.size()];
@@ -593,12 +606,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         shoes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Get latest temperature values from user
                 warmRange = datasource.getWarmRange();
                 chillyRange = datasource.getChillyRange();
                 clothes.lowerWarm = (float) warmRange.getMin();
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+
                 HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> shoes = clothes.getShoes(currentForecast.getTemperature());
                 String[] shoesList = new String[shoes.size()];
