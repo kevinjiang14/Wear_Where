@@ -23,3 +23,11 @@ An android app to suggest clothing and accessories based on the weather of your 
 - You can now view all source files in Android Studio, and debug by using the green triangle.
 
 # Technical Details
+
+**Determining User's City & State**
+
+The code is found in the getLocation() method of the Main Activity. The user's city and state are needed to get useful data from the Weather Underground API calls. The city and state of the user's current location are determined from the user's latitude and longitude. The Geocoder object uses reverse geocoding to determine a list of possible addresses from a given latitude and longitude. The first Address object returned by the Geocoder is used because it is most likely the user's current location. The Address class methods getLocality() and getAdminArea() return the city and state respectively. The location TextView is updated with the user's city and state. Finally, the Weather Underground API calls are made witht the updated city and state Strings.
+
+**Database**
+
+The database code is found in the Database package. SQLite is the database used in Android apps. The DatabaseCreator class creates a database file called "range.db"  with a table called "ranges". Each row in the table has three columns: id, min, and max. The SQLite "create table" command is executed in the DatabaseCreator's onCreate() method. The TempRange class is used to move data in and out of the database. It has variables to hold the id, min, and max for any row in the database. The DatabaseInterface class is used to interact with the database. The datasource variable in Main Activity is a DatabaseInterface object. Data is returned using TempRange objects. Cursor objects copy database row values into TempRange objects. Data is inserted into the database using ContentValues objects. The row id is used to update existing rows in the database.
