@@ -21,3 +21,5 @@ An android app to suggest clothing and accessories based on the weather of your 
 - Place this folder in your Android Studio workspace.
 - Open the project in Android Studio.
 - You can now view all source files in Android Studio, and debug by using the green triangle.
+
+# Technical Details
