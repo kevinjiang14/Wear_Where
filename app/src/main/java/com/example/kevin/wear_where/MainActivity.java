@@ -197,7 +197,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String city;
     private String state;
 
+    // Variable used for updateing database
     private DatabaseInterface datasource;
+
+    // Variables used for updating temperature ranges
     private TempRange warmRange;
     private TempRange chillyRange;
 
@@ -205,7 +208,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public final static String FIRSTMESSAGE = "com.example.kevin.wear_where.MESSAGE_ONE";
     public final static String SECONDMESSAGE = "com.example.kevin.wear_wear.MESSAGE_TWO";
 
-    private Button menuButton;
     final Context context = this;
 
     // Global Geocoder class
@@ -282,14 +284,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        // Start up and open database
         datasource = new DatabaseInterface(this);
         datasource.open();
 
+        // If first time using app, add default values to database
         warmRange = datasource.getWarmRange();
         if(warmRange == null){
             datasource.createRange(60, 79);
         }
-
         chillyRange = datasource.getChillyRange();
         if(chillyRange == null){
             datasource.createRange(40, 59);
@@ -335,12 +338,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         miscellaneous.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Get latest temperature values from user
                 warmRange = datasource.getWarmRange();
                 chillyRange = datasource.getChillyRange();
                 clothes.lowerWarm = (float) warmRange.getMin();
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+
                 HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> miscellaneous = clothes.getMisc(currentForecast.getTemperature());
                 String[] miscellaneousList = new String[miscellaneous.size()];
@@ -422,12 +428,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         upperbody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Get latest temperature values from user
                 warmRange = datasource.getWarmRange();
                 chillyRange = datasource.getChillyRange();
                 clothes.lowerWarm = (float) warmRange.getMin();
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+
                 HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> upperbody = clothes.getUpperBody(currentForecast.getTemperature());
                 String[] upperbodyList = new String[upperbody.size()];
@@ -508,12 +517,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         lowerbody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Get latest temperature values from user
                 warmRange = datasource.getWarmRange();
                 chillyRange = datasource.getChillyRange();
                 clothes.lowerWarm = (float) warmRange.getMin();
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+
                 HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> lowerbody = clothes.getLowerBody(currentForecast.getTemperature());
                 String[] lowerbodyList = new String[lowerbody.size()];
@@ -594,12 +606,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         shoes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Get latest temperature values from user
                 warmRange = datasource.getWarmRange();
                 chillyRange = datasource.getChillyRange();
                 clothes.lowerWarm = (float) warmRange.getMin();
                 clothes.upperWarm = (float) warmRange.getMax();
                 clothes.lowerChilly = (float) chillyRange.getMin();
                 clothes.upperChilly = (float) chillyRange.getMax();
+
                 HashSet<String> currentSet = new HashSet<String>();
                 ArrayList<String> shoes = clothes.getShoes(currentForecast.getTemperature());
                 String[] shoesList = new String[shoes.size()];
@@ -822,8 +837,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // TODO: DO STUFF ON ERROR (Toast?)
             }
         });
-
-        menuButton = (Button) findViewById(R.id.button);
 
         // Assign hourly forecast widgets
         temperature = (TextView) findViewById(R.id.temperature);
@@ -1062,13 +1075,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             latitude = mLastLocation.getLatitude();
             longitude = mLastLocation.getLongitude();
 
+            // Get city and state from latitude and longitude
             geocoder = new Geocoder(this, Locale.getDefault());
             try {
-                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                city = addresses.get(0).getLocality();
-                state = addresses.get(0).getAdminArea();
-                location.setText(city + ", " + state);
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);     // Return list of address based on latitude & longitude
+                city = addresses.get(0).getLocality();                                          // Returns city from first address
+                state = addresses.get(0).getAdminArea();                                        // Returns state from first address
+                location.setText(city + ", " + state);                                          // Update textbox with city & state
 
+                // API calls for weather based based on city & state
                 getCurrentRequest();
                 getHourlyRequest();
                 getDailyRequest();
@@ -1457,17 +1472,20 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onResume() {
-        datasource.open();
+        datasource.open();          // Neet  to reopen database on resume
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        datasource.close();
+        datasource.close();         // Need to close database when the app is paused
         super.onPause();
     }
 
-    /* Menu code */
+    /* Menu Code
+       Provide settings for user to update
+       Serach functionality for a place based on city & state */
+
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
 
@@ -1476,7 +1494,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.warm:
-                        // get prompts.xml view
+
+                        // get prompts.xml view, set temperature range
                         LayoutInflater li = LayoutInflater.from(context);
                         View promptsView = li.inflate(R.layout.prompt, null);
 
@@ -1485,18 +1504,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         // set prompts.xml to alertdialog builder
                         alertDialogBuilder.setView(promptsView);
 
+                        // Set default value for wheel
                         final NumberPicker pickmin = (NumberPicker) promptsView.findViewById(R.id.min);
                         pickmin.setMinValue(0);
                         pickmin.setMaxValue(100);
-                        pickmin.setValue(55);
+                        pickmin.setValue(60);
                         pickmin.setWrapSelectorWheel(false);
 
+                        // Set default value for wheel
                         final NumberPicker pickmax = (NumberPicker) promptsView.findViewById(R.id.max);
                         pickmax.setMinValue(0);
                         pickmax.setMaxValue(100);
                         pickmax.setValue(79);
                         pickmin.setWrapSelectorWheel(false);
 
+                        // Update wheels with database values
                         TempRange range = datasource.getWarmRange();
                         if(range != null){
                             pickmin.setValue(range.getMin());
@@ -1509,6 +1531,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                 .setPositiveButton("OK",
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog,int id) {
+                                                // Update database with new values
                                                 TempRange range = datasource.getWarmRange();
                                                 if(range == null){
                                                     datasource.createRange(pickmin.getValue(), pickmax.getValue());
@@ -1532,7 +1555,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         alertDialog.show();
                         return true;
                     case R.id.chilly:
-                        // get prompts.xml view
+
+                        // get prompts.xml view, set temperature range
                         LayoutInflater li3 = LayoutInflater.from(context);
                         View promptsView3 = li3.inflate(R.layout.prompt, null);
 
@@ -1541,16 +1565,19 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         // set prompts.xml to alertdialog builder
                         alertDialogBuilder3.setView(promptsView3);
 
+                        // Set default value for wheel
                         final NumberPicker pickmin2 = (NumberPicker) promptsView3.findViewById(R.id.min);
                         pickmin2.setMinValue(0);
                         pickmin2.setMaxValue(100);
-                        pickmin2.setValue(32);
+                        pickmin2.setValue(40);
 
+                        // Set default value for wheel
                         final NumberPicker pickmax2 = (NumberPicker) promptsView3.findViewById(R.id.max);
                         pickmax2.setMinValue(0);
                         pickmax2.setMaxValue(100);
-                        pickmax2.setValue(54);
+                        pickmax2.setValue(59);
 
+                        // Update wheels with database values
                         TempRange range2 = datasource.getChillyRange();
                         if(range2 != null){
                             pickmin2.setValue(range2.getMin());
@@ -1563,6 +1590,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                 .setPositiveButton("OK",
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog,int id) {
+                                                // Update database with new values
                                                 TempRange range2 = datasource.getChillyRange();
                                                 if(range2 == null){
                                                     datasource.createRange(pickmin2.getValue(), pickmax2.getValue());
@@ -1586,7 +1614,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         alertDialog3.show();
                         return true;
                     case R.id.search:
-                        // get search_input.xml view
+
+                        // get search_input.xml view, ask user for city & state
                         LayoutInflater li2 = LayoutInflater.from(context);
                         View promptsView2 = li2.inflate(R.layout.search_input, null);
 
@@ -1595,6 +1624,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         // set prompts.xml to alertdialog builder
                         alertDialogBuilder2.setView(promptsView2);
 
+                        // Variables used for getting user inputs
                         final EditText cityInput = (EditText) promptsView2.findViewById(R.id.cityInput);
                         final EditText stateInput = (EditText) promptsView2.findViewById(R.id.stateInput);
 
@@ -1604,6 +1634,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                 .setPositiveButton("OK",
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog,int id) {
+
+                                                // Get user inputs
                                                 final String city_input = cityInput.getText().toString();
                                                 final String state_input = stateInput.getText().toString();
 
@@ -1618,6 +1650,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
                                                 final TextView searchResult = (TextView) promptsView3.findViewById(R.id.searchResult);
 
+                                                // API call based on city & state provided by user
                                                 new CurrentConditionAST(city_input, state_input){
                                                     @Override
                                                     protected void onPostExecute(ConditionsObject item) {

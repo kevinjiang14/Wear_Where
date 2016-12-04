@@ -1,5 +1,6 @@
 package com.example.kevin.wear_where.Database;
 
+/* Class used to move data in and out of the database */
 public class TempRange {
     private long id;
     private int min;
