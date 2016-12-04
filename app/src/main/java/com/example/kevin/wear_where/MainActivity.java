@@ -1656,7 +1656,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                                     protected void onPostExecute(ConditionsObject item) {
                                                         ConditionsObject resultForecast = item;
                                                         searchResult.setText("The weather in " + city_input + ", " + state_input + " is " + resultForecast.getTemperature() + (char) 0x00B0 + " F");
-                                                        displayCurrentResults();
+
+                                                        //Don't want to change main tab
+                                                        //displayCurrentResults();
                                                     }
                                                 }.execute();
 
