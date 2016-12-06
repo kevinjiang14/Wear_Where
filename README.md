@@ -48,26 +48,34 @@ The user can also search places for current temperatures using the menu button. 
 ## Road Trip Functionality
 
 - Layout
-
   - The layout for this tab can be found in the ScrollView with the field “android:id=”@+id/layout4”. The layout consists of a ScrollView containing a RelativeLayout, which contains a RelativeLayout, a LinearLayout, and a RelativeLayout. The first RelativeLayout contains the MapFragment, TextViews for the title and contents for the overall suggested clothings for the road trip, and a TextView for the title of the interval details section. The linear layout is initially empty, but will become populated with TextViews with details for each interval upon a successful query. The second RelativeLayout contains the PlaceAutocompleteFragments for the starting and ending locations, as well as text views for their respective section headers, and also a button to call the PlaceMarkers() method upon its reception of a click.
   
 - Google Maps
-
   - The map functionality is powered by the Google Maps Android API. The map fragment in the road trip tab is set up to automatically focus and zoom in on your current location upon start-up. The layout for each interval is also defined upon start-up in a setInfoWindowAdapter() method. The code for the initialization of the map fragment can be found in the onMapReady() method.
   
 - Starting and Ending Locations
-
   - The starting and ending location fields are powered by the Google Places API for Android. They are of type PlaceAutocompleteFragment, and defined as startingLocation and endingLocation respectively in the onStart() method. The listeners for these fields can also be found in the onStart() method. The listeners are currently defined to instantiate startingCoordinates and endingCoordinates with new LatLng objects based on the place selected.
   
 - Let's Go Button
-
   - The Let’s Go button calls the placeMarkers() method when it is clicked. If the user has not picked both a starting and ending location, then the placeMarkers() method will simply reset startingCoordinates and endingCoordinates to null, reset both PlaceAutocompleteFragments to blank, and prompt the user to enter both a starting and ending location before pressing the Let’s Go button. Otherwise, the placeMarkers() method will call getRouteBetweenPoints() and adjust the zoom and camera bounds based on the LatLng objects of startingCoordinates and endingCoordinates.
 
     - getRouteBetweenPoints()
-
-      - The getRouteBetweenPoints() method creates a new GoogleDirectionsAST with its argument LatLng objects. With the result of the GoogleDirectionsAST, it places the polyline for the queried route. It will also determine the number of intervals that should be on the map based on the distance of the queried route, and calculate the interval coordinates that weather should be displayed for. The getIntervalInformation() method is then called with the aforementioned interval coordinates as its arguments. If an exception is thrown, the method will end and the end-user will be notified that the query attempt has failed.
+      - The getRouteBetweenPoints() method creates a new GoogleDirectionsAST object with its argument LatLng objects. With the result of the GoogleDirectionsAST object, it places the polyline for the queried route. It will also determine the number of intervals that should be on the map based on the distance of the queried route, and calculate the interval coordinates that weather should be displayed for. The getIntervalInformation() method is then called with the aforementioned interval coordinates as its arguments. If an exception is thrown, the method will end and the end-user will be notified that the query attempt has failed.
+      
+        - GoogleDirectionsAST
+          - The GoogleDirectionsAST class is an asynchronous task powered by the Google Maps Directions API. This class is run in the background in order to get the JSON object for the route between the input LatLng objects. The code for this class can be found in the GoogleDirectionsAST.java file in the AsyncTask folder.
 
     - getIntervalInformation()
-
-      - The getIntervalInformation() method creates a new IntervalInformationAST with its argument LatLng objects. With the result of the IntervalInformationAST, it displays the clothing suggestions for the overall route, as well as the clothing suggestions for each interval in the Road Trip Tab. The getIntervalInformation() method also uses the results of the IntervalInformationAST in order to display the markers for each interval on the mapFragment. If an exception is thrown, the method will end and the end-user will be notified that the query attempt has failed.
-    
+      - The getIntervalInformation() method creates a new IntervalInformationAST object with its argument LatLng objects. With the result of the IntervalInformationAST objects, it displays the clothing suggestions for the overall route, as well as the clothing suggestions for each interval in the Road Trip Tab. The getIntervalInformation() method also uses the results of the IntervalInformationAST in order to display the markers for each interval on the mapFragment. If an exception is thrown, the method will end and the end-user will be notified that the query attempt has failed.
+        
+        - IntervalInformationAST
+          - The IntervalInformationAST class is an asynchronous task that encapsulates all events responsible for retrieving information for each interval that is passed in as an argument. For each interval that is passed in, this class will create a GoogleDistanceAST object, a MapsForecastAST object and a GoogleTimeZoneAST object in order to get the Weather, ETA, and Time Zone information for each interval. The asynchronous task will create markers for each of the intervals passed in with the information from the created asynchronous tasks, and return a MapInformation object containing the created objects and the relevant information to be used in the Text Views in the road trip tab. The code for this class can be found in the IntervalInformationAST.java file in the AsyncTask folder.
+          
+            - GoogleDistanceAST
+              - The GoogleDistanceAST class is an asynchronous task powered by the Google Maps Distance Matrix API. This class is run in the background in order to get the JSON object for the argument list of intervals. The code for this class can be found in the GoogleDistanceAST.java file in the AsyncTask folder.
+              
+            - MapsForecastAST
+              - The MapsForecastAST class is an asynchronous task powered by the hourly 10 day forecast feature of the Weatherunderground API. This class is run in the background in order to read the JSON object for the argument LatLng object. The code for this class can be found in the MapsForecastAST.java file in the AsyncTask folder.
+              
+            - GoogleTimeZoneAST
+              - The TimeZoneAST class is an asynchronous task powered by the Google Maps Time Zone API. This class is run in the background in order to get the Time Zone for the argument LatLng object. The code for this class can be found in the GoogleTimeZoneAST.java file in the AsyncTask folder.
