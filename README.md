@@ -48,18 +48,26 @@ The user can also search places for current temperatures using the menu button. 
 ## Road Trip Functionality
 
 - Layout
+
   - The layout for this tab can be found in the ScrollView with the field “android:id=”@+id/layout4”. The layout consists of a ScrollView containing a RelativeLayout, which contains a RelativeLayout, a LinearLayout, and a RelativeLayout. The first RelativeLayout contains the MapFragment, TextViews for the title and contents for the overall suggested clothings for the road trip, and a TextView for the title of the interval details section. The linear layout is initially empty, but will become populated with TextViews with details for each interval upon a successful query. The second RelativeLayout contains the PlaceAutocompleteFragments for the starting and ending locations, as well as text views for their respective section headers, and also a button to call the PlaceMarkers() method upon its reception of a click.
   
 - Google Maps
+
   - The map functionality is powered by the Google Maps Android API. The map fragment in the road trip tab is set up to automatically focus and zoom in on your current location upon start-up. The layout for each interval is also defined upon start-up in a setInfoWindowAdapter() method. The code for the initialization of the map fragment can be found in the onMapReady() method.
   
 - Starting and Ending Locations
+
   - The starting and ending location fields are powered by the Google Places API for Android. They are of type PlaceAutocompleteFragment, and defined as startingLocation and endingLocation respectively in the onStart() method. The listeners for these fields can also be found in the onStart() method. The listeners are currently defined to instantiate startingCoordinates and endingCoordinates with new LatLng objects based on the place selected.
   
 - Let's Go Button
+
   - The Let’s Go button calls the placeMarkers() method when it is clicked. If the user has not picked both a starting and ending location, then the placeMarkers() method will simply reset startingCoordinates and endingCoordinates to null, reset both PlaceAutocompleteFragments to blank, and prompt the user to enter both a starting and ending location before pressing the Let’s Go button. Otherwise, the placeMarkers() method will call getRouteBetweenPoints() and adjust the zoom and camera bounds based on the LatLng objects of startingCoordinates and endingCoordinates.
+
     - getRouteBetweenPoints()
+
       - The getRouteBetweenPoints() method creates a new GoogleDirectionsAST with its argument LatLng objects. With the result of the GoogleDirectionsAST, it places the polyline for the queried route. It will also determine the number of intervals that should be on the map based on the distance of the queried route, and calculate the interval coordinates that weather should be displayed for. The getIntervalInformation() method is then called with the aforementioned interval coordinates as its arguments. If an exception is thrown, the method will end and the end-user will be notified that the query attempt has failed.
+
     - getIntervalInformation()
+
       - The getIntervalInformation() method creates a new IntervalInformationAST with its argument LatLng objects. With the result of the IntervalInformationAST, it displays the clothing suggestions for the overall route, as well as the clothing suggestions for each interval in the Road Trip Tab. The getIntervalInformation() method also uses the results of the IntervalInformationAST in order to display the markers for each interval on the mapFragment. If an exception is thrown, the method will end and the end-user will be notified that the query attempt has failed.
     
