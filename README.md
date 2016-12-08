@@ -47,17 +47,21 @@ The user can also search places for current temperatures using the menu button. 
 
 ##Vacation
 The user can input a vacation location along with the intended departure and return dates. All fields must be filled in or a message will appear prompting the user to do so. Afterwards when the “Submit” button is pressed the VacationDataActivity appears.
+
 - Time Frame
     - With the provided departure and return dates the length of the vacation is calculated into number of days through the CalculateDuration() method.
     - The number of days is then passed into the CalculateTimeFrame() method to determine the length of a time frame to be looked up. The length of the time frames are broken into every day, week, or month if the vacation duration is between 1 and 7 days, 8 and 35 days, or greater than 35 days respectively. This is done to prevent over usage of API calls to our weather service provider. 
     - The CreateTimeFrames() method is called to create the starting date and ending date of each time frames within the departure and return dates. Each time frame is then passed along with the same vacation location that was inputted at the beginning to Weather Underground’s planner service.
     - Each time frame is then displayed with the statistics of certain weather conditions occurring during that time.
+
 - Clothing Suggestion
     - Next to each time frame there is a “Suggestion” button when clicked provides a list of suggested clothing to prepare for that time frame of the vacation.
     - The main list of clothing at the top is determined by the temperature range that has the highest percentage of occurrence.
     - Under that main clothing suggestion list there is another secondary list which recommends a separate list of clothing that the user should consider bringing. This list is determined by taking into account all the other temperature range’s chance of occurrence. If any of the other temperature ranges has a chance of 30% or higher of occurring then clothing for that range will be added into this secondary list for the user to consider.
+
 - Weather Underground Planner
     - Weather Underground’s Planner service takes in a location and a starting and ending date and provides statistical percentages of the weather condition between those dates based on historical conditions.
+    - Only statistics for the temperature ranges and weather condition of snow or rain are displayed to the user.
 
 ## Road Trip Functionality
 
