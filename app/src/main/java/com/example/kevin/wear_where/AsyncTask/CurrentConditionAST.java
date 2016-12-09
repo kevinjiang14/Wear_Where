@@ -30,7 +30,7 @@ public class CurrentConditionAST extends AsyncTask<Void, ConditionsObject, Condi
     protected ConditionsObject doInBackground(Void... params) {
         ConditionsObject conditionsObject;
 
-        String current_link = String.format("http://api.wunderground.com/api/ca5b9df3415b7849/conditions/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
+        String current_link = String.format("http://api.wunderground.com/api/fe0b389aa655786c/conditions/q/%s/%s.json", Uri.encode(state), Uri.encode(city));
 
         conditionsObject = this.loop(current_link);
 
