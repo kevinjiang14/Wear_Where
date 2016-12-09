@@ -45,6 +45,28 @@ The user can set weather preferences using the menu button. The menu button is c
 
 The user can also search places for current temperatures using the menu button. The code is found in the showPopup() method of MainActivity. The user provides the city and state using two EditText widgets. A CurrentConditionAST object is created to make a Weather Underground API call using the city and state provided by the user. The current temperature of the place queried by the user is displayed in a new prompt.
 
+## Apparel
+This tab is for the user to view clothing suggestions for the current weather outside as well as a separate set of suggestions in the case that the weather changes to a certain degree in the later hours of the day.
+
+- Clothes
+    - The clothes were collected by surveying a group of individuals for their own wardrobe. They were asked to fill out a text file and organize their wardrobe based upon which temperature condition they would wear each clothing item. The temperature conditions are separated into four ranges that are defined as freezing, chilly, warm, and hot. 
+    - After receiving their submission, the text files were manually assessed for any errors like wrong formatting and misspelling. Then they are compiled into two separate text files, one for male clothing and one for female clothing. Both files are then passed as parameters during the creation of the Clothing class that is defined in the /wear folder.
+    
+- Gender Button
+    - The button is a switch that changes the gender of the clothing suggestions that the user receives. When the switch is clicked, it changes a globally defined String that all classes have access to. This will change the user's clothing suggestions throughout the whole application. A Toast message will pop up to notify the user which gender the app is currently set to and the code for this switch is in onCreate() of the Main Activity class.
+
+- Suggestion Buttons
+    - The user can choose which body part they want to see clothing suggestions for by clicking one of the buttons:
+        - Miscellaneous, Upperbody, LowerBody, Shoes
+        
+    - Each button's onClick function is defined in onCreate() in the MainActivity class. Once clicked, they call on one of accessor methods from the Clothing class which returns a set of clothing pertaining to that body part that was parsed from the text file:
+        - getMisc(), getUpperBody(), getLowerBody(), getShoes()
+
+    - The ClothingActivity class will then start and bring up a new activity defined as clothing_list.xml. The screen contains two ListView widgets that adapt a custom list format that's under mylist.xml. The top ListView widget provides details on the current temperature and current condition and gives clothing suggestions that reflect those details. The ListView widget on the bottom half will show details when the temperature changes to a degree that lands the user in a different temperature range. If the current temperature is higher than the user's lower bound Chilly temperature range setting but a few hours later the temperature will drop to below the bound, then the user has moved from the Chilly range down to the Freezing range. The ListView will then show details of how many hours later the change of temperature will move the user into a new range and also provide details of the temperature and condition at that hour. The clothing suggestions in that ListView reflect items that they would need in that new temperature range.
+        
+- Warning Message
+    - The warning message is simply a text view on the bottom of the screen that has a very small functionality to it. A short snippet of code in the MainActivty class looks through the Hourly forecast and tests for certain weather conditions to show a warning for. The purpose of including the warning message was to resolve the case that the user skips viewing the hourly forecast and goes straight to looking at the Apparel tab for clothing suggestions. There is only a warning message when there is a possibility of rain, snow, or both during that day. These were the only condition cases considered because it was decided that there were no other weather conditions that people would need to especially prepare for. Huge weather phenomenons like tornados, hurricanes and such do require attention but they are beyond the scope of what the application can help with so it decided to leave them out of the warning.
+     
 ##Vacation
 The user can input a vacation location along with the intended departure and return dates. All fields must be filled in or a message will appear prompting the user to do so. Afterwards when the “Submit” button is pressed the VacationDataActivity appears.
 
