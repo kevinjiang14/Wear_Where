@@ -34,7 +34,7 @@ public class PlannerAST extends AsyncTask<Void, PlannerObject, PlannerObject> {
     protected PlannerObject doInBackground(Void... params) {
         PlannerObject plannerObject;
 
-        String planner_link = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/planner_%s%s/q/%s/%s.json", Uri.encode(leaveDate), Uri.encode(returnDate), Uri.encode(state), Uri.encode(city));
+        String planner_link = String.format("http://api.wunderground.com/api/fe0b389aa655786c/planner_%s%s/q/%s/%s.json", Uri.encode(leaveDate), Uri.encode(returnDate), Uri.encode(state), Uri.encode(city));
 
         plannerObject = this.loop(planner_link);
 
