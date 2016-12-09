@@ -29,7 +29,7 @@ public class GeolookupAST extends AsyncTask<Void, GeoLookupObject, GeoLookupObje
     protected GeoLookupObject doInBackground(Void... params) {
         GeoLookupObject geoLookupObject;
 
-        String geolookupLink = String.format("http://api.wunderground.com/api/ad52b6bffd967fae/geolookup/q/%s,%s.json", Double.toString(latitude), Double.toString(longitude));
+        String geolookupLink = String.format("http://api.wunderground.com/api/fe0b389aa655786c/geolookup/q/%s,%s.json", Double.toString(latitude), Double.toString(longitude));
 
         geoLookupObject = this.loop(geolookupLink);
 
