@@ -59,17 +59,17 @@
                                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
                             <TextView
-                                android:id="@+id/temperature"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/description"
-                                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                            <TextView
                                 android:id="@+id/description"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/location"
+                                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                            <TextView
+                                android:id="@+id/temperature"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/description"
                                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
                             <ImageView
@@ -86,16 +86,21 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/conditionIcon"
-                                android:layout_marginTop="17dp"
                                 android:id="@+id/button"
                                 android:onClick="showPopup"/>
 
                             <ImageView
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/button"
-                                android:src="@drawable/wundergroundlogo_4c_horz"/>
+                                android:layout_height="90dp"
+                                android:layout_below="@id/button"
+                                android:src="@drawable/wundergroundlogo_4c_horz"
+                                android:id="@+id/legal"/>
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/legal"
+                                android:text="Powered by Weather Underground" />
                         </RelativeLayout>
 
                     </android.support.v4.widget.SwipeRefreshLayout>
@@ -1079,12 +1084,6 @@
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:src="@drawable/wundergroundlogo_4c_horz"/>
-
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -1155,11 +1154,6 @@
                         android:layout_below="@id/returnDate"
                         android:text="Submit" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:src="@drawable/wundergroundlogo_4c_horz"/>
                 </RelativeLayout>
 
                 <ScrollView
@@ -1295,8 +1289,15 @@
                             <ImageView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/legal1"
                                 android:layout_below="@+id/getRoadTripWeatherButton"
                                 android:src="@drawable/wundergroundlogo_4c_horz"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/legal1"
+                                android:text="Powered by Weather Underground" />
                         </RelativeLayout>
                     </RelativeLayout>
                 </ScrollView>

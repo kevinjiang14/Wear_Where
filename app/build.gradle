@@ -4,11 +4,11 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
     defaultConfig {
-        applicationId "com.example.kevin.wear_where"
+        applicationId "com.ubcse.kevin.wear_where"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
 
         // Enabling multidex support.
         multiDexEnabled true
