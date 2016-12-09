@@ -24,7 +24,7 @@ An android app to suggest clothing and accessories based on the weather of your 
 - You can now view all source files in Android Studio, and debug by using the green triangle.
 
 **Running it on Android**
-- Install the application from the Google Play Store.
+- Install the application from the Google Play Store from [here](https://play.google.com/store/apps/details?id=com.ubcse.kevin.wear_where).
 - Provide the requested permissions, and you're good to go!
 
 # Technical Details
